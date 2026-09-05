@@ -1,33 +1,78 @@
-<div class="group">
-	<div class="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gray-100">
-		<span class="absolute top-3 left-3 z-10 bg-black text-white px-2.5 py-1.5 rounded-lg text-[10px] font-bold">NEW</span>
+<div class="bg-white border border-gray-200 rounded-2xl overflow-hidden group hover:shadow-xl transition">
+    <div class="relative aspect-square overflow-hidden bg-gray-100">
 
-		{{-- Wishlist --}}<x-products.wishlistButton :product="$product"/>
-		{{-- Product Detail Link --}}<x-products.image :product="$product"/>
-     	{{-- Add To Cart --}}<x-products.addToCart :product="$product"/>
+        {{-- Product Image --}}<x-products.image :product="$product"/>
+        {{-- Wishlist --}}<x-products.wishlistButton :product="$product"/>
     </div>
-	
-	{{-- Product Details --}}
-	<div class="pt-4">
-		<p class="text-xs text-gray-400">{{ $product->category->name ?? 'Fashion' }}</p>
-		<a href="{{ route('product.detail', $product->slug) }}" class="block">
-			<h3 class="font-semibold mt-1 hover:text-gray-500 transition">{{ $product->name }}</h3>
-		</a>
 
-		<div class="flex items-center justify-between mt-2">
-			<div>
-				<span class="font-bold">₹{{ $product->sale_price }}</span>
+    {{-- PRODUCT INFO --}}
+    <div class="p-2">
 
-				@if($product->price > $product->sale_price)
-				<span class="text-xs text-gray-400 line-through ml-1">₹{{ $product->price }}</span>@endif
-			</div>
-			
-			@if($product->reviews->isNotEmpty())
-    		<span class="text-xs text-yellow-500">
-        		★ {{ $product->reviews->first()->rating }}
-    		</span>
-    		
-    		@endif
-		</div>
-	</div>
+        {{-- Category --}}
+        <div class="h-[52px] flex items-center justify-between w-full">
+            <div class="w-20"> 
+                <p class="text-xs text-gray-400">
+                    {{ $product->category->name ?? 'Fashion' }}
+                </p>
+            </div>
+            
+            <div class="text-xs text-gray-400">                 
+                {{-- Available Sizes --}}
+                @if(!empty($product->sizes))
+                    @foreach($product->sizes as $size)
+                        @php
+                            $sizeName = '';
+
+                            if (is_object($size)) {
+                                $sizeName = $size->name ?? $size->size ?? '';
+                            } elseif (is_array($size)) {
+                                $sizeName = $size['name'] ?? $size['size'] ?? '';
+                            } else {
+                                $sizeName = $size;
+                            }
+                        @endphp
+                        @if(!empty($sizeName))
+                        <span class="inline-flex items-center justify-center px-2 py-1 border border-gray-200 rounded-md text-xs text-gray-700">
+                            {{ $sizeName }}
+                        </span>
+                        @endif
+                    @endforeach
+                @endif
+            </div>
+        </div>
+
+        {{-- NAME --}}
+        <h3 class="font-semibold mt-2 h-[48px]" style="text-overflow: ellipsis;" >{{ $product->name }}</h3>
+
+{{-- PRICE --}}
+<div class="flex items-center justify-between mt-3 w-full">
+
+    {{-- PRICE LEFT --}}
+    <div>
+        <span class="font-bold text-lg">
+            ₹{{ number_format($product->sale_price) }}
+        </span>
+
+        @if($product->price > $product->sale_price)
+            <span class="text-sm text-gray-400 line-through ml-1">
+                ₹{{ number_format($product->price) }}
+            </span>
+        @endif
+    </div>
+
+    {{-- RATING RIGHT --}}
+    <div class="flex items-center gap-1 text-sm">
+        <span class="text-yellow-500">★</span>
+        <span class="font-semibold">
+            {{ $product->rating ?? 0 }}
+        </span>
+    </div>
+
+</div>
+
+
+        {{-- CART --}}
+        {{-- Add To Cart --}}
+        <x-products.addToCart :product="$product"/>
+    </div>
 </div>

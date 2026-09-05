@@ -16,6 +16,8 @@
                     @endcan
                     <x-side-bar text="Categories" :list="['List'=> 'categories.index','Add Category'=> 'categories.create']"></x-side-bar>
                     <x-side-bar text="Brands" :list="['List'=> 'brand.index','Add Brand'=> 'brand.create']"></x-side-bar>
+                    <x-side-bar text="Colors" :list="['List'=> 'colors.index','Add Color'=> 'colors.create']"></x-side-bar>
+                    <x-side-bar text="Sizes" :list="['List'=> 'sizes.index','Add Size'=> 'sizes.create']"></x-side-bar>
                     <x-side-bar text="Tags" :list="['List'=> 'tags.index','Add Brand'=> 'tags.create']"></x-side-bar>
                     <x-side-bar text="Products" :list="['List'=> 'products.index','Add Product'=> 'products.create']"></x-side-bar>
                     <x-side-bar-button text="Orders" link="{{ route('admin.orders') }}"></x-side-bar-button>

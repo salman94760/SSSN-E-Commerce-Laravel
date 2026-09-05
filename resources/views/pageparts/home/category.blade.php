@@ -41,7 +41,7 @@
 
             <div class="bg-white rounded-2xl overflow-hidden border border-gray-200 hover:shadow-xl transition duration-300">
                 <div class="relative h-52 overflow-hidden bg-gray-100">
-                    <img src="{{ asset('storage/'.$category->image) }}" alt="{{ $category['name'] }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <img src="{{ asset('storage/'.$category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
 
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition"></div>
 

@@ -172,6 +172,20 @@ if (data.status === "removed") {
         alert("Something went wrong.");
     });
 }
+
+function reloadFilter() {
+    let filter = document.getElementById('filters').value;
+
+    let url = new URL(window.location.href);
+
+    if (filter) {
+        url.searchParams.set('sort', filter);
+    } else {
+        url.searchParams.delete('sort');
+    }
+
+    window.location.href = url.toString();
+}
 </script>
 </body>
 </html>

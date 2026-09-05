@@ -584,12 +584,19 @@
                 
 
                 @foreach($cartitems as $item)
+                @php
+                 $size = $item->product->sizes
+                                    ->where('id', $item->size_id)
+                                    ->first();
 
-
+                                $unitPrice = $size?->pivot?->price
+                                    ?? $item->price
+                                    ?? $item->product->sale_price;
+                                    @endphp
                 <div class="flex gap-3 mt-5">
 
-                    @if($item->product && $item->product->image)
-    <img src="{{ asset('storage/' . $item->product->image) }}"
+                    @if($item->product && $item->product->images)
+    <img src="{{ asset('storage/' . $item->product->images->first()->name) }}"
          alt="{{ $item->product->name }}"
          class="w-20 h-24 rounded-xl object-cover">
 @else
@@ -605,16 +612,18 @@
                         </h3>
 
                         <p class="text-xs text-gray-500 mt-1">
-                            Grey · M
+                            {{$item->color->name}} · {{$item->size->name}}
+
+                        </p>
+                             <p class="text-xs text-gray-500 mt-1">
+                            Quantity . {{$item->quantity}}
                         </p>
 
                         <p class="font-semibold mt-3">
-                            ₹{{$item->product->sale_price}}
+                            Price : ₹{{$unitPrice}}
                         </p>
 
-                        <p class="text-xs text-gray-500 mt-1">
-                            Quantity . {{$item->quantity}}
-                        </p>
+                       
 
                     </div>
 
@@ -812,7 +821,7 @@ function ApplyCoupon() {
     function updatePayment() {
 
         const selected = document.querySelector(
-            'input[name="payment"]:checked'
+            'input[name="payment_method"]:checked'
         ).value;
 
         // Hide all

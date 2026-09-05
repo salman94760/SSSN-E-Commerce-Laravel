@@ -6,6 +6,8 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Color;
+use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
@@ -20,13 +22,15 @@ class DashboardController extends Controller
         $products = Product::count();
         $categories = Category::count();
         $brands = Brand::count();
+        $colors = Color::count();
+        $sizes = Size::count();
         $allSellers = User::where('role','seller')->count();
         $ordersCount = 0;
         $couponsCount = 0;
         $reviewsCount = 0;
         $toalPayments = 0;
         if ($user->role === 'admin' || $user->role === 'seller') {
-            return view('dashboard/admin-dashboard',compact('allUsers','allSellers','products','categories','brands','ordersCount','couponsCount','reviewsCount','toalPayments'));
+            return view('dashboard/admin-dashboard',compact('allUsers','allSellers','products','categories','brands','colors','sizes','ordersCount','couponsCount','reviewsCount','toalPayments'));
         }
         return view('/dashboard/customer-dashboard');
     }

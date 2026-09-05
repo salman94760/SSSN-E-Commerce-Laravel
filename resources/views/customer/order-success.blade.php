@@ -358,7 +358,7 @@
                     </div>
 
                     <span class="text-sm text-gray-500">
-                        3 Items
+                        {{$orderItem->sum('quantity')}} Items
                     </span>
 
                 </div>
@@ -367,7 +367,7 @@
                     @foreach($orderItem as $item)
                     <div class="flex gap-4 py-5">
                         <div class="w-20 h-24 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-                            <img src="{{asset('storage/'.$item->product->image)}}" class="w-full h-full object-cover">
+                            <img src="{{asset('storage/'.$item->product->images->first()->name)}}" class="w-full h-full object-cover">
                         </div>
 
                         <div class="flex-1">
@@ -376,7 +376,7 @@
                             <p class="text-xs
                                       text-gray-500 mt-1">
 
-                                Black · Size L
+                                {{$item->color->name}} · Size {{$item->size->name}}
 
                             </p>
 
@@ -386,12 +386,18 @@
                                 Qty: {{$item->quantity}}
 
                             </p>
+                             <p class="text-xs
+                                      text-gray-400 mt-2">
+
+                                Price: {{$item->price}}
+
+                            </p>
 
                         </div>
 
 
                         <div class="font-semibold">
-                            ₹{{$item->product->sale_price}}
+                            Total : ₹{{number_format($item->price*$item->quantity,2)}}
                         </div>
 
                     </div>

@@ -43,4 +43,33 @@ public function updateStatus(Request $request, $id)
 
     return back()->with('success', 'Order status updated successfully.');
 }
+
+
+public function updatePaymentStatus(Request $request, Order $order)
+{
+    $request->validate([
+        'payment_status' => [
+            'required',
+            'in:Pending,Paid,Failed,Refunded'
+        ],
+
+        'transaction_id' => [
+            'nullable',
+            'string',
+            'max:255'
+        ],
+    ]);
+
+    $order->update([
+        'payment_status' => $request->payment_status,
+        'transaction_id' => $request->transaction_id,
+    ]);
+
+    return back()->with(
+        'success',
+        'Payment status updated successfully.'
+    );
+}
+
+
 }

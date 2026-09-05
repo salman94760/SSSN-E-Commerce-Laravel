@@ -228,6 +228,14 @@
                             Brand
                         </th>
 
+                         <th class="px-6 py-4 font-semibold text-slate-600">
+                            Color
+                        </th>
+
+                         <th class="px-6 py-4 font-semibold text-slate-600">
+                            Size
+                        </th>
+
                         <th class="px-6 py-4 font-semibold text-slate-600">
                             Price
                         </th>
@@ -307,6 +315,16 @@
                                 {{ $product->category->name ?? 'N/A' }}
                             </td>
 
+
+                            {{-- Brand --}}
+                            <td class="px-6 py-4 text-slate-600">
+                                {{ $product->brand->name ?? 'N/A' }}
+                            </td>
+
+                            {{-- Brand --}}
+                            <td class="px-6 py-4 text-slate-600">
+                                {{ $product->brand->name ?? 'N/A' }}
+                            </td>
 
                             {{-- Brand --}}
                             <td class="px-6 py-4 text-slate-600">

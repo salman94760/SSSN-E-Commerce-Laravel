@@ -1,34 +1,17 @@
 @extends('layouts.customer.customer-layout')
-
 @section('customerContent')
 
 <div class="bg-gray-50 min-h-screen">
-
-    {{-- Breadcrumb --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-
         <div class="flex items-center gap-2 text-sm text-gray-500">
-
-            <a href="#"
-               class="hover:text-black">
-                Home
-            </a>
-
+            <a href="#" class="hover:text-black">Home</a>
             <span>/</span>
 
-            <a href="{{ route('customer.shop') }}"
-               class="hover:text-black">
-                Shop
-            </a>
-
+            <a href="{{ route('customer.shop') }}" class="hover:text-black">Shop</a>
             <span>/</span>
 
-            <span class="text-gray-900">
-                {{ $product->name }}
-            </span>
-
+            <span class="text-gray-900">{{ $product->name }}</span>
         </div>
-
     </div>
 
 
@@ -40,17 +23,18 @@
             {{-- LEFT : IMAGE --}}
             <div>
 
-                <div class="relative bg-white
-                            rounded-3xl overflow-hidden
-                            border border-gray-100">
+                <div class="relative bg-white rounded-3xl overflow-hidden border border-gray-100">
 
-                    {{-- Badge --}}
-                    <span class="absolute top-5 left-5 z-10
-                                 bg-black text-white
-                                 px-3 py-1.5 rounded-lg
-                                 text-xs font-semibold">
-                        NEW
-                    </span>
+                    {{-- Tag --}}
+                    @if($product->tag)
+                        <span class="absolute top-5 left-5 z-10
+                                     bg-black text-white
+                                     px-3 py-1.5 rounded-lg
+                                     text-xs font-semibold">
+                            {{ $product->tag }}
+                        </span>
+                    @endif
+
 
                     {{-- Wishlist --}}
                     <button
@@ -66,29 +50,48 @@
                         ♡
                     </button>
 
+                    @if(isset($product->images[0]) && $product->images[0]->name != "")
+                    <img
+                        src="{{ asset('storage/' . $product->images->first()->name) }}"
+                        alt="{{ $product->name }}"
+                        class="w-full aspect-[4/5] object-cover">
+                    @else
                     <img
                         src="{{ asset('storage/' . $product->image) }}"
                         alt="{{ $product->name }}"
-                        class="w-full aspect-[4/5]
-                               object-cover">
+                        class="w-full aspect-[4/5] object-cover">
+                    @endif
+                    
 
                 </div>
 
 
                 {{-- Thumbnail --}}
-                <div class="flex gap-3 mt-4">
+     <div class="flex gap-3 mt-4">
+    @if(!empty($product->images) && is_iterable($product->images))
 
-                    <div class="w-20 h-20 rounded-xl
-                                overflow-hidden
-                                border-2 border-black">
-
-                        <img
-                            src="{{ asset('storage/' . $product->image) }}"
-                            class="w-full h-full object-cover">
-
-                    </div>
-
+        @foreach($product->images as $image)
+            @if(is_object($image) && !empty($image->name))
+                <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-black">
+                    <img
+                        src="{{ asset('storage/' . $image->name) }}"
+                        alt="{{ $product->name ?? 'Product image' }}"
+                        class="w-full h-full object-cover"
+                    >
                 </div>
+            @elseif(is_array($image) && !empty($image['name']))
+                <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-black">
+                    <img
+                        src="{{ asset('storage/' . $image['name']) }}"
+                        alt="{{ $product->name ?? 'Product image' }}"
+                        class="w-full h-full object-cover"
+                    >
+                </div>
+            @endif
+        @endforeach
+
+    @endif
+</div>
 
             </div>
 
@@ -96,45 +99,100 @@
             {{-- RIGHT : DETAILS --}}
             <div class="lg:pt-5">
 
+
                 {{-- Category --}}
                 <p class="text-sm text-gray-500">
-                    {{ $product->category->name ?? 'Men Collection' }}
+                    {{ $product->category->name ?? 'Collection' }}
                 </p>
 
 
                 {{-- Name --}}
-                <h1 class="text-3xl sm:text-4xl
-                           font-bold text-gray-900 mt-2">
+                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mt-2">
                     {{ $product->name }}
                 </h1>
+
+
+                {{-- Tag --}}
+
+             @if($product->tags && $product->tags->count())
+    <div class="mt-3 flex flex-wrap gap-2">
+
+        @foreach($product->tags as $tag)
+
+            @if(!empty($tag->name))
+
+                <span class="inline-block px-3 py-1
+                             bg-gray-100 rounded-lg
+                             text-xs font-semibold text-gray-700">
+                    {{ $tag->name }}
+                </span>
+            @endif
+        @endforeach
+
+    </div>
+@endif
 
 
                 {{-- Rating --}}
                 <div class="flex items-center gap-3 mt-4">
 
+                    @php
+                        $reviewCount = $product->reviews->count();
+                        $averageRating = $reviewCount > 0
+                            ? round($product->reviews->avg('rating'), 1)
+                            : 0;
+                    @endphp
+
                     <div class="text-yellow-500 text-lg">
-                        ★★★★★
+
+                        @if($reviewCount > 0)
+
+                            @for($i = 1; $i <= 5; $i++)
+
+                                @if($i <= round($averageRating))
+                                    ★
+                                @else
+                                    ☆
+                                @endif
+
+                            @endfor
+
+                        @else
+                            ☆☆☆☆☆
+                        @endif
+
                     </div>
 
                     <span class="text-sm text-gray-500">
-                        4.8 (24 Reviews)
+
+                        @if($reviewCount > 0)
+                            {{ $averageRating }} ({{ $reviewCount }} Reviews)
+                        @else
+                            No Reviews
+                        @endif
+
                     </span>
 
                 </div>
 
 
-                {{-- Price --}}
+                {{-- PRICE --}}
+                @php
+                    $firstSizePrice = $product->sizes->first()?->pivot?->price;
+                    $displayPrice = $firstSizePrice ?? $product->discount_price ?? $product->price;
+                @endphp
+
                 <div class="flex items-center gap-3 mt-6">
 
-                    <span class="text-3xl font-bold">
-                        ₹{{ $product->discount_price ?? $product->price }}
+                    <span id="product-price" class="text-3xl font-bold">
+                        ₹{{ number_format($displayPrice, 2) }}
                     </span>
 
-                    @if($product->discount_price)
+                    {{-- Original product price --}}
+                    @if($product->discount_price && !$firstSizePrice)
 
-                        <span class="text-lg text-gray-400
-                                     line-through">
-                            ₹{{ $product->price }}
+                        <span class="text-lg text-gray-400 line-through">
+                            ₹{{ number_format($product->price, 2) }}
                         </span>
 
                         <span class="bg-green-100
@@ -168,7 +226,8 @@
 
                 <div class="border-t border-gray-200 mt-7 pt-7">
 
-                    {{-- COLOR --}}
+
+                    {{-- ================= COLOR ================= --}}
                     <div>
 
                         <div class="flex justify-between">
@@ -177,42 +236,48 @@
                                 Color
                             </label>
 
-                            <span class="text-sm text-gray-500">
-                                Black
+                            <span
+                                id="selected-color"
+                                class="text-sm text-gray-500">
+                                {{ $product->colors->first()->name ?? 'Select Color' }}
                             </span>
 
                         </div>
 
+
                         <div class="flex gap-3 mt-4">
 
-                            <button
-                                type="button"
-                                class="w-9 h-9 rounded-full
-                                       bg-black
-                                       ring-2 ring-offset-2
-                                       ring-black">
-                            </button>
+                            @forelse($product->colors as $color)
 
-                            <button
-                                type="button"
-                                class="w-9 h-9 rounded-full
-                                       bg-gray-500
-                                       border">
-                            </button>
+                                <button
+                                    type="button"
+                                    onclick="selectColor(
+                                        '{{ $color->name }}',
+                                        '{{ $color->id }}',
+                                        this
+                                    )"
+                                    title="{{ $color->name }}"
+                                    class="color-btn w-9 h-9 rounded-full border-2
+                                           hover:ring-2 hover:ring-offset-2
+                                           hover:ring-black transition"
+                                    style="background-color: {{ $color->hex_code ?? '#000000' }}">
 
-                            <button
-                                type="button"
-                                class="w-9 h-9 rounded-full
-                                       bg-blue-900
-                                       border">
-                            </button>
+                                </button>
+
+                            @empty
+
+                                <span class="text-sm text-gray-500">
+                                    No colors available
+                                </span>
+
+                            @endforelse
 
                         </div>
 
                     </div>
 
 
-                    {{-- SIZE --}}
+                    {{-- ================= SIZE ================= --}}
                     <div class="mt-7">
 
                         <div class="flex justify-between">
@@ -221,20 +286,23 @@
                                 Size
                             </label>
 
-                            <a href="#"
-                               class="text-sm underline">
-                                Size Guide
-                            </a>
 
                         </div>
 
+
                         <div class="flex flex-wrap gap-3 mt-4">
 
-                            @foreach(['S','M','L','XL','XXL'] as $size)
+                            @forelse($product->sizes as $size)
 
                                 <button
                                     type="button"
-                                    class="min-w-12 px-4 py-2.5
+                                    onclick="selectSize(
+                                        {{ $size->id }},
+                                        '{{ $size->name }}',
+                                        {{ $size->pivot->price }},
+                                        this
+                                    )"
+                                    class="size-btn min-w-12 px-4 py-2.5
                                            rounded-xl
                                            border border-gray-300
                                            text-sm font-semibold
@@ -243,18 +311,60 @@
                                            hover:text-white
                                            transition">
 
-                                    {{ $size }}
+                                    {{ $size->name }}
 
                                 </button>
 
-                            @endforeach
+                            @empty
+
+                                <span class="text-sm text-gray-500">
+                                    No sizes available
+                                </span>
+
+                            @endforelse
+
+                        </div>
+
+
+                        {{-- Selected Size --}}
+                        <div class="mt-4">
+
+                            <span class="text-sm text-gray-500">
+                                Selected Size:
+                            </span>
+
+                            <span
+                                id="selected-size"
+                                class="text-sm font-semibold">
+                                {{ $product->sizes->first()->name ?? 'None' }}
+                            </span>
 
                         </div>
 
                     </div>
 
 
-                    {{-- QUANTITY --}}
+                    {{-- ================= SELECTED PRODUCT DATA ================= --}}
+                    <input
+                        type="hidden"
+                        name="selected_color"
+                        id="selected-color-input"
+                        value="{{ $product->colors->first()->id ?? '' }}">
+
+                    <input
+                        type="hidden"
+                        name="selected_size"
+                        id="selected-size-input"
+                        value="{{ $product->sizes->first()->id ?? '' }}">
+
+                    <input
+                        type="hidden"
+                        name="selected_price"
+                        id="selected-price-input"
+                        value="{{ $displayPrice }}">
+
+
+                    {{-- ================= QUANTITY ================= --}}
                     <div class="mt-7">
 
                         <label class="font-semibold">
@@ -300,9 +410,10 @@
                     </div>
 
 
-                    {{-- BUTTONS --}}
+                    {{-- ================= BUTTONS ================= --}}
                     <div class="grid sm:grid-cols-2 gap-3 mt-8">
-
+                        @if($product->sizes && count($product->sizes) > 0)
+                       
                         <form
                             action="{{ route('cart.add', $product->id) }}"
                             method="POST">
@@ -314,6 +425,25 @@
                                 name="quantity"
                                 id="cart-quantity"
                                 value="1">
+
+                            <input
+                                type="hidden"
+                                name="color_id"
+                                id="cart-color"
+                                value="{{ $product->colors->first()->id ?? '' }}">
+
+                            <input
+                                type="hidden"
+                                name="size_id"
+                                id="cart-size"
+                                value="{{ $product->sizes->first()->id ?? '' }}">
+
+                            <input
+                                type="hidden"
+                                name="price"
+                                id="cart-price"
+                                value="{{ $displayPrice }}">
+
 
                             <button
                                 type="submit"
@@ -327,11 +457,10 @@
                                 Add to Cart
 
                             </button>
+                          
 
                         </form>
-
-
-                        <button
+                          <button
                             type="button"
                             class="w-full h-14
                                    border-2 border-black
@@ -344,13 +473,42 @@
                             Buy Now
 
                         </button>
+                        @else
+                        <form
+                            action="{{ route('product.notify', $product->id) }}"
+                            method="POST">
+
+                            @csrf
+
+                           
+
+
+                            <button
+                                type="submit"
+                                class="w-full h-14
+                                       bg-black text-white
+                                       rounded-2xl
+                                       font-semibold
+                                       hover:bg-gray-800
+                                       transition">
+
+                                Notify me
+
+                            </button>
+
+                        </form>
+                        @endif
+
+                        
+
+
+                        
 
                     </div>
 
 
-                    {{-- FEATURES --}}
-                    <div class="grid grid-cols-3
-                                gap-3 mt-8">
+                    {{-- ================= FEATURES ================= --}}
+                    <div class="grid grid-cols-3 gap-3 mt-8">
 
                         <div class="text-center">
 
@@ -364,6 +522,7 @@
 
                         </div>
 
+
                         <div class="text-center">
 
                             <div class="text-xl">
@@ -375,6 +534,7 @@
                             </p>
 
                         </div>
+
 
                         <div class="text-center">
 
@@ -390,6 +550,7 @@
 
                     </div>
 
+
                 </div>
 
             </div>
@@ -399,7 +560,7 @@
     </section>
 
 
-    {{-- REVIEWS --}}
+    {{-- ================= REVIEWS ================= --}}
     <section class="bg-white border-t">
 
         <div class="max-w-7xl mx-auto
@@ -410,61 +571,246 @@
                 Customer Reviews
             </h2>
 
+
+            @php
+                $reviewCount = $product->reviews->count();
+
+                $averageRating = $reviewCount > 0
+                    ? round($product->reviews->avg('rating'), 1)
+                    : 0;
+            @endphp
+
+
             <div class="flex items-center gap-4 mt-5">
 
                 <span class="text-4xl font-bold">
-                    4.8
+
+                    {{ $averageRating > 0 ? $averageRating : '0.0' }}
+
                 </span>
+
 
                 <div>
 
                     <div class="text-yellow-500">
-                        ★★★★★
+
+                        @if($reviewCount > 0)
+
+                            @for($i = 1; $i <= 5; $i++)
+
+                                @if($i <= round($averageRating))
+                                    ★
+                                @else
+                                    ☆
+                                @endif
+
+                            @endfor
+
+                        @else
+                            ☆☆☆☆☆
+                        @endif
+
                     </div>
 
+
                     <p class="text-sm text-gray-500 mt-1">
-                        Based on 24 reviews
+
+                        Based on {{ $reviewCount }} reviews
+
                     </p>
 
                 </div>
 
             </div>
 
+
+            {{-- Review List --}}
+            @if($product->reviews->isNotEmpty())
+
+                <div class="mt-8 space-y-5">
+
+                    @foreach($product->reviews as $review)
+
+                        <div class="border-b border-gray-200 pb-5">
+
+                            <div class="flex justify-between">
+
+                                <div>
+
+                                    <p class="font-semibold">
+                                        {{ $review->user->name ?? 'Customer' }}
+                                    </p>
+
+                                    <div class="text-yellow-500 text-sm">
+
+                                        @for($i = 1; $i <= 5; $i++)
+
+                                            @if($i <= $review->rating)
+                                                ★
+                                            @else
+                                                ☆
+                                            @endif
+
+                                        @endfor
+
+                                    </div>
+
+                                </div>
+
+                                <span class="text-xs text-gray-400">
+
+                                    {{ $review->created_at?->format('d M Y') }}
+
+                                </span>
+
+                            </div>
+
+
+                            @if($review->comment)
+
+                                <p class="text-gray-600 mt-2">
+                                    {{ $review->comment }}
+                                </p>
+
+                            @endif
+
+                        </div>
+
+                    @endforeach
+
+                </div>
+
+            @endif
+
         </div>
 
     </section>
 
+
 </div>
 
 
+{{-- ================= JAVASCRIPT ================= --}}
 <script>
 
-function increaseQty() {
+    // ================= COLOR =================
 
-    let input = document.getElementById('quantity');
+    function selectColor(colorName,colorId, button) {
 
-    input.value = parseInt(input.value) + 1;
+        document.getElementById('selected-color').innerText = colorName;
 
-    document.getElementById('cart-quantity').value =
-        input.value;
-}
+        document
+            .getElementById('selected-color-input')
+            .value = button.dataset.id ?? '';
+
+        document
+            .getElementById('cart-color')
+            .value = colorId ?? '';
 
 
-function decreaseQty() {
+        document.querySelectorAll('.color-btn').forEach(btn => {
 
-    let input = document.getElementById('quantity');
+            btn.classList.remove(
+                'ring-2',
+                'ring-offset-2',
+                'ring-black'
+            );
 
-    let value = parseInt(input.value);
+        });
 
-    if (value > 1) {
 
-        input.value = value - 1;
+        button.classList.add(
+            'ring-2',
+            'ring-offset-2',
+            'ring-black'
+        );
+
+    }
+
+
+    // ================= SIZE =================
+
+    function selectSize(sizeId, sizeName, price, button) {
+
+        // Selected size name
+        document.getElementById('selected-size').innerText = sizeName;
+
+
+        // Hidden size
+        document.getElementById('selected-size-input').value = sizeId;
+
+        document.getElementById('cart-size').value = sizeId;
+
+
+        // Price
+        document.getElementById('product-price').innerText =
+            '₹' + Number(price).toLocaleString('en-IN', {
+                minimumFractionDigits: 2
+            });
+
+
+        // Hidden price
+        document.getElementById('selected-price-input').value = price;
+
+        document.getElementById('cart-price').value = price;
+
+
+        // Remove selected class from all sizes
+        document.querySelectorAll('.size-btn').forEach(btn => {
+
+            btn.classList.remove(
+                'bg-black',
+                'text-white',
+                'border-black'
+            );
+
+        });
+
+
+        // Add selected class
+        button.classList.add(
+            'bg-black',
+            'text-white',
+            'border-black'
+        );
+
+    }
+
+
+    // ================= QUANTITY =================
+
+    function increaseQty() {
+
+        let input = document.getElementById('quantity');
+
+        let value = parseInt(input.value) || 1;
+
+        input.value = value + 1;
 
         document.getElementById('cart-quantity').value =
             input.value;
+
     }
-}
+
+
+    function decreaseQty() {
+
+        let input = document.getElementById('quantity');
+
+        let value = parseInt(input.value) || 1;
+
+        if (value > 1) {
+
+            input.value = value - 1;
+
+            document.getElementById('cart-quantity').value =
+                input.value;
+
+        }
+
+    }
 
 </script>
+
 
 @endsection

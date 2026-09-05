@@ -30,6 +30,8 @@
         @endcan
         <x-admin-dashboard-cards link="categories.index" title="Categories" subTitle="Manage categories →" :count="$categories"></x-admin-dashboard-cards>
         <x-admin-dashboard-cards link="brand.index" title="brands" subTitle="Manage brands →" :count="$brands"></x-admin-dashboard-cards>
+        <x-admin-dashboard-cards link="colors.index" title="colors" subTitle="Manage colors →" :count="$colors"></x-admin-dashboard-cards>
+        <x-admin-dashboard-cards link="sizes.index" title="sizes" subTitle="Manage sizes →" :count="$sizes"></x-admin-dashboard-cards>
         <x-admin-dashboard-cards link="products.index" title="Products" subTitle="Manage products →" :count="$products"></x-admin-dashboard-cards>
         <x-admin-dashboard-cards link="admin.orders" title="Orders" subTitle="Manage orders →" :count="$ordersCount"></x-admin-dashboard-cards>
         <x-admin-dashboard-cards link="coupons.index" title="Coupons" subTitle="Manage coupons →" :count="$couponsCount"></x-admin-dashboard-cards>

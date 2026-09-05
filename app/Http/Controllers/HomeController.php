@@ -6,30 +6,49 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
-    public function index(){
-        $categories = Category::all();
-        $brands = Brand::all();
-        $products = Product::with(['category','brand','reviews.user'])->get();
-        return view('welcome',compact('products','categories','brands'));
+    public function index()
+    {
+        $categories = Cache::rememberForever('categories', function () {
+            return Category::all()->toArray();;
+        });
+        $brands = Cache::rememberForever('brands', function () {
+            return Brand::all()->toArray();;
+        });
+
+        $products = Cache::rememberForever('feature_product', function () {
+            return Product::with(['category', 'brand', 'reviews.user'])
+                ->get()
+                ->toArray();
+        });
+
+        $categories = json_decode(json_encode($categories));
+        $brands     = json_decode(json_encode($brands));
+        $products   = json_decode(json_encode($products));
+        return view('welcome', compact('products', 'categories', 'brands'));
     }
 
-    public function contact(){
+    public function contact()
+    {
         return view('contact');
     }
 
-    public function faq(){
+    public function faq()
+    {
         return view('faq');
     }
 
-    public function about(){
+    public function about()
+    {
         return view('about');
     }
 
-    public function category(){
+    public function category()
+    {
         $categories = Category::paginate(20);
-        return view('customer.category',compact('categories'));
+        return view('customer.category', compact('categories'));
     }
 }

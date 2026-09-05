@@ -622,6 +622,151 @@
         <p class="mt-1 text-sm text-gray-500">
             Change the current order status.
         </p>
+        {{-- Payment Status Update --}}
+<div class="rounded-xl border border-gray-200 bg-white shadow-sm">
+
+    {{-- Card Header --}}
+    <div class="border-b border-gray-200 px-5 py-4">
+
+        <h2 class="text-base font-bold text-gray-900">
+            Update Payment
+        </h2>
+
+        <p class="mt-1 text-sm text-gray-500">
+            Change the current payment status.
+        </p>
+
+    </div>
+
+
+    {{-- Form --}}
+    <div class="p-5">
+
+        <form
+            action="{{ route('admin.orders.payment-status', $order->id) }}"
+            method="POST"
+        >
+
+            @csrf
+            @method('PUT')
+
+
+            {{-- Payment Status --}}
+            <div>
+
+                <label
+                    for="payment_status"
+                    class="mb-2 block text-sm font-semibold text-gray-700"
+                >
+                    Payment Status
+                </label>
+
+                <select
+                    id="payment_status"
+                    name="payment_status"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10"
+                >
+
+                    <option
+                        value="Pending"
+                        {{ $order->payment_status === 'Pending' ? 'selected' : '' }}
+                    >
+                        Pending
+                    </option>
+
+                    <option
+                        value="Paid"
+                        {{ $order->payment_status === 'Paid' ? 'selected' : '' }}
+                    >
+                        Paid
+                    </option>
+
+                    <option
+                        value="Failed"
+                        {{ $order->payment_status === 'Failed' ? 'selected' : '' }}
+                    >
+                        Failed
+                    </option>
+
+                    <option
+                        value="Refunded"
+                        {{ $order->payment_status === 'Refunded' ? 'selected' : '' }}
+                    >
+                        Refunded
+                    </option>
+
+                </select>
+
+                @error('payment_status')
+
+                    <p class="mt-1 text-xs font-medium text-red-600">
+                        {{ $message }}
+                    </p>
+
+                @enderror
+
+            </div>
+
+
+            {{-- Transaction ID --}}
+            <div class="mt-4">
+
+                <label
+                    for="transaction_id"
+                    class="mb-2 block text-sm font-semibold text-gray-700"
+                >
+                    Transaction ID
+                </label>
+
+                <input
+                    type="text"
+                    id="transaction_id"
+                    name="transaction_id"
+                    value="{{ old('transaction_id', $order->transaction_id) }}"
+                    placeholder="Enter transaction ID"
+                    class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-900 focus:ring-2 focus:ring-gray-900/10"
+                >
+
+                @error('transaction_id')
+
+                    <p class="mt-1 text-xs font-medium text-red-600">
+                        {{ $message }}
+                    </p>
+
+                @enderror
+
+            </div>
+
+
+            {{-- Update Button --}}
+            <button
+                type="submit"
+                class="mt-4 inline-flex w-full items-center justify-center rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+            >
+
+                <svg
+                    class="mr-2 h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                    />
+                </svg>
+
+                Update Payment
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
 
     </div>
 

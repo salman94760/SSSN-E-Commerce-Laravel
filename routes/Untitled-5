@@ -1,0 +1,8 @@
+// Route::get('/test-subscription-mail', function () {
+//     $products = Product::limit(4)->get();
+
+//     return view('mail.subscription-mail', [
+//         'name' => 'Salman',
+//         'products' => $products,
+//     ]);
+// });
