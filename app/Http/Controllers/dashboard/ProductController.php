@@ -4,15 +4,19 @@ namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
+use App\Jobs\NewProductLaunchMail;
+use App\Jobs\StockUpdateJob;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ProductNotify;
 use App\Models\Size;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -52,7 +56,18 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate(5)->withQueryString();
-        return view('dashboard.products.index', compact('categories', 'brands', 'products', 'userid', 'colors', 'sizes'));
+
+
+        $productsInfo = Product::selectRaw('
+    count(*) total,
+    sum(status = 1) active,
+    sum(status = 2) out_stock,
+    sum(status = 3) stock
+')->first();
+
+
+
+        return view('dashboard.products.index', compact('categories', 'brands', 'products', 'userid', 'colors', 'sizes', 'productsInfo'));
     }
 
     /**
@@ -87,6 +102,7 @@ class ProductController extends Controller
         $product->status = $request->status;
         $product->user_id = Auth::id();
         if ($product->save()) {
+            NewProductLaunchMail::dispatch($product);
             return redirect()->route('products.index')->with("success", "product Added successfully");
         } else {
             return back();
@@ -112,7 +128,7 @@ class ProductController extends Controller
         $colors = Color::all();
         $sizes = Size::all();
         $tags = Tag::all();
-        $product = Product::with(['brand', 'category'])->find($id);
+        $product = Product::with(['sizes','brand', 'category'])->find($id);
         return view('dashboard.products.edit', compact('categories', 'brands', 'product', 'tags', 'colors', 'sizes'));
     }
 
@@ -121,8 +137,11 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, string $id)
     {
+      
         $path = "";
         $product = Product::findOrFail($id);
+
+  
 
         $product->update([
             'name'          => $request->name,
@@ -154,10 +173,12 @@ class ProductController extends Controller
 
                 $sizeData[$v['size_id']] = [
                     'price' => $v['price'],
+                    'stock' => $v['stock'],
                 ];
             }
 
             $product->sizes()->sync($sizeData);
+
         }
 
         if (is_array($request->images)) {
@@ -177,6 +198,17 @@ class ProductController extends Controller
                 ]);
             }
         }
+
+        $notify = ProductNotify::where([
+            'product_id' => $id,
+            'user_id' => Auth::id(),
+        ])->get();
+        if(!empty($notify)){
+            $product = Product::with('images')->findOrFail($id);
+            StockUpdateJob::dispatch($product,auth()->user()->email);
+        }
+
+        Cache::forget('feature_product');
         return redirect()->route('products.index')->with('success', 'Product updated successfully');
     }
 

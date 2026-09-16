@@ -1,5 +1,25 @@
-@extends('layouts.admin.admin')
-@section('content')
+@extends('layouts.admin.page')
+@section('title', 'Orders')
+@section('adminPage')
+
+@php
+$status = ['Pending','Processing','Shipped','Delivered','Cancelled'];
+
+@endphp
+
+
+
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+    <div class="mx-auto max-w-7xl">
+
+        <x-admin.sub-header :arr="['title'=>'Payments','subtitle'=>'Manage all customer payments.']"/>
+
+            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                <div class="overflow-x-auto">
+                    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+                        <x-admin.view-filter :arr="['status'=>$status,'reset'=>'/payments','searchname'=>'payments']"/>
+                        <x-admin.view-table>
 @forelse($orders as $order)
 
     <div class="rounded-xl border border-gray-200 bg-white p-5">
@@ -138,4 +158,13 @@
     </div>
 
 @endforelse
+                        </x-admin.view-table>
+               
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection

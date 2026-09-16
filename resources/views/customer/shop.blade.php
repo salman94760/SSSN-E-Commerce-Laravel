@@ -518,6 +518,20 @@ SHOP MAIN
                                 Price: High to Low
                             </option>
 
+                            <option
+                                value="asc"
+                                {{ request('sort') === 'asc' ? 'selected' : '' }}
+                            >
+                                Product : A-Z
+                            </option>
+
+                            <option
+                                value="desc"
+                                {{ request('sort') === 'desc' ? 'selected' : '' }}
+                            >
+                                Product : Z-A
+                            </option>
+
                         </select>
 
                     </div>

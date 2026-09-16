@@ -10,10 +10,12 @@
 
         {{-- Category --}}
         <div class="h-[52px] flex items-center justify-between w-full">
-            <div class="w-20"> 
+            <div class="w-17"> 
                 <p class="text-xs text-gray-400">
                     {{ $product->category->name ?? 'Fashion' }}
                 </p>
+
+                
             </div>
             
             <div class="text-xs text-gray-400">                 
@@ -64,7 +66,13 @@
     <div class="flex items-center gap-1 text-sm">
         <span class="text-yellow-500">★</span>
         <span class="font-semibold">
-            {{ $product->rating ?? 0 }}
+            @if(isset($product->reviews[0]))
+                {{ $product->reviews[0]->rating ?? 0 }}
+            @else
+                @if(!empty($product->reviews))
+                    {{ $product->reviews?->first()?->rating ?? 0 }}
+                @endif
+            @endif
         </span>
     </div>
 

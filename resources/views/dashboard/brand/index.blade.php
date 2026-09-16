@@ -1,210 +1,42 @@
-@extends('layouts.admin.admin')
+@extends('layouts.admin.page')
 
-@section('title', 'Add Brands')
+@section('title', 'Brands')
 
-@section('breadcrumb', 'brands')
+@section('adminPage')
 
-@section('content')
+@php
+    $status = ['All','Active','Inactive'];
+    $column = ['Action','#','Brands','Slug','Status','Image'];
+@endphp
 
-<div class="space-y-6">
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+    <div class="mx-auto max-w-7xl">
 
-    {{-- Header --}}
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <x-admin.sub-header :arr="['title'=>'Brands','subtitle'=>'Manage your clothing brands.','AddButton'=>'+ Add Brand','link'=>'brands.create']"/>
 
-        <div>
-            <h1 class="text-2xl font-bold text-slate-800">
-                brands
-            </h1>
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+            <div class="overflow-x-auto">
+                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-            <p class="mt-1 text-sm text-slate-500">
-                Manage your clothing brands
-            </p>
-        </div>
-
-        <a
-            href="{{ route('brand.create') }}"
-            class="inline-flex items-center justify-center rounded-lg bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
-        >
-            + Add Brand
-        </a>
-
-    </div>
-
-
-    {{-- Success Message --}}
-    @if(session('success'))
-        <div class="flex items-center justify-between rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-
-            <span>
-                {{ session('success') }}
-            </span>
-
-            <button
-                type="button"
-                onclick="this.parentElement.remove()"
-                class="font-bold hover:text-green-900"
-            >
-                ×
-            </button>
-
-        </div>
-    @endif
-
-
-    {{-- brands Table --}}
-    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-
-        <div class="overflow-x-auto">
-            {{-- Filter --}}
-<div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-
-    <form
-        action="{{ route('brand.index') }}"
-        method="GET"
-        class="flex flex-col gap-3 lg:flex-row lg:items-end"
-    >
-
-        {{-- Search --}}
-        <div class="flex-1">
-            <label class="mb-1.5 block text-xs font-medium text-slate-600">
-                Search
-            </label>
-
-            <input
-                type="text"
-                name="search"
-                value="{{ request('search') }}"
-                placeholder="Search brand..."
-                class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
-            >
-        </div>
-
-
-        {{-- Status --}}
-        <div class="w-full lg:w-44">
-            <label class="mb-1.5 block text-xs font-medium text-slate-600">
-                Status
-            </label>
-
-            <select
-                name="status"
-                class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
-            >
-                <option value="">All Status</option>
-
-                <option
-                    value="1"
-                    {{ request('status') === '1' ? 'selected' : '' }}
-                >
-                    Active
-                </option>
-
-                <option
-                    value="0"
-                    {{ request('status') === '0' ? 'selected' : '' }}
-                >
-                    Inactive
-                </option>
-            </select>
-        </div>
-
-
-        {{-- Sort --}}
-        <div class="w-full lg:w-44">
-            <label class="mb-1.5 block text-xs font-medium text-slate-600">
-                Sort
-            </label>
-
-            <select
-                name="sort"
-                class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
-            >
-                <option value="latest">Newest</option>
-
-                <option
-                    value="oldest"
-                    {{ request('sort') === 'oldest' ? 'selected' : '' }}
-                >
-                    Oldest
-                </option>
-
-                <option
-                    value="name_asc"
-                    {{ request('sort') === 'name_asc' ? 'selected' : '' }}
-                >
-                    Name A-Z
-                </option>
-
-                <option
-                    value="name_desc"
-                    {{ request('sort') === 'name_desc' ? 'selected' : '' }}
-                >
-                    Name Z-A
-                </option>
-            </select>
-        </div>
-
-
-        {{-- Filter Button --}}
-        <button
-            type="submit"
-            class="rounded-lg bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700"
-        >
-            Filter
-        </button>
-
-
-        {{-- Reset --}}
-        <a
-            href="{{ route('brand.index') }}"
-            class="rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-center text-sm font-medium text-slate-600 hover:bg-slate-50"
-        >
-            Reset
-        </a>
-
-    </form>
-
-</div>
-            <table class="w-full text-left text-sm">
-
-                <thead class="border-b border-slate-200 bg-slate-50">
-
-                    <tr>
-
-                        <th class="px-6 py-4 font-semibold text-slate-600">
-                            #
-                        </th>
-
-                        <th class="px-6 py-4 font-semibold text-slate-600">
-                            Brand
-                        </th>
-
-                        <th class="px-6 py-4 font-semibold text-slate-600">
-                            Slug
-                        </th>
-
-                        <th class="px-6 py-4 font-semibold text-slate-600">
-                            Status
-                        </th>
-
-                        <th class="px-6 py-4 font-semibold text-slate-600">
-                            Image
-                        </th>
-
-                        <th class="px-6 py-4 text-right font-semibold text-slate-600">
-                            Action
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody class="divide-y divide-slate-100">
-
+                    <x-admin.view-filter :arr="['status'=>$status,'searchname'=>'brands','reset'=>'/brands']"/>
+                    
+                    <x-admin.view-table :arr="['columnArr'=>$column]">
+                 
                     @forelse($brands as $b)
 
                         <tr class="transition hover:bg-slate-50">
+
+                             <td class="whitespace-nowrap px-6 py-4 text-slate-500">
+                                 <a href="{{ route('brands.edit', $b->id) }}" title="Edit" class="flex h-9 w-9 items-center justify-center rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50">✎</a>
+
+                                        <form action="{{ route('brands.destroy', $b->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?')">
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button title="Delete" type="submit" class="flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 text-red-600 hover:bg-red-50">🗑
+                                            </button>
+                                        </form>
+                            </td>
 
                             {{-- ID --}}
                             <td class="whitespace-nowrap px-6 py-4 text-slate-500">
@@ -250,42 +82,7 @@
                             <td><img class="w-20 h-20" src="{{asset('storage/'.$b->image)}}" /></td>
 
 
-                            {{-- Actions --}}
-                            <td class="whitespace-nowrap px-6 py-4 text-right">
-
-                                <div class="flex justify-end gap-2">
-
-                                    {{-- Edit --}}
-                                    <a
-                                        href="{{ route('brand.edit', $b->id) }}"
-                                        class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100"
-                                    >
-                                        Edit
-                                    </a>
-
-
-                                    {{-- Delete --}}
-                                    <form
-                                        action="{{ route('brand.destroy', $b->id) }}"
-                                        method="POST"
-                                        onsubmit="return confirm('Are you sure you want to delete this Brand?')"
-                                    >
-
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button
-                                            type="submit"
-                                            class="rounded-lg border border-red-200 px-3 py-2 text-xs font-medium text-red-600 transition hover:bg-red-50"
-                                        >
-                                            Delete
-                                        </button>
-
-                                    </form>
-
-                                </div>
-
-                            </td>
+                            
 
                         </tr>
 
@@ -326,49 +123,21 @@
                         </tr>
 
                     @endforelse
-
-                </tbody>
-
-            </table>
-            @if($brands->hasPages())
-
-    <div class="flex flex-col gap-4 border-t border-slate-200 bg-white px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-
-        {{-- Showing --}}
-        <p class="text-sm text-slate-500">
-            Showing
-            <span class="font-semibold text-slate-700">
-                {{ $brands->firstItem() }}
-            </span>
-
-            to
-
-            <span class="font-semibold text-slate-700">
-                {{ $brands->lastItem() }}
-            </span>
-
-            of
-
-            <span class="font-semibold text-slate-700">
-                {{ $brands->total() }}
-            </span>
-
-            brands
-        </p>
-
-
-        {{-- Pagination --}}
-        <div>
-            {{ $brands->links() }}
+                    </x-admin.view-table>
+                    <x-admin.view-pagination :arr="['arrpagination'=>$brands]"/>
+                    </div>
+                </div>
+            </div>
         </div>
-
     </div>
-
-@endif
-        </div>
-
-    </div>
-
 </div>
-
 @endsection
+
+
+
+
+
+
+
+
+

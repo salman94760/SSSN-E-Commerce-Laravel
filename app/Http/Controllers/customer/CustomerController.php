@@ -8,13 +8,17 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Coupon;
+use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductNotify;
+use App\Models\ProductReview;
 use App\Models\Size;
 use App\Models\User;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Ramsey\Uuid\Type\Integer;
 
 class CustomerController extends Controller
 {
@@ -202,44 +206,7 @@ class CustomerController extends Controller
         return redirect('/shop')->with('success', 'Cart item removed successfully.');
     }
 
-    public function review()
-    {
-        $reviews = collect([
-            (object) [
-                'id' => 1,
-                'rating' => 5,
-                'comment' => 'Product ki quality bahut achhi hai. Fabric soft aur comfortable hai. Delivery bhi time par mili.',
-                'created_at' => now()->subDays(2),
-                'user' => (object) [
-                    'id' => 1,
-                    'name' => 'Rahul Kumar',
-                ],
-            ],
 
-            (object) [
-                'id' => 2,
-                'rating' => 4,
-                'comment' => 'Lower ka fitting achha hai aur material bhi premium feel deta hai. Overall good product.',
-                'created_at' => now()->subDays(5),
-                'user' => (object) [
-                    'id' => 2,
-                    'name' => 'Amit Sharma',
-                ],
-            ],
-
-            (object) [
-                'id' => 3,
-                'rating' => 5,
-                'comment' => 'Exactly same product mila jaisa website par dikhaya gaya tha. Comfortable for daily use.',
-                'created_at' => now()->subDays(8),
-                'user' => (object) [
-                    'id' => 3,
-                    'name' => 'Rohit Singh',
-                ],
-            ],
-        ]);
-        return view('customer.review', compact('reviews'));
-    }
 
     public function shop(Request $request)
     {
@@ -252,7 +219,7 @@ class CustomerController extends Controller
        }
         
          
-        $products = Product::with(['sizes', 'category', 'wishlist' => function ($query) {
+        $products = Product::with(['reviews','sizes', 'category', 'wishlist' => function ($query) {
             $query->where('user_id', Auth::id());
         }])
             ->when($category, function ($query) use ($category) {
@@ -393,5 +360,38 @@ class CustomerController extends Controller
         //         'products' => $products,
         //     ]);
         // });
+    }
+
+    public function productReview($orderId){
+        $order = Order::find($orderId);
+        return view('customer.product-review',compact('order'));
+    }
+
+    public function productReviewStore(Request $request){
+        $review = ProductReview::create([
+            'product_id'    => $request->product_id,
+            'user_id'       => Auth::id(),
+            'order_id'      => $request->order_id,
+            'rating'        => $request->rating,
+            'review'        => $request->review,
+            'status'        => 1
+        ]);
+
+        if($review){
+      
+    return redirect()->route('product.review.thankyou');
+}
+        
+    }
+
+    public function notify(String $productId){
+        $notify = ProductNotify::create([
+            'product_id'    => $productId,
+            'user_id'       => Auth::id()
+        ]);
+
+        if(!empty($notify)){
+            return redirect('/shop')->with('success','Product reminder set successfully');
+        }
     }
 }

@@ -1,191 +1,35 @@
-@extends('layouts.admin.admin')
+@extends('layouts.admin.page')
 
-@section('content')
+@section('title', 'Coupon')
+
+@section('adminPage')
+
+@php
+    $status = ['All','Active','Inactive'];
+    $column = ['Action','Code','Discount','Min Order','Usage','Validity','Status'];
+@endphp
 
 <div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-
     <div class="mx-auto max-w-7xl">
-
-        {{-- Header --}}
-        <div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Coupons
-                </h1>
-
-                <p class="mt-1 text-sm text-gray-500">
-                    Create and manage discount coupons.
-                </p>
-            </div>
-
-            <a
-                href="{{ route('coupons.create') }}"
-                class="inline-flex items-center justify-center rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-gray-700"
-            >
-                + Create Coupon
-            </a>
-
-        </div>
-          {{-- Filter --}}
-<div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-
-    <form
-        action="{{ route('categories.index') }}"
-        method="GET"
-        class="flex flex-col gap-3 lg:flex-row lg:items-end"
-    >
-
-        {{-- Search --}}
-        <div class="flex-1">
-            <label class="mb-1.5 block text-xs font-medium text-slate-600">
-                Search
-            </label>
-
-            <input
-                type="text"
-                name="search"
-                value="{{ request('search') }}"
-                placeholder="Search coupon..."
-                class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
-            >
-        </div>
-
-
-        {{-- Status --}}
-        <div class="w-full lg:w-44">
-            <label class="mb-1.5 block text-xs font-medium text-slate-600">
-                Status
-            </label>
-
-            <select
-                name="status"
-                class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
-            >
-                <option value="">All Status</option>
-
-                <option
-                    value="1"
-                    {{ request('status') === '1' ? 'selected' : '' }}
-                >
-                    Active
-                </option>
-
-                <option
-                    value="0"
-                    {{ request('status') === '0' ? 'selected' : '' }}
-                >
-                    Inactive
-                </option>
-            </select>
-        </div>
-
-
-        {{-- Sort --}}
-        <div class="w-full lg:w-44">
-            <label class="mb-1.5 block text-xs font-medium text-slate-600">
-                Sort
-            </label>
-
-            <select
-                name="sort"
-                class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
-            >
-                <option value="latest">Newest</option>
-
-                <option
-                    value="oldest"
-                    {{ request('sort') === 'oldest' ? 'selected' : '' }}
-                >
-                    Oldest
-                </option>
-                <option
-                    value="percentage"
-                    {{ request('sort') === 'asc' ? 'selected' : '' }}
-                >
-                    Percentage
-                </option>
-
-                <option
-                    value="fixed"
-                    {{ request('sort') === 'desc' ? 'selected' : '' }}
-                >
-                    Fixed
-                </option>
-            </select>
-        </div>
-
-
-        {{-- Filter Button --}}
-        <button
-            type="submit"
-            class="rounded-lg bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-700"
-        >
-            Filter
-        </button>
-
-
-        {{-- Reset --}}
-        <a
-            href="{{ route('coupons.index') }}"
-            class="rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-center text-sm font-medium text-slate-600 hover:bg-slate-50"
-        >
-            Reset
-        </a>
-
-    </form>
-
-</div>
-
-        {{-- Table --}}
-        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-
+        <x-admin.sub-header :arr="['title'=>'Coupons','subtitle'=>'Create and manage discount coupons.','AddButton'=>'+ Add Coupon','link'=>'coupons.create']"/>
+                    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
             <div class="overflow-x-auto">
+                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-                <table class="min-w-full divide-y divide-gray-200">
-
-                    <thead class="bg-gray-50">
-
-                        <tr>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase text-gray-500">
-                                Code
-                            </th>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase text-gray-500">
-                                Discount
-                            </th>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase text-gray-500">
-                                Min Order
-                            </th>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase text-gray-500">
-                                Usage
-                            </th>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase text-gray-500">
-                                Validity
-                            </th>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase text-gray-500">
-                                Status
-                            </th>
-
-                            <th class="px-5 py-4 text-right text-xs font-semibold uppercase text-gray-500">
-                                Action
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody class="divide-y divide-gray-100">
+                    <x-admin.view-filter :arr="['status'=>$status,'searchname'=>'coupons','reset'=>'/coupons']"/>
+                    
+                    <x-admin.view-table :arr="['columnArr'=>$column]">
+                                   
 
                         @forelse($coupons as $coupon)
 
                             <tr class="hover:bg-gray-50">
+                                 <td class="whitespace-nowrap px-6 py-4 text-slate-500">
+                                 <a href="{{ route('coupons.edit', $coupon->id) }}" title="Edit" class="flex h-9 w-9 items-center justify-center rounded-lg border border-blue-200 text-blue-600 hover:bg-blue-50">✎</a>
+
+                                  
+                            </td>
+                                      
 
                                 <td class="px-5 py-4">
 
@@ -263,16 +107,7 @@
                                 </td>
 
 
-                                <td class="px-5 py-4 text-right">
-
-                                    <a
-                                        href="{{ route('coupons.edit', $coupon->id) }}"
-                                        class="rounded-lg bg-gray-900 px-3 py-2 text-xs font-semibold text-white hover:bg-gray-700"
-                                    >
-                                        Edit
-                                    </a>
-
-                                </td>
+                         
 
                             </tr>
 
@@ -290,24 +125,22 @@
                             </tr>
 
                         @endforelse
-
-                    </tbody>
-
-                </table>
-
+                    </x-admin.view-table>
+                    <x-admin.view-pagination :arr="['arrpagination'=>$coupons]"/>
+                    </div>
+                </div>
             </div>
-
-
-            <div class="border-t border-gray-200 px-5 py-4">
-
-                {{ $coupons->links() }}
-
-            </div>
-
         </div>
-
     </div>
-
 </div>
+
+
+
+
+
+
+
+
+
 
 @endsection

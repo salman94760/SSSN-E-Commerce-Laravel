@@ -1,40 +1,19 @@
-@extends('layouts.admin.admin')
+@extends('layouts.admin.page')
 
 @section('title', 'Add Color')
 
-@section('breadcrumb', 'Color / Create Color')
+@section('adminPage')
 
-@section('content')
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+    <div class="mx-auto max-w-7xl">
 
-<div class="mx-auto max-w-4xl">
+        <x-admin.sub-header :arr="['title'=>'Add Color','subtitle'=>'Create a new clothing Color.']"/>
 
-    {{-- Page Header --}}
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold text-slate-800">
-            Add Color
-        </h1>
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+            <div class="overflow-x-auto">
+                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-        <p class="mt-1 text-sm text-slate-500">
-            Create a new clothing Color
-        </p>
-    </div>
-
-
-    {{-- Validation Errors --}}
-    @if($errors->any())
-        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-
-            <ul class="list-disc space-y-1 pl-5">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-
-        </div>
-    @endif
-
-
-    {{-- Form Card --}}
+                    <x-admin.view-table>
     <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
 
         <form
@@ -161,7 +140,28 @@
         </form>
 
     </div>
-
+                    </x-admin.view-table>
+                   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @endsection

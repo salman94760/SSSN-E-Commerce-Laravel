@@ -1,83 +1,40 @@
-@extends('layouts.admin.admin')
+@extends('layouts.admin.page')
+@section('title', 'Orders')
+@section('adminPage')
 
-@section('content')
+@php
+$status = ['Pending','Processing','Shipped','Delivered','Cancelled'];
+$column = ['Action','Order','Customer','Items','Total','Payment','Status'];
+@endphp
+
+
 
 <div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-
     <div class="mx-auto max-w-7xl">
 
-        {{-- Header --}}
-        <div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <x-admin.sub-header :arr="['ordertotal'=>$orders->total(),'title'=>'Orders','subtitle'=>'Manage all customer orders']"/>
 
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Orders
-                </h1>
+            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                <div class="overflow-x-auto">
+                    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-                <p class="mt-1 text-sm text-gray-500">
-                    Manage all customer orders.
-                </p>
-            </div>
+                        <x-admin.view-filter :arr="['status'=>$status,'categories'=>[],'reset'=>'/orders','searchname'=>'orders']"/>
+                        <x-admin.view-table :arr="['columnArr'=>$column]">
+                                                    @forelse($orders as $order)
 
-            <div class="rounded-lg bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm ring-1 ring-gray-200">
-                Total Orders:
-                <span class="font-bold text-gray-900">
-                    {{ $orders->total() }}
-                </span>
-            </div>
+                            <tr class="transition hover:bg-slate-50">
 
-        </div>
+                                {{-- Action --}}
+                                <td class="whitespace-nowrap px-5 py-4 text-cener">
 
+                                    <a
+                                        href="{{ route('admin.orders.show', $order->id) }}"
+                                        class="inline-flex items-center rounded-lg bg-gray-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-gray-700"
+                                    >
+                                        View
+                                    </a>
 
-        {{-- Orders Table --}}
-        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-
-            <div class="overflow-x-auto">
-
-                <table class="min-w-full divide-y divide-gray-200">
-
-                    <thead class="bg-gray-50">
-
-                        <tr>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                Order
-                            </th>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                Customer
-                            </th>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                Items
-                            </th>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                Total
-                            </th>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                Payment
-                            </th>
-
-                            <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                Status
-                            </th>
-
-                            <th class="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                Action
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody class="divide-y divide-gray-100 bg-white">
-
-                        @forelse($orders as $order)
-
-                            <tr class="transition hover:bg-gray-50">
+                                </td>
 
                                 {{-- Order --}}
                                 <td class="whitespace-nowrap px-5 py-4">
@@ -97,10 +54,9 @@
                                 <td class="px-5 py-4">
 
                                     <div class="text-sm font-medium text-gray-900">
+                                        @if($order->userInfo->user->name)
 
-                                        @if($order->userInfo)
-
-                                            {{ $order->userInfo->name ?? 'Customer' }}
+                                            {{ $order->userInfo->user->name ?? 'Customer' }}
 
                                         @else
 
@@ -220,17 +176,6 @@
                                 </td>
 
 
-                                {{-- Action --}}
-                                <td class="whitespace-nowrap px-5 py-4 text-right">
-
-                                    <a
-                                        href="{{ route('admin.orders.show', $order->id) }}"
-                                        class="inline-flex items-center rounded-lg bg-gray-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-gray-700"
-                                    >
-                                        View
-                                    </a>
-
-                                </td>
 
                             </tr>
 
@@ -274,27 +219,12 @@
                             </tr>
 
                         @endforelse
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-
-            {{-- Pagination --}}
-            @if($orders->hasPages())
-
-                <div class="border-t border-gray-200 px-5 py-4">
-                    {{ $orders->links() }}
+                        </x-admin.view-table>
+                        <x-admin.view-pagination :arr="['arrpagination'=>$orders]"/>
+                    </div>
                 </div>
-
-            @endif
-
+            </div>
         </div>
-
     </div>
-
 </div>
-
 @endsection

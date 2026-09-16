@@ -1,40 +1,19 @@
-@extends('layouts.admin')
+@extends('layouts.admin.page')
 
 @section('title', 'Edit brand')
 
-@section('breadcrumb', 'Edit-Brand')
+@section('adminPage')
 
-@section('content')
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+    <div class="mx-auto max-w-7xl">
 
-<div class="mx-auto max-w-4xl">
+        <x-admin.sub-header :arr="['title'=>'Edit brand','subtitle'=>'Edit clothing brand.']"/>
 
-    {{-- Page Header --}}
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold text-slate-800">
-            Edit brand
-        </h1>
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+            <div class="overflow-x-auto">
+                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-        <p class="mt-1 text-sm text-slate-500">
-            Edit clothing brand
-        </p>
-    </div>
-
-
-    {{-- Validation Errors --}}
-    @if($errors->any())
-        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-
-            <ul class="list-disc space-y-1 pl-5">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-
-        </div>
-    @endif
-
-
-    {{-- Form Card --}}
+                    <x-admin.view-table>
     <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
 
         <form
@@ -173,7 +152,7 @@
             <div class="flex items-center justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4">
 
                 <a
-                    href="{{ route('categories.index') }}"
+                    href="{{ route('brands.index') }}"
                     class="rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
                 >
                     Cancel
@@ -191,7 +170,21 @@
         </form>
 
     </div>
-
+                    </x-admin.view-table>
+                   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
 @endsection
+
+
+
+
+
+
+
+
+

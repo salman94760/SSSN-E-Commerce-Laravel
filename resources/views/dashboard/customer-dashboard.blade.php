@@ -152,7 +152,7 @@
                     </div>
 
                     <p class="text-sm text-gray-500 mt-5">
-                        Total Orders
+                        Total Ordersss
                     </p>
 
                     <p class="text-2xl font-bold mt-1">

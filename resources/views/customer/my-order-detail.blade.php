@@ -4,7 +4,6 @@
 
 <div class="min-h-screen bg-gray-50 py-8">
 
-```
 <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
     {{-- Back --}}
@@ -266,14 +265,14 @@
                                 {{-- Item Total --}}
                                 <div class="text-right">
 
-                                    <p class="text-xs text-gray-500">
+                                    <p class="text-xs text-gray-500 ss2">
                                         Total
                                     </p>
 
                                     @if($item->product)
 
                                         <p class="mt-1 text-base font-bold text-gray-900">
-                                            ₹{{ number_format($item->product->sale_price * $item->quantity, 2) }}
+                                            ₹{{ number_format($item->price * $item->quantity, 2) }}
                                         </p>
 
                                     @else
@@ -712,7 +711,7 @@
 
                             @method('PATCH')
 
-
+                            <input type="hidden" name="userRole" value="{{auth()->user()->role}}"/>
                             <label
                                 for="cancel_reason"
                                 class="block text-sm font-medium text-gray-700"
@@ -889,6 +888,7 @@
                             </span>
 
                             <span class="text-lg font-bold text-gray-900">
+                         
                                 ₹{{ number_format($order->total_amount - $order->discount_amount, 2) }}
                             </span>
 
@@ -1105,11 +1105,11 @@
                                 @endif"
                             >
 
-                                @if($order->cancelled_by === 'admin')
+                                @if($order->cancel_by === 'admin')
 
                                     Admin
 
-                                @elseif($order->cancelled_by === 'user')
+                                @elseif($order->cancel_by === 'customer')
 
                                     You
 

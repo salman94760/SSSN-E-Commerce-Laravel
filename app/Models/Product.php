@@ -10,7 +10,7 @@ use App\Models\Category;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ["category_id", "brand_id", "name", "slug", "description", "price", "sale_price", "stock", "image", "status", "user_id"];
+    protected $fillable = ["category_id", "brand_id", "name", "slug", "description", "price", "sale_price", "stock", "image", "status", "user_id","sku"];
 
     public function brand()
     {
@@ -27,10 +27,7 @@ class Product extends Model
         return $this->hasMany(Wishlist::class, 'product_id');
     }
 
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
-    }
+
 
     public function colors()
     {
@@ -50,7 +47,16 @@ class Product extends Model
 public function sizes()
 {
     return $this->belongsToMany(Size::class,'product_size', 'product_id', 'size_id')
-        ->withPivot('price')
+        ->withPivot('price','stock')
         ->withTimestamps();
+}
+
+public function users(){
+    return $this->belongsTo(User::class,'user_id','id');
+}
+
+public function reviews()
+{
+    return $this->hasMany(ProductReview::class);
 }
 }

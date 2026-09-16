@@ -44,6 +44,11 @@ return [
     'client_secret' => env('TWITTER_CLIENT_SECRET'),
     'redirect' => env('TWITTER_REDIRECT_URI'),
 ],
+'razorpay' => [
+    'key' => env('RAZORPAY_KEY_ID'),
+    'secret' => env('RAZORPAY_KEY_SECRET'),
+    'webhook_secret'=> env('RAZORPAY_WEBHOOK_SECRET')
+],
 
     'slack' => [
         'notifications' => [

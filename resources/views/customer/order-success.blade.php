@@ -367,7 +367,12 @@
                     @foreach($orderItem as $item)
                     <div class="flex gap-4 py-5">
                         <div class="w-20 h-24 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+                            @if($item->product->images->first())
                             <img src="{{asset('storage/'.$item->product->images->first()->name)}}" class="w-full h-full object-cover">
+                            @else
+                            N/A
+                            @endif
+                            
                         </div>
 
                         <div class="flex-1">

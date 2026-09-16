@@ -14,26 +14,24 @@
 
             <div class="grid md:grid-cols-3 gap-6">
 
-                @foreach([
-                    ['Rahul', '★★★★★', 'Very comfortable and good quality.'],
-                    ['Aman', '★★★★★', 'Product exactly as shown.'],
-                    ['Aman', '★★★★★', 'Product exactly as shown.'],
-                    ['Aman', '★★★★★', 'Product exactly as shown.'],
-                    ['Rohit', '★★★★☆', 'Good product and fast delivery.']
-                ] as $review)
+                @foreach($reviews as $review)
 
                     <div class="border rounded-xl p-6">
 
                         <div class="text-yellow-500">
-                            {{ $review[1] }}
+                            @if(!empty($review->rating))
+                            @for($i=1; $i<=$review->rating; $i++)
+                                ★
+                            @endfor
+                            @endif
                         </div>
 
                         <p class="text-gray-600 mt-4">
-                            "{{ $review[2] }}"
+                            "{{ $review->review }}"
                         </p>
 
                         <div class="font-semibold mt-5">
-                            {{ $review[0] }}
+                            {{ $review->user->name }}
                         </div>
 
                     </div>

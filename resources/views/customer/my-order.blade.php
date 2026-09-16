@@ -197,7 +197,7 @@
                                                     @if($item->product)
 
                                                         <p class="mt-1 text-sm font-bold text-gray-900">
-                                                            ₹{{ number_format($item->product->sale_price * $item->quantity, 2) }}
+                                                            ₹{{ number_format($item->price * $item->quantity, 2) }}
                                                         </p>
 
                                                     @else

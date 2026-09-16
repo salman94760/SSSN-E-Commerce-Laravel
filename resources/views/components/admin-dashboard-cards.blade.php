@@ -1,5 +1,5 @@
 <a href="{{ route($link) }}"
-           class="group block bg-white rounded-xl shadow-sm border border-slate-100 p-6
+           class="group block bg-white rounded-xl shadow-sm border border-slate-100 p-3
                   hover:shadow-md hover:-translate-y-1 transition duration-200">
 
             <div class="flex items-center justify-between">

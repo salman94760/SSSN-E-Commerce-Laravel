@@ -1,28 +1,19 @@
-@extends('layouts.admin.admin')
+@extends('layouts.admin.page')
 
 @section('title', 'Edit Product')
 
-@section('breadcrumb', 'Products / Edit Product')
+@section('adminPage')
 
-@section('content')
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+    <div class="mx-auto max-w-7xl">
 
-<div class="mx-auto max-w-5xl">
+        <x-admin.sub-header :arr="['title'=>'Edit Product','subtitle'=>'Edit your clothing product']"/>
 
-    {{-- Header --}}
-    <div class="mb-6">
-
-        <h1 class="text-2xl font-bold text-slate-800">
-            Edit Product
-        </h1>
-
-        <p class="mt-1 text-sm text-slate-500">
-            Edit your clothing product
-        </p>
-
-    </div>
-
-
-    <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                <div class="overflow-x-auto">
+                    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        
+                               <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
 
         <form
             action="{{ route('products.update', $product->id) }}"
@@ -262,6 +253,34 @@
 
                     </div>
 
+                    {{-- Slug --}}
+                    <div>
+
+                        <label
+                            for="sku"
+                            class="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                            SKU
+                            <span class="text-red-500">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="sku"
+                            id="sku"
+                            value="{{ old('sku', $product->sku) }}"
+                            placeholder="premium-cotton-t-shirt-001"
+                            class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+                        >
+
+                        @error('sku')
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
 
                     {{-- ================================= --}}
                     {{-- SIZE WISE PRICE --}}
@@ -272,7 +291,7 @@
                         <div class="mb-3">
 
                             <label class="block text-sm font-medium text-slate-700">
-                                Size Wise Price
+                                Size Wise Price and Stock
                             </label>
 
                             <p class="mt-1 text-xs text-slate-500">
@@ -286,7 +305,7 @@
                             id="size-price-container"
                             class="space-y-3"
                         >
-
+                      
                             @foreach($product->sizes as $size)
 
                                 <div
@@ -322,6 +341,21 @@
                                             min="0"
                                             step="0.01"
                                             placeholder="Enter price"
+                                            class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+                                        >
+
+                                    </div>
+
+                                    {{-- Stock --}}
+                                    <div class="flex-1">
+
+                                        <input
+                                            type="number"
+                                            name="sizes[{{ $size->id }}][stock]"
+                                            value="{{ old('sizes.' . $size->id . '.stock', $size->pivot->stock) }}"
+                                            min="0"
+                                            step="0.01"
+                                            placeholder="Enter stock"
                                             class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
                                         >
 
@@ -489,16 +523,14 @@
                                 Select Tag
                             </option>
 
-                            @foreach($tags as $tag)
-
-                                <option
-                                    value="{{ $tag->id }}"
-                                    {{ old('tag_id', $product->tag_id) == $tag->id ? 'selected' : '' }}
-                                >
-                                    {{ $tag->name }}
-                                </option>
-
-                            @endforeach
+                           @foreach($tags as $tag)
+    <option
+        value="{{ $tag->id }}"
+        {{ $product->tags->contains($tag->id) ? 'selected' : '' }}
+    >
+        {{ $tag->name }}
+    </option>
+@endforeach
 
                         </select>
 
@@ -540,7 +572,22 @@
                         @enderror
 
                     </div>
-
+                      <div class="md:col-span-2">
+                     <label
+                            for="description"
+                            class="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                            Images
+                        </label>
+                    <div class="flex justify-start">
+                        @if(!empty($product->images->first()))
+                        @foreach($product->images as $image)
+                         <img class="w-20 h-20" src="{{asset('storage/'.$image->name)}}" />
+                        @endforeach
+                        @endif
+                       
+                    </div>
+                </div>
 
                     {{-- Description --}}
                     <div class="md:col-span-2">
@@ -595,8 +642,34 @@
         </form>
 
     </div>
-
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 {{-- Select2 --}}
@@ -639,6 +712,14 @@ $(document).ready(function () {
         })
     );
 
+    const existingStock = @json(
+        $product->sizes->mapWithKeys(function ($size) {
+            return [
+                $size->id => $size->pivot->stock
+            ];
+        })
+    );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -662,6 +743,7 @@ $(document).ready(function () {
             let sizeName = size.text().trim();
 
             let price = existingPrices[sizeId] ?? '';
+            let stock = existingStock[sizeId] ?? '';
 
 
             let html = `
@@ -696,6 +778,23 @@ $(document).ready(function () {
                             min="0"
                             step="0.01"
                             placeholder="Enter price"
+                            class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
+                        >
+
+                    </div>
+
+                   
+
+
+                    <div class="flex-1">
+
+                        <input
+                            type="number"
+                            name="sizes[${sizeId}][stock]"
+                            value="${stock}"
+                            min="0"
+                            step="0.01"
+                            placeholder="Enter stock"
                             class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
                         >
 

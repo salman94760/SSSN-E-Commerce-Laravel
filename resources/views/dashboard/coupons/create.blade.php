@@ -1,36 +1,21 @@
-@extends('layouts.admin.admin')
-@section('content')
+@extends('layouts.admin.page')
+
+@section('title', 'Add Coupons')
+
+@section('adminPage')
+
 <div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-
     <div class="mx-auto max-w-7xl">
-        {{-- Header --}}
-        <div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
 
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Coupons
-                </h1>
+        <x-admin.sub-header :arr="['title'=>'Add Coupons','subtitle'=>'Create and manage discount coupons..']"/>
 
-                <p class="mt-1 text-sm text-gray-500">
-                    Create and manage discount coupons.
-                </p>
-            </div>
+        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+            <div class="overflow-x-auto">
+                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-           
+                    <x-admin.view-table>
+    
 
-        </div>
-            {{-- Validation Errors --}}
-    @if($errors->any())
-        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-
-            <ul class="list-disc space-y-1 pl-5">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-
-        </div>
-    @endif
 <form
     action="{{ route('coupons.store') }}"
     method="POST"
@@ -167,6 +152,31 @@
     </button>
 
 </form>
+
+  
+                    </x-admin.view-table>
+                   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @endsection

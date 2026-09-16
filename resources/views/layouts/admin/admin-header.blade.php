@@ -14,11 +14,11 @@
 
 </head>
 <header class="bg-slate-950 text-white">
-    <div class="flex h-24 items-center justify-between px-8">
+    <div class="flex h-17 items-center justify-between px-8">
 
         {{-- Left --}}
         <div>
-            <h1 class="text-3xl font-bold">
+            <h1 class="text-xl font-bold">
                 Admin Dashboard
             </h1>
         </div>

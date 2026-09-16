@@ -1,6 +1,6 @@
-@extends('layouts.admin.admin')
+@extends('layouts.admin.page')
 
-@section('content')
+@section('adminPage')
 
 <div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
 

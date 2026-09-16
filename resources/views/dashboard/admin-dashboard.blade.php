@@ -8,20 +8,11 @@
 
 <div class="space-y-6">
 
-    {{-- Page Heading --}}
-    <div>
-        <h2 class="text-2xl font-bold text-slate-800">
-            Dashboard
-        </h2>
 
-        <p class="text-sm text-slate-500 mt-1">
-            Welcome to your admin dashboard
-        </p>
-    </div>
 
 
     {{-- Dashboard Cards --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
         {{-- Users --}}
         @can('isAdmin')
@@ -29,7 +20,7 @@
         <x-admin-dashboard-cards link="users.index" title="Sellers" subTitle="Manage sellers →" :count="$allSellers"></x-admin-dashboard-cards>
         @endcan
         <x-admin-dashboard-cards link="categories.index" title="Categories" subTitle="Manage categories →" :count="$categories"></x-admin-dashboard-cards>
-        <x-admin-dashboard-cards link="brand.index" title="brands" subTitle="Manage brands →" :count="$brands"></x-admin-dashboard-cards>
+        <x-admin-dashboard-cards link="brands.index" title="brands" subTitle="Manage brands →" :count="$brands"></x-admin-dashboard-cards>
         <x-admin-dashboard-cards link="colors.index" title="colors" subTitle="Manage colors →" :count="$colors"></x-admin-dashboard-cards>
         <x-admin-dashboard-cards link="sizes.index" title="sizes" subTitle="Manage sizes →" :count="$sizes"></x-admin-dashboard-cards>
         <x-admin-dashboard-cards link="products.index" title="Products" subTitle="Manage products →" :count="$products"></x-admin-dashboard-cards>
