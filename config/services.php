@@ -50,6 +50,12 @@ return [
     'webhook_secret'=> env('RAZORPAY_WEBHOOK_SECRET')
 ],
 
+'payu' => [
+    'key' => env('PAYU_KEY'),
+    'salt' => env('PAYU_SALT'),
+    'base_url' => env('PAYU_BASE_URL'),
+],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

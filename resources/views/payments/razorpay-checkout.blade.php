@@ -55,7 +55,6 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-
 document.addEventListener('DOMContentLoaded', function () {
 
     const payButton = document.getElementById('pay-button');
@@ -82,6 +81,12 @@ document.addEventListener('DOMContentLoaded', function () {
         theme: {
             color: "#000000"
         },
+
+        /*
+        |--------------------------------------------------------------------------
+        | PAYMENT SUCCESS
+        |--------------------------------------------------------------------------
+        */
 
         handler: function (response) {
 
@@ -126,30 +131,139 @@ document.addEventListener('DOMContentLoaded', function () {
             form.submit();
         },
 
+        /*
+        |--------------------------------------------------------------------------
+        | PAYMENT FAILED
+        |--------------------------------------------------------------------------
+        */
+
         modal: {
             ondismiss: function () {
-                window.location.replace("{{ url('/') }}");
+
+                payButton.disabled = false;
+
+                payButton.innerText =
+                    'Pay ₹{{ number_format($order->total_amount, 2) }}';
+
                 console.log('Razorpay checkout closed');
             }
         }
+
     };
 
     const razorpay = new Razorpay(options);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Razorpay Payment Failed Event
+    |--------------------------------------------------------------------------
+    */
+
+    razorpay.on('payment.failed', function (response) {
+
+        console.error('Razorpay Payment Failed:', response.error);
+
+        const errorCode = response.error.code ?? '';
+        const errorDescription = response.error.description ?? 'Payment failed.';
+        const errorReason = response.error.reason ?? '';
+
+        /*
+        |--------------------------------------------------------------------------
+        | Send Failure To Laravel
+        |--------------------------------------------------------------------------
+        */
+
+        fetch("{{ route('razorpay.failed') }}", {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                'Accept': 'application/json'
+            },
+
+            body: JSON.stringify({
+
+                order_id: "{{ $order->id }}",
+
+                razorpay_order_id:
+                    response.error.metadata?.order_id ?? "{{ $razorpayOrder['id'] }}",
+
+                razorpay_payment_id:
+                    response.error.metadata?.payment_id ?? null,
+
+                error_code: errorCode,
+
+                error_description: errorDescription,
+
+                error_reason: errorReason
+
+            })
+
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            console.log('Failure saved:', data);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Show Error To Customer
+            |--------------------------------------------------------------------------
+            */
+
+            alert(errorDescription);
+
+            payButton.disabled = false;
+
+            payButton.innerText =
+                'Pay ₹{{ number_format($order->total_amount, 2) }}';
+
+        })
+        .catch(error => {
+
+            console.error('Failed to save payment failure:', error);
+
+            alert(errorDescription);
+
+            payButton.disabled = false;
+
+            payButton.innerText =
+                'Pay ₹{{ number_format($order->total_amount, 2) }}';
+        });
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | OPEN RAZORPAY
+    |--------------------------------------------------------------------------
+    */
 
     payButton.addEventListener('click', function (e) {
 
         e.preventDefault();
 
         payButton.disabled = true;
+
         payButton.innerText = 'Opening Payment...';
 
         razorpay.open();
 
         setTimeout(() => {
-            payButton.disabled = false;
-            payButton.innerText =
-                'Pay ₹{{ number_format($order->total_amount, 2) }}';
+
+            if (payButton.disabled) {
+
+                payButton.disabled = false;
+
+                payButton.innerText =
+                    'Pay ₹{{ number_format($order->total_amount, 2) }}';
+
+            }
+
         }, 3000);
+
     });
 
 });

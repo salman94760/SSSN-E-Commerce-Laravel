@@ -60,13 +60,20 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
 Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
+
 Route::post('/razorpay/webhook',[PaymentController::class, 'webhook'])->name('razorpay.webhook');
+Route::post('/payu/payment', [PaymentController::class, 'payment'])->name('payu.payment');
+Route::post('/payu/success', [PaymentController::class, 'success'])->name('payu.success');
+Route::post('/payu/failure', [PaymentController::class, 'failure'])->name('payu.failure');
+
+
 Route::middleware("check.login")->group(function () {
     Route::resource('/adminprofile', AdminController::class);
 
     Route::resource('/users', UserController::class);
     Route::resource('/sellers', SellerController::class);
     Route::post('/razorpay/verify',[PaymentController::class, 'verify'])->name('razorpay.verify');
+    Route::post('/razorpay/payment-failed',[PaymentController::class, 'failed'])->name('razorpay.failed');
     Route::resource('/colors', ColorController::class);
     Route::resource('/sizes', SizeController::class);
     Route::resource('/tags', TagController::class);
@@ -74,7 +81,7 @@ Route::middleware("check.login")->group(function () {
 
     Route::controller(CustomerController::class)->group(function () {
         Route::get('/cart', 'cart')->name('customer.cart');
-        Route::post('/remove-item/{id}', 'removeCartitems');
+        Route::delete('/remove-item/{id}', 'removeCartitems');
         Route::post('/cart/{id}', 'addToCart')->name('cart.add');
         Route::post('/cart/{item}/increase', 'increase')->name('cart.increase');
         Route::post('/cart/{item}/decrease', 'decrease')->name('cart.decrease');

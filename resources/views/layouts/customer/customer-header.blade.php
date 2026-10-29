@@ -19,6 +19,7 @@
 
 
 <body class="bg-gray-50 text-gray-900">
+    @include('msg')
 
     {{-- ================= HEADER ================= --}}
     <header class="bg-white border-b sticky top-0 z-50">

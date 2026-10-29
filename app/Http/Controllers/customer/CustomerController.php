@@ -197,13 +197,16 @@ class CustomerController extends Controller
     public function removeCartitems(string $id)
     {
         $cart = CartItem::where('cart_id', $id)->first();
-
+        // dd($cart,$id);
         if ($cart) {
             CartItem::where('cart_id', $id)->delete();
             Cart::where('id', $id)->delete();
+            return redirect('/shop')->with('success', 'Cart item removed successfully.');
         }
 
-        return redirect('/shop')->with('success', 'Cart item removed successfully.');
+        return redirect('/cart')->with('error', 'Something went wrong.');
+
+        
     }
 
 

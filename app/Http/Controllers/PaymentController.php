@@ -250,4 +250,72 @@ class PaymentController extends Controller
             'success' => true
         ]);
     }
+
+    public function failed(Request $request)
+{
+    $request->validate([
+        'order_id'           => 'required|integer',
+        'razorpay_order_id'  => 'nullable|string',
+        'razorpay_payment_id'=> 'nullable|string',
+        'error_code'         => 'nullable|string',
+        'error_description'  => 'nullable|string',
+        'error_reason'       => 'nullable|string',
+    ]);
+
+    $order = Order::where('id', $request->order_id)
+        ->where('customer_id', auth()->id())
+        ->firstOrFail();
+
+    /*
+    |--------------------------------------------------------------------------
+    | Security Check
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        $request->razorpay_order_id &&
+        $order->gateway_order_id !== $request->razorpay_order_id
+    ) {
+        Log::warning('Razorpay failed payment order mismatch', [
+            'local_order_id'       => $order->id,
+            'gateway_order_id'     => $order->gateway_order_id,
+            'razorpay_order_id'    => $request->razorpay_order_id,
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid Razorpay order.'
+        ], 422);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Save Failure
+    |--------------------------------------------------------------------------
+    */
+
+    $order->update([
+        'payment_status' => 'Failed',
+    ]);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Log Failure
+    |--------------------------------------------------------------------------
+    */
+
+    Log::warning('Razorpay payment failed', [
+        'order_id'            => $order->id,
+        'razorpay_order_id'   => $request->razorpay_order_id,
+        'razorpay_payment_id' => $request->razorpay_payment_id,
+        'error_code'          => $request->error_code,
+        'error_description'   => $request->error_description,
+        'error_reason'        => $request->error_reason,
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Payment failure recorded.'
+    ]);
+}
 }
