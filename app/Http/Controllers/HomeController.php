@@ -11,27 +11,19 @@ use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
-    public function index()
-    {
-        $categories = Cache::rememberForever('categories', function () {
-            return Category::all()->toArray();;
-        });
-        $brands = Cache::rememberForever('brands', function () {
-            return Brand::all()->toArray();;
-        });
-
-        $products = Cache::rememberForever('feature_product', function () {
-            return Product::with(['sizes','images','reviews','category', 'brand', 'reviews.user'])
-                ->get()
-                ->toArray();
-        });
-
+    public function index(){
+        $categories = Category::all();
+        $brands = Brand::all();
+        $products = Product::with([
+            'sizes',
+            'images',
+            'reviews',
+            'category',
+            'brand',
+            'reviews.user'
+        ])->get();
         $reviews = ProductReview::all();
-
-        $categories = json_decode(json_encode($categories));
-        $brands     = json_decode(json_encode($brands));
-        $products   = json_decode(json_encode($products));
-        return view('welcome', compact('products', 'categories', 'brands','reviews'));
+        return view('welcome', compact('products','categories','brands','reviews'));
     }
 
     public function contact()
