@@ -1,7 +1,7 @@
 <section id="featured" class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {{-- Section Header --}}
+    
         <div class="flex items-end justify-between mb-8">
             <div>
                 <span class="text-xs uppercase tracking-widest text-gray-400">
@@ -17,7 +17,7 @@
                 </p>
             </div>
 
-            {{-- Desktop Shop Link --}}
+        
             <a href="{{ url('/shop') }}"
                class="hidden sm:inline-flex items-center gap-2 text-sm font-semibold hover:underline">
                 View All
@@ -25,7 +25,7 @@
             </a>
         </div>
 
-        {{-- Products --}}
+    
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 
             @foreach($products as $product)

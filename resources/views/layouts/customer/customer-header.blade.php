@@ -10,10 +10,10 @@
 
     <link rel="icon" type="image/png" href="{{ asset('logo/logo.ico') }}">
 
-    {{-- Tailwind CSS --}}
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-    {{-- Alpine JS --}}
+  
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
@@ -21,23 +21,25 @@
 <body class="bg-gray-50 text-gray-900">
     @include('msg')
 
-    {{-- ================= HEADER ================= --}}
+    
     <header class="bg-white border-b sticky top-0 z-50">
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="min-h-[120px] flex items-center justify-between gap-6">
 
-                {{-- ================= LOGO ================= --}}
+               
                 <a href="{{ url('/') }}" class="flex items-center">
 
                     <div class="w-[110px] h-[90px] flex flex-col items-center justify-center">
 
-                        <img
-                            src="{{ asset('logo/' . $globalComapnyDetail->logo) }}"
-                            alt="Logo"
-                            class="max-w-full max-h-[70px] object-contain"
-                        >
+                        @if($globalComapnyDetail?->logo)
+    <img
+        src="{{ asset('logo/' . $globalComapnyDetail->logo) }}"
+        alt="Logo"
+        class="max-w-full max-h-[70px] object-contain"
+    >
+@endif
 
                         <p class="text-[10px] uppercase tracking-widest text-gray-400">
                             Clothing Store
@@ -48,10 +50,10 @@
                 </a>
 
 
-                {{-- ================= NAVIGATION ================= --}}
+             
                 <nav class="hidden lg:flex items-center gap-8">
 
-                    {{-- Home --}}
+        
                     <a
                         href="{{ url('/') }}"
                         class="text-sm text-gray-500 hover:text-black transition
@@ -61,7 +63,7 @@
                     </a>
 
 
-                    {{-- Shop --}}
+                  
                     <a
                         href="{{ url('/shop') }}"
                         class="text-sm text-gray-500 hover:text-black transition
@@ -71,7 +73,7 @@
                     </a>
 
 
-                    {{-- About --}}
+               
                     <a
                         href="{{ url('/about') }}"
                         class="text-sm text-gray-500 hover:text-black transition
@@ -81,7 +83,7 @@
                     </a>
 
 
-                    {{-- Reviews --}}
+                 
                     <a
                         href="{{ url('/reviews') }}"
                         class="text-sm text-gray-500 hover:text-black transition
@@ -91,7 +93,7 @@
                     </a>
 
 
-                    {{-- FAQ --}}
+                 
                     <a
                         href="{{ url('/faq') }}"
                         class="text-sm text-gray-500 hover:text-black transition
@@ -101,7 +103,7 @@
                     </a>
 
 
-                    {{-- Contact --}}
+                 
                     <a
                         href="{{ url('/contact') }}"
                         class="text-sm text-gray-500 hover:text-black transition
@@ -113,12 +115,12 @@
                 </nav>
 
 
-                {{-- ================= RIGHT SIDE ================= --}}
+              
                 <div class="flex items-center gap-3">
 
                     @if(auth()->check())
 
-                        {{-- ================= WELCOME ================= --}}
+                       
                         <div class="hidden md:block text-right">
 
                             <p class="text-xs text-gray-500">
@@ -131,7 +133,7 @@
                         </div>
 
 
-                        {{-- ================= WISHLIST ================= --}}
+                     
                         <a
                             href="{{ url('/wishlist') }}"
                             class="relative w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"
@@ -158,7 +160,7 @@
                         </a>
 
 
-                        {{-- ================= CART ================= --}}
+                      
                         <a
                             href="{{ url('/cart') }}"
                             class="relative w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"
@@ -193,13 +195,13 @@
                         </a>
 
 
-                        {{-- ================= USER DROPDOWN ================= --}}
+                      
                         <div
                             class="relative"
                             x-data="{ open: false }"
                         >
 
-                            {{-- Dropdown Button --}}
+                      
                             <button
                                 type="button"
                                 @click="open = !open"
@@ -209,7 +211,7 @@
                                 hover:bg-gray-200 transition"
                             >
 
-                                {{-- User Initial --}}
+                            
                                 <span
                                     class="w-8 h-8 rounded-lg bg-black text-white
                                     flex items-center justify-center
@@ -221,7 +223,7 @@
                             </button>
 
 
-                            {{-- ================= DROPDOWN ================= --}}
+                          
                             <div
                                 x-show="open"
                                 x-transition
@@ -231,7 +233,7 @@
                                 border border-gray-100 py-2 z-50"
                             >
 
-                                {{-- ================= USER INFO ================= --}}
+                               
                                 <div class="px-4 py-3 border-b border-gray-100">
 
                                     <p class="text-xs text-gray-500">
@@ -249,7 +251,7 @@
                                 </div>
 
 
-                                {{-- ================= DASHBOARD ================= --}}
+                             
                                 <a
                                     href="{{ url('/dashboard') }}"
                                     class="flex items-center gap-3 px-4 py-2.5
@@ -268,7 +270,7 @@
                                 </a>
 
 
-                                {{-- ================= PROFILE ================= --}}
+                             
                                 <a
                                     href="{{ url('/profile') }}"
                                     class="flex items-center gap-3 px-4 py-2.5
@@ -287,7 +289,7 @@
                                 </a>
 
 
-                                {{-- ================= MY ORDERS ================= --}}
+                             
                                 <a
                                     href="{{ url('/my-orders') }}"
                                     class="flex items-center gap-3 px-4 py-2.5
@@ -306,11 +308,11 @@
                                 </a>
 
 
-                                {{-- ================= DIVIDER ================= --}}
+                             
                                 <div class="border-t border-gray-100 my-2"></div>
 
 
-                                {{-- ================= LOGOUT ================= --}}
+                            
                                 <form
                                     action="{{ route('logout') }}"
                                     method="POST"
@@ -344,7 +346,7 @@
 
                     @else
 
-                        {{-- ================= REGISTER ================= --}}
+                      
                         <a
                             href="{{ route('userRegister') }}"
                             class="rounded-lg border border-slate-600
@@ -356,7 +358,7 @@
                         </a>
 
 
-                        {{-- ================= LOGIN ================= --}}
+                      
                         <a
                             href="{{ route('userLogin') }}"
                             class="rounded-lg border border-slate-600
@@ -378,7 +380,7 @@
     </header>
 
 
-    {{-- ================= PAGE CONTENT ================= --}}
+
 
     @yield('content')
 
