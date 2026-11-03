@@ -28,7 +28,7 @@
         {{-- Products --}}
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 
-            @foreach(array_slice($products, 0, 12) as $product)
+            @foreach($products as $product)
 
                 <x-products.productCard :product="$product" />
 
