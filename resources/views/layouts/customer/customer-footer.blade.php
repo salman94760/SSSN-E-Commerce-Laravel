@@ -16,7 +16,19 @@
                 <div class="flex items-center gap-3">
 
                     <a href="{{ url('/') }}" class=" items-center gap-3">
-                    <div class="w-[110px] h-[90px] rounded-xl items-center justify-center font-bold"><img class="bg-white" src="{{asset('logo/'.$globalComapnyDetail->logo)}}" /><p class="text-[10px] uppercase tracking-widest text-gray-400">Clothing Store</p></div>
+                    <div class="w-[110px] h-[90px] rounded-xl items-center justify-center font-bold">
+    @if($globalComapnyDetail?->logo)
+        <img
+            class="bg-white"
+            src="{{ asset('logo/' . $globalComapnyDetail->logo) }}"
+            alt="Company Logo"
+        />
+    @endif
+
+    <p class="text-[10px] uppercase tracking-widest text-gray-400">
+        Clothing Store
+    </p>
+</div>
                     
                    <!--  <div>
                         <h1 class="font-bold text-xl">SSSN</h1>
