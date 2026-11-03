@@ -21,7 +21,7 @@ class HomeController extends Controller
             'category',
             'brand',
             'reviews.user'
-        ])->get();
+        ])->latest()->limit(12)->get();
         $reviews = ProductReview::all();
         return view('welcome', compact('products','categories','brands','reviews'));
     }
