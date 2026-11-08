@@ -1,1268 +1,378 @@
+
 @extends('layouts.admin.page')
 @section('adminPage')
-<div class="p-4 sm:p-6 lg:p-8">
-    <div class="mx-auto max-w-7xl">
-        <x-admin.sub-header :arr="['title'=>'Store Dashboard','subtitle'=>'Here whats happening with your store today.','AddButton'=>'+ Add product','link'=>'products.create']"/>
 
-  
+@php
+    // Demo fallback data - replace with controller data
+    $totalProducts = $totalProducts ?? 248;
+    $totalCategories = $totalCategories ?? 18;
+    $totalOrders = $totalOrders ?? 1256;
+    $totalRevenue = $totalRevenue ?? 485600;
+
+    $recentOrders = $recentOrders ?? collect();
+    $topProducts = $topProducts ?? collect();
+
+    $head = ['Order ID','Customer','Date','Amount','Status'];
+@endphp
+
+<div class="min-h-screen bg-[#f4f0ea] text-[#39332d]">
+
+    <div class="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+
+        {{-- HEADER --}}
+        <div class="mb-10 flex flex-wrap items-center justify-between gap-5">
+
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-[4px] text-[#aa8d6b]">
+                    SSSN FASHION / MANAGEMENT
+                </p>
+
+                <h1 class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+                    Dashboard
+                </h1>
+
+                <p class="mt-2 text-sm text-[#958c81]">
+                    Welcome back! Here's what's happening with your store.
+                </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+
+                <div class="hidden rounded-2xl border border-white/80 bg-white/60 px-5 py-3 shadow-sm backdrop-blur-xl sm:block">
+                    <p class="text-[9px] font-bold uppercase tracking-[2px] text-[#aa8d6b]">
+                        Today
+                    </p>
+                    <p class="mt-1 text-sm font-semibold">
+                        {{ now()->format('d M Y') }}
+                    </p>
+                </div>
+
+                <button class="flex h-12 w-12 items-center justify-center rounded-2xl border border-white bg-white/70 shadow-lg shadow-[#8f7655]/10 transition hover:-translate-y-1">
+                    <span class="text-lg">♙</span>
+                </button>
+
+            </div>
+
+        </div>
 
 
-                <!-- ================================================= -->
-                <!-- STATS -->
-                <!-- ================================================= -->
+        {{-- STATISTICS --}}
+        <div class="grid grid-cols-2 gap-4 xl:grid-cols-4 xl:gap-6">
 
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {{-- PRODUCTS --}}
+            <div class="group relative overflow-hidden rounded-[26px] border border-white/80 bg-white/65 p-5 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:shadow-[0_25px_55px_rgba(100,75,45,0.13)] sm:p-7">
+
+                <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#e7d5bb]/40 blur-2xl transition group-hover:scale-150"></div>
+
+                <div class="relative flex items-center justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#938778]">
+                        Products
+                    </p>
+
+                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eee3d3] text-xl">
+                        ♧
+                    </div>
+                </div>
+
+                <h2 class="relative mt-6 text-3xl font-semibold tracking-tight">
+                    {{ number_format($totalProducts) }}
+                </h2>
+
+                <p class="relative mt-2 text-xs text-[#a58a6d]">
+                    Total products in store
+                </p>
+
+            </div>
 
 
-                    <!-- Revenue -->
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            {{-- CATEGORIES --}}
+            <div class="group relative overflow-hidden rounded-[26px] border border-white/80 bg-white/65 p-5 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:shadow-[0_25px_55px_rgba(100,75,45,0.13)] sm:p-7">
 
-                        <div class="flex items-start justify-between">
+                <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#d9e0d4]/50 blur-2xl transition group-hover:scale-150"></div>
 
-                            <div>
+                <div class="relative flex items-center justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#938778]">
+                        Categories
+                    </p>
 
-                                <p class="text-sm font-medium text-slate-500">
-                                    Total Sales
-                                </p>
+                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e4e9df] text-xl">
+                        ◈
+                    </div>
+                </div>
 
-                                <h3 class="mt-2 text-2xl font-bold text-slate-900">
-                                    ₹{{number_format($totalSales,2)}}
-                                </h3>
+                <h2 class="relative mt-6 text-3xl font-semibold tracking-tight">
+                    {{ number_format($totalCategories) }}
+                </h2>
 
-                            </div>
+                <p class="relative mt-2 text-xs text-[#a58a6d]">
+                    Active product categories
+                </p>
 
-                            <div class="rounded-xl bg-slate-100 p-3 text-slate-700">
+            </div>
 
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        stroke-width="2"
-                                        d="M12 8c-1.5 0-3 .67-3 2s1.5 2 3 2 3 .67 3 2-1.5 2-3 2m0-10v2m0 8v2m9-4a9 9 0 11-18 0 9 9 0 0118 0z"
-                                    />
-                                </svg>
 
-                            </div>
+            {{-- ORDERS --}}
+            <div class="group relative overflow-hidden rounded-[26px] border border-white/80 bg-white/65 p-5 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:shadow-[0_25px_55px_rgba(100,75,45,0.13)] sm:p-7">
 
-                        </div>
+                <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#ead9d9]/50 blur-2xl transition group-hover:scale-150"></div>
 
-                        <div class="mt-4 flex items-center gap-2 text-xs">
+                <div class="relative flex items-center justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#938778]">
+                        Orders
+                    </p>
 
-                            <span class="font-semibold text-green-600">
-                                +12.5%
-                            </span>
+                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f0e3e1] text-xl">
+                        ♧
+                    </div>
+                </div>
 
-                            <span class="text-slate-400">
-                                from last month
-                            </span>
+                <h2 class="relative mt-6 text-3xl font-semibold tracking-tight">
+                    {{ number_format($totalOrders) }}
+                </h2>
 
-                        </div>
+                <p class="relative mt-2 text-xs text-[#a58a6d]">
+                    Total customer orders
+                </p>
 
+            </div>
+
+
+            {{-- REVENUE --}}
+            <div class="group relative overflow-hidden rounded-[26px] border border-white/80 bg-white/65 p-5 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:shadow-[0_25px_55px_rgba(100,75,45,0.13)] sm:p-7">
+
+                <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#e8d9b9]/50 blur-2xl transition group-hover:scale-150"></div>
+
+                <div class="relative flex items-center justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#938778]">
+                        Revenue
+                    </p>
+
+                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f0e6d1] text-xl">
+                        ₹
+                    </div>
+                </div>
+
+                <h2 class="relative mt-6 text-3xl font-semibold tracking-tight">
+                    ₹{{ number_format($totalRevenue) }}
+                </h2>
+
+                <p class="relative mt-2 text-xs text-[#a58a6d]">
+                    Total store revenue
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {{-- CHART + QUICK ACTIONS --}}
+        <div class="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+            {{-- SALES CHART --}}
+            <div class="rounded-[28px] border border-white/80 bg-white/65 p-6 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl xl:col-span-2 sm:p-8">
+
+                <div class="flex flex-wrap items-center justify-between gap-4">
+
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-[3px] text-[#aa8d6d]">
+                            Performance
+                        </p>
+
+                        <h2 class="mt-2 text-xl font-semibold">
+                            Sales Overview
+                        </h2>
                     </div>
 
-
-                    <!-- Orders -->
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
-                        <div class="flex items-start justify-between">
-
-                            <div>
-
-                                <p class="text-sm font-medium text-slate-500">
-                                    Total Orders
-                                </p>
-
-                                <h3 class="mt-2 text-2xl font-bold text-slate-900">
-                                    {{$ordersCount}}
-                                </h3>
-
-                            </div>
-
-                            <div class="rounded-xl bg-slate-100 p-3 text-slate-700">
-
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        stroke-width="2"
-                                        d="M3 3h2l2.4 12.2a2 2 0 002 1.6h7.8a2 2 0 002-1.6L21 7H6M10 21h.01M17 21h.01"
-                                    />
-                                </svg>
-
-                            </div>
-
-                        </div>
-
-                        <div class="mt-4 flex items-center gap-2 text-xs">
-
-                            <span class="font-semibold text-green-600">
-                                +8.2%
-                            </span>
-
-                            <span class="text-slate-400">
-                                from last month
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Customers -->
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
-                        <div class="flex items-start justify-between">
-
-                            <div>
-
-                                <p class="text-sm font-medium text-slate-500">
-                                    Customers
-                                </p>
-
-                                <h3 class="mt-2 text-2xl font-bold text-slate-900">
-                                    {{$allUsers}}
-                                </h3>
-
-                            </div>
-
-                            <div class="rounded-xl bg-slate-100 p-3 text-slate-700">
-
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        stroke-width="2"
-                                        d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m4-8a4 4 0 110 8 4 4 0 000-8z"
-                                    />
-                                </svg>
-
-                            </div>
-
-                        </div>
-
-                        <div class="mt-4 flex items-center gap-2 text-xs">
-
-                            <span class="font-semibold text-green-600">
-                                +5.7%
-                            </span>
-
-                            <span class="text-slate-400">
-                                from last month
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Products -->
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
-                        <div class="flex items-start justify-between">
-
-                            <div>
-
-                                <p class="text-sm font-medium text-slate-500">
-                                    Products
-                                </p>
-
-                                <h3 class="mt-2 text-2xl font-bold text-slate-900">
-                                    {{$products}}
-                                </h3>
-
-                            </div>
-
-                            <div class="rounded-xl bg-slate-100 p-3 text-slate-700">
-
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        stroke-width="2"
-                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                                    />
-                                </svg>
-
-                            </div>
-
-                        </div>
-
-                        <div class="mt-4 flex items-center gap-2 text-xs">
-
-                            <span class="font-semibold text-slate-600">
-                                24 added
-                            </span>
-
-                            <span class="text-slate-400">
-                                this month
-                            </span>
-
-                        </div>
-
-                    </div>
+                    <span class="rounded-xl border border-[#e8dfd2] bg-[#f8f5ef] px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-[#927a5c]">
+                        Last 7 Months
+                    </span>
 
                 </div>
 
+                <div class="mt-8 h-[280px]">
+                    <canvas id="salesChart"></canvas>
+                </div>
 
-                <!-- ================================================= -->
-                <!-- MAIN GRID -->
-                <!-- ================================================= -->
-
-                <div class="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
+            </div>
 
 
-                    <!-- SALES OVERVIEW -->
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-2">
+            {{-- QUICK ACTIONS --}}
+            <div class="rounded-[28px] border border-white/80 bg-white/65 p-6 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl sm:p-8">
 
-                        <div class="flex items-center justify-between">
+                <p class="text-[10px] font-bold uppercase tracking-[3px] text-[#aa8d6d]">
+                    Manage Store
+                </p>
+
+                <h2 class="mt-2 text-xl font-semibold">
+                    Quick Actions
+                </h2>
+
+                <div class="mt-7 space-y-3">
+
+                    <a href="{{ url('/admin/products/create') }}"
+                       class="group flex items-center justify-between rounded-2xl border border-[#eae1d5] bg-white/70 p-4 transition duration-300 hover:-translate-y-1 hover:border-[#c8ad89] hover:bg-[#f7f1e8]">
+
+                        <div class="flex items-center gap-3">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#eee3d3] text-lg">＋</span>
 
                             <div>
-
-                                <h2 class="font-bold text-slate-900">
-                                    Sales Overview
-                                </h2>
-
-                                <p class="mt-1 text-sm text-slate-500">
-                                    Revenue performance
-                                </p>
-
+                                <p class="text-sm font-semibold">Add Product</p>
+                                <p class="mt-1 text-[10px] text-[#a49a8d]">Create new product</p>
                             </div>
+                        </div>
 
-                            <select
-                                class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 outline-none"
+                        <span class="text-[#a58a6d]">→</span>
+                    </a>
+
+
+                    <a href="{{ url('/admin/categories') }}"
+                       class="group flex items-center justify-between rounded-2xl border border-[#eae1d5] bg-white/70 p-4 transition duration-300 hover:-translate-y-1 hover:border-[#c8ad89] hover:bg-[#f7f1e8]">
+
+                        <div class="flex items-center gap-3">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e7eade] text-lg">◈</span>
+
+                            <div>
+                                <p class="text-sm font-semibold">Categories</p>
+                                <p class="mt-1 text-[10px] text-[#a49a8d]">Manage categories</p>
+                            </div>
+                        </div>
+
+                        <span class="text-[#a58a6d]">→</span>
+                    </a>
+
+
+                    <a href="{{ url('/admin/orders') }}"
+                       class="group flex items-center justify-between rounded-2xl border border-[#eae1d5] bg-white/70 p-4 transition duration-300 hover:-translate-y-1 hover:border-[#c8ad89] hover:bg-[#f7f1e8]">
+
+                        <div class="flex items-center gap-3">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f0e3e1] text-lg">▤</span>
+
+                            <div>
+                                <p class="text-sm font-semibold">View Orders</p>
+                                <p class="mt-1 text-[10px] text-[#a49a8d]">Manage customer orders</p>
+                            </div>
+                        </div>
+
+                        <span class="text-[#a58a6d]">→</span>
+                    </a>
+
+
+                    <a href="{{ url('/admin/customers') }}"
+                       class="group flex items-center justify-between rounded-2xl border border-[#eae1d5] bg-white/70 p-4 transition duration-300 hover:-translate-y-1 hover:border-[#c8ad89] hover:bg-[#f7f1e8]">
+
+                        <div class="flex items-center gap-3">
+                            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e5e8ec] text-lg">♙</span>
+
+                            <div>
+                                <p class="text-sm font-semibold">Customers</p>
+                                <p class="mt-1 text-[10px] text-[#a49a8d]">View your customers</p>
+                            </div>
+                        </div>
+
+                        <span class="text-[#a58a6d]">→</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {{-- RECENT ORDERS --}}
+        <x-admin.admin-table
+            eyebrow="Store Activity"
+            title="Recent Orders"
+            url="/admin/orders"
+            :head="$head"
+            :body="$recentOrders"
+        />
+       
+
+
+        {{-- TOP PRODUCTS --}}
+        <div class="mt-8 rounded-[28px] border border-white/80 bg-white/65 p-6 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl sm:p-8">
+
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[10px] font-bold uppercase tracking-[3px] text-[#aa8d6d]">
+                        Product Performance
+                    </p>
+
+                    <h2 class="mt-2 text-xl font-semibold">
+                        Best Selling Products
+                    </h2>
+                </div>
+
+                <a href="{{ url('/admin/products') }}"
+                   class="text-[10px] font-bold uppercase tracking-[2px] text-[#a58a6d]">
+                    View All →
+                </a>
+            </div>
+
+
+            <div class="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
+                @forelse($topProducts as $product)
+
+                    <div class="flex items-center gap-4 rounded-2xl border border-[#eee8df] bg-white/60 p-4 transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+
+                        <div class="h-16 w-14 flex-shrink-0 overflow-hidden rounded-xl bg-[#eee8df]">
+
+                            <img
+                                src="{{ $product->images->first()?->image ? asset('storage/'.$product->images->first()->image) : 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=200' }}"
+                                alt="{{ $product->name ?? 'Product' }}"
+                                class="h-full w-full object-cover"
+                                loading="lazy"
                             >
-                                <option>Last 7 days</option>
-                                <option>Last 30 days</option>
-                                <option>Last 3 months</option>
-                            </select>
 
                         </div>
 
+                        <div class="min-w-0">
+                            <h3 class="truncate text-sm font-semibold">
+                                {{ $product->name ?? $product->title ?? 'Product' }}
+                            </h3>
 
-                        <!-- Fake Chart -->
-                        <div class="mt-8">
-
-                            <div class="flex h-64 items-end gap-2 sm:gap-4">
-
-                                <div class="flex h-full flex-1 flex-col justify-end">
-                                    <div class="rounded-t-lg bg-slate-900" style="height: 42%"></div>
-                                </div>
-
-                                <div class="flex h-full flex-1 flex-col justify-end">
-                                    <div class="rounded-t-lg bg-slate-800" style="height: 58%"></div>
-                                </div>
-
-                                <div class="flex h-full flex-1 flex-col justify-end">
-                                    <div class="rounded-t-lg bg-slate-700" style="height: 48%"></div>
-                                </div>
-
-                                <div class="flex h-full flex-1 flex-col justify-end">
-                                    <div class="rounded-t-lg bg-slate-900" style="height: 72%"></div>
-                                </div>
-
-                                <div class="flex h-full flex-1 flex-col justify-end">
-                                    <div class="rounded-t-lg bg-slate-800" style="height: 65%"></div>
-                                </div>
-
-                                <div class="flex h-full flex-1 flex-col justify-end">
-                                    <div class="rounded-t-lg bg-slate-700" style="height: 84%"></div>
-                                </div>
-
-                                <div class="flex h-full flex-1 flex-col justify-end">
-                                    <div class="rounded-t-lg bg-slate-900" style="height: 95%"></div>
-                                </div>
-
-                            </div>
-
-
-                            <div class="mt-3 grid grid-cols-7 text-center text-xs text-slate-400">
-
-                                <span>Mon</span>
-                                <span>Tue</span>
-                                <span>Wed</span>
-                                <span>Thu</span>
-                                <span>Fri</span>
-                                <span>Sat</span>
-                                <span>Sun</span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- ORDER STATUS -->
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
-                        <div>
-
-                            <h2 class="font-bold text-slate-900">
-                                Order Status
-                            </h2>
-
-                            <p class="mt-1 text-sm text-slate-500">
-                                Current order distribution
+                            <p class="mt-2 text-xs font-bold text-[#a58a6d]">
+                                ₹{{ number_format((float) ($product->price ?? 0), 2) }}
                             </p>
-
-                        </div>
-
-
-                        <div class="mt-8 space-y-5">
-
-
-                            <!-- Pending -->
-                            <div>
-
-                                <div class="mb-2 flex items-center justify-between">
-
-                                    <span class="text-sm font-medium text-slate-600">
-                                        Pending
-                                    </span>
-
-                                    <span class="text-sm font-bold text-slate-900">
-                                        18%
-                                    </span>
-
-                                </div>
-
-                                <div class="h-2 overflow-hidden rounded-full bg-slate-100">
-
-                                    <div
-                                        class="h-full rounded-full bg-yellow-400"
-                                        style="width:18%"
-                                    ></div>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- Processing -->
-                            <div>
-
-                                <div class="mb-2 flex items-center justify-between">
-
-                                    <span class="text-sm font-medium text-slate-600">
-                                        Processing
-                                    </span>
-
-                                    <span class="text-sm font-bold text-slate-900">
-                                        26%
-                                    </span>
-
-                                </div>
-
-                                <div class="h-2 overflow-hidden rounded-full bg-slate-100">
-
-                                    <div
-                                        class="h-full rounded-full bg-blue-500"
-                                        style="width:26%"
-                                    ></div>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- Shipped -->
-                            <div>
-
-                                <div class="mb-2 flex items-center justify-between">
-
-                                    <span class="text-sm font-medium text-slate-600">
-                                        Shipped
-                                    </span>
-
-                                    <span class="text-sm font-bold text-slate-900">
-                                        22%
-                                    </span>
-
-                                </div>
-
-                                <div class="h-2 overflow-hidden rounded-full bg-slate-100">
-
-                                    <div
-                                        class="h-full rounded-full bg-purple-500"
-                                        style="width:22%"
-                                    ></div>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- Delivered -->
-                            <div>
-
-                                <div class="mb-2 flex items-center justify-between">
-
-                                    <span class="text-sm font-medium text-slate-600">
-                                        Delivered
-                                    </span>
-
-                                    <span class="text-sm font-bold text-slate-900">
-                                        29%
-                                    </span>
-
-                                </div>
-
-                                <div class="h-2 overflow-hidden rounded-full bg-slate-100">
-
-                                    <div
-                                        class="h-full rounded-full bg-green-500"
-                                        style="width:29%"
-                                    ></div>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- Cancelled -->
-                            <div>
-
-                                <div class="mb-2 flex items-center justify-between">
-
-                                    <span class="text-sm font-medium text-slate-600">
-                                        Cancelled
-                                    </span>
-
-                                    <span class="text-sm font-bold text-slate-900">
-                                        5%
-                                    </span>
-
-                                </div>
-
-                                <div class="h-2 overflow-hidden rounded-full bg-slate-100">
-
-                                    <div
-                                        class="h-full rounded-full bg-red-500"
-                                        style="width:5%"
-                                    ></div>
-
-                                </div>
-
-                            </div>
-
                         </div>
 
                     </div>
 
-                </div>
+                @empty
 
+                    <p class="col-span-full py-8 text-center text-sm text-[#958c81]">
+                        Top products will appear here.
+                    </p>
 
+                @endforelse
 
-                <!-- ================================================= -->
-                <!-- RECENT ORDERS -->
-                <!-- ================================================= -->
+            </div>
 
-                <div class="mt-6 rounded-2xl border border-slate-200 bg-white shadow-sm">
+        </div>
 
-                    <div class="flex flex-col gap-3 border-b border-slate-200 px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
 
-                        <div>
+        {{-- FOOTER --}}
+        <div class="mt-10 flex flex-col items-center justify-between gap-3 border-t border-[#e6ddd1] pt-6 text-center sm:flex-row">
 
-                            <h2 class="font-bold text-slate-900">
-                                Recent Orders
-                            </h2>
+            <p class="text-[10px] uppercase tracking-[2px] text-[#a49a8d]">
+                © {{ date('Y') }} SSSN Fashion. All rights reserved.
+            </p>
 
-                            <p class="mt-1 text-sm text-slate-500">
-                                Latest orders from your customers
-                            </p>
+            <p class="text-[10px] font-semibold uppercase tracking-[2px] text-[#a58a6d]">
+                Designed for Fashion Excellence
+            </p>
 
-                        </div>
+        </div>
 
-                        <a
-                            href="#"
-                            class="text-sm font-semibold text-slate-900 hover:underline"
-                        >
-                            View all orders →
-                        </a>
+    </div>
 
-                    </div>
+</div>
 
 
-                    <div class="overflow-x-auto">
+{{-- CHART JS --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-                        <table class="w-full min-w-[850px]">
-
-                            <thead class="bg-slate-50">
-
-                                <tr class="border-b border-slate-200">
-
-                                    <th class="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
-                                        Order
-                                    </th>
-
-                                    <th class="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
-                                        Customer
-                                    </th>
-
-                                    <th class="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
-                                        Amount
-                                    </th>
-
-                                    <th class="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
-                                        Payment
-                                    </th>
-
-                                    <th class="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
-                                        Status
-                                    </th>
-
-                                    <th class="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
-                                        Date
-                                    </th>
-
-                                    <th class="px-5 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500">
-                                        Action
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody class="divide-y divide-slate-100">
-
-
-                                <!-- ORDER 1 -->
-                                <tr class="transition hover:bg-slate-50">
-
-                                    <td class="px-5 py-4">
-
-                                        <p class="text-sm font-bold text-slate-900">
-                                            ORD-NJVQRJEG
-                                        </p>
-
-                                        <p class="mt-1 text-xs text-slate-400">
-                                            3 items
-                                        </p>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <div class="flex items-center gap-3">
-
-                                            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-700">
-                                                RK
-                                            </div>
-
-                                            <div>
-
-                                                <p class="text-sm font-semibold text-slate-900">
-                                                    Rahul Kumar
-                                                </p>
-
-                                                <p class="text-xs text-slate-500">
-                                                    rahul@example.com
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <p class="text-sm font-bold text-slate-900">
-                                            ₹998.00
-                                        </p>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <div class="space-y-1">
-
-                                            <p class="text-xs font-medium text-slate-600">
-                                                COD
-                                            </p>
-
-                                            <span class="inline-flex rounded-full bg-yellow-100 px-2.5 py-1 text-[11px] font-bold text-yellow-700">
-                                                Pending
-                                            </span>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <span class="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                                            Processing
-                                        </span>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4 text-sm text-slate-500">
-                                        21 Aug 2026
-                                    </td>
-
-
-                                    <td class="px-5 py-4 text-right">
-
-                                        <button
-                                            class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100"
-                                        >
-                                            View
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-
-                                <!-- ORDER 2 -->
-                                <tr class="transition hover:bg-slate-50">
-
-                                    <td class="px-5 py-4">
-
-                                        <p class="text-sm font-bold text-slate-900">
-                                            ORD-ZDC5CNQ5
-                                        </p>
-
-                                        <p class="mt-1 text-xs text-slate-400">
-                                            2 items
-                                        </p>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <div class="flex items-center gap-3">
-
-                                            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-700">
-                                                AS
-                                            </div>
-
-                                            <div>
-
-                                                <p class="text-sm font-semibold text-slate-900">
-                                                    Amit Sharma
-                                                </p>
-
-                                                <p class="text-xs text-slate-500">
-                                                    amit@example.com
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <p class="text-sm font-bold text-slate-900">
-                                            ₹2,349.00
-                                        </p>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <div class="space-y-1">
-
-                                            <p class="text-xs font-medium text-slate-600">
-                                                COD
-                                            </p>
-
-                                            <span class="inline-flex rounded-full bg-yellow-100 px-2.5 py-1 text-[11px] font-bold text-yellow-700">
-                                                Pending
-                                            </span>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <span class="inline-flex rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
-                                            Pending
-                                        </span>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4 text-sm text-slate-500">
-                                        23 Aug 2026
-                                    </td>
-
-
-                                    <td class="px-5 py-4 text-right">
-
-                                        <button
-                                            class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100"
-                                        >
-                                            View
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-
-                                <!-- ORDER 3 -->
-                                <tr class="transition hover:bg-slate-50">
-
-                                    <td class="px-5 py-4">
-
-                                        <p class="text-sm font-bold text-slate-900">
-                                            ORD-JI0FZMBS
-                                        </p>
-
-                                        <p class="mt-1 text-xs text-slate-400">
-                                            4 items
-                                        </p>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <div class="flex items-center gap-3">
-
-                                            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-700">
-                                                PS
-                                            </div>
-
-                                            <div>
-
-                                                <p class="text-sm font-semibold text-slate-900">
-                                                    Priya Singh
-                                                </p>
-
-                                                <p class="text-xs text-slate-500">
-                                                    priya@example.com
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <p class="text-sm font-bold text-slate-900">
-                                            ₹3,495.00
-                                        </p>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <div class="space-y-1">
-
-                                            <p class="text-xs font-medium text-slate-600">
-                                                COD
-                                            </p>
-
-                                            <span class="inline-flex rounded-full bg-yellow-100 px-2.5 py-1 text-[11px] font-bold text-yellow-700">
-                                                Pending
-                                            </span>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <span class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
-                                            Cancelled
-                                        </span>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4 text-sm text-slate-500">
-                                        04 Sep 2026
-                                    </td>
-
-
-                                    <td class="px-5 py-4 text-right">
-
-                                        <button
-                                            class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100"
-                                        >
-                                            View
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-
-                                <!-- ORDER 4 -->
-                                <tr class="transition hover:bg-slate-50">
-
-                                    <td class="px-5 py-4">
-
-                                        <p class="text-sm font-bold text-slate-900">
-                                            ORD-PG6PIE5Z
-                                        </p>
-
-                                        <p class="mt-1 text-xs text-slate-400">
-                                            5 items
-                                        </p>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <div class="flex items-center gap-3">
-
-                                            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-700">
-                                                VK
-                                            </div>
-
-                                            <div>
-
-                                                <p class="text-sm font-semibold text-slate-900">
-                                                    Vikram Kumar
-                                                </p>
-
-                                                <p class="text-xs text-slate-500">
-                                                    vikram@example.com
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <p class="text-sm font-bold text-slate-900">
-                                            ₹6,080.00
-                                        </p>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <div class="space-y-1">
-
-                                            <p class="text-xs font-medium text-slate-600">
-                                                COD
-                                            </p>
-
-                                            <span class="inline-flex rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-bold text-green-700">
-                                                Paid
-                                            </span>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4">
-
-                                        <span class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                                            Delivered
-                                        </span>
-
-                                    </td>
-
-
-                                    <td class="px-5 py-4 text-sm text-slate-500">
-                                        04 Sep 2026
-                                    </td>
-
-
-                                    <td class="px-5 py-4 text-right">
-
-                                        <button
-                                            class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100"
-                                        >
-                                            View
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-                                        <!-- Payment Summary -->
-
-                        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm">
-
-                            <div class="border-b border-slate-200 px-5 py-4">
-
-                                <h3 class="text-base font-bold text-slate-900">
-                                    Payment Summary
-                                </h3>
-
-                                <p class="mt-1 text-xs text-slate-500">
-                                    Payment method performance
-                                </p>
-
-                            </div>
-
-
-                            <div class="p-5">
-
-                                <div class="space-y-6">
-
-
-                                    <div>
-
-                                        <div class="mb-2 flex items-center justify-between">
-
-                                            <span class="text-sm font-semibold text-slate-700">
-                                                Cash on Delivery
-                                            </span>
-
-                                            <span class="text-sm font-bold text-slate-900">
-                                                ₹{{number_format($payments['COD'])}}
-                                            </span>
-
-                                        </div>
-
-                                        <div class="h-2 rounded-full bg-slate-100">
-
-                                            <div
-                                                class="h-2 rounded-full bg-slate-800"
-                                                style="width:{{($payments['COD']/$totalSales)*100}}%"
-                                            ></div>
-
-                                        </div>
-
-                                        <p class="mt-1 text-xs text-slate-400">
-                                            {{($payments['COD']/$totalSales)*100}}% of total revenue
-                                        </p>
-
-                                    </div>
-
-
-                                    <div>
-
-                                        <div class="mb-2 flex items-center justify-between">
-
-                                            <span class="text-sm font-semibold text-slate-700">
-                                                Online Payment
-                                            </span>
-
-                                            <span class="text-sm font-bold text-slate-900">
-                                                ₹98,650
-                                            </span>
-
-                                        </div>
-
-                                        <div class="h-2 rounded-full bg-slate-100">
-
-                                            <div
-                                                class="h-2 rounded-full bg-blue-600"
-                                                style="width:41%"
-                                            ></div>
-
-                                        </div>
-
-                                        <p class="mt-1 text-xs text-slate-400">
-                                            41% of total revenue
-                                        </p>
-
-                                    </div>
-
-
-                                    <div>
-
-                                        <div class="mb-2 flex items-center justify-between">
-
-                                            <span class="text-sm font-semibold text-slate-700">
-                                                UPI
-                                            </span>
-
-                                            <span class="text-sm font-bold text-slate-900">
-                                                ₹24,900
-                                            </span>
-
-                                        </div>
-
-                                        <div class="h-2 rounded-full bg-slate-100">
-
-                                            <div
-                                                class="h-2 rounded-full bg-purple-600"
-                                                style="width:10%"
-                                            ></div>
-
-                                        </div>
-
-                                        <p class="mt-1 text-xs text-slate-400">
-                                            10% of total revenue
-                                        </p>
-
-                                    </div>
-
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                <!-- ================================================= -->
-                <!-- BOTTOM GRID -->
-                <!-- ================================================= -->
-
-                <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-
-
-                    <!-- LOW STOCK -->
-                    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm">
-
-                        <div class="flex items-center justify-between border-b border-slate-200 px-5 py-5">
-
-                            <div>
-
-                                <h2 class="font-bold text-slate-900">
-                                    Low Stock Products
-                                </h2>
-
-                                <p class="mt-1 text-sm text-slate-500">
-                                    Products that need attention
-                                </p>
-
-                            </div>
-
-                            <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">
-                                5 Items
-                            </span>
-
-                        </div>
-
-
-                        <div class="divide-y divide-slate-100">
-
-
-                            <div class="flex items-center gap-4 p-5">
-
-                                <div class="h-12 w-12 rounded-xl bg-slate-100"></div>
-
-                                <div class="min-w-0 flex-1">
-
-                                    <p class="truncate text-sm font-semibold text-slate-900">
-                                        Premium Cotton Shirt
-                                    </p>
-
-                                    <p class="mt-1 text-xs text-slate-500">
-                                        SKU: SHIRT-001
-                                    </p>
-
-                                </div>
-
-                                <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">
-                                    3 left
-                                </span>
-
-                            </div>
-
-
-                            <div class="flex items-center gap-4 p-5">
-
-                                <div class="h-12 w-12 rounded-xl bg-slate-100"></div>
-
-                                <div class="min-w-0 flex-1">
-
-                                    <p class="truncate text-sm font-semibold text-slate-900">
-                                        Classic Sneakers
-                                    </p>
-
-                                    <p class="mt-1 text-xs text-slate-500">
-                                        SKU: SHOE-024
-                                    </p>
-
-                                </div>
-
-                                <span class="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-700">
-                                    7 left
-                                </span>
-
-                            </div>
-
-
-                            <div class="flex items-center gap-4 p-5">
-
-                                <div class="h-12 w-12 rounded-xl bg-slate-100"></div>
-
-                                <div class="min-w-0 flex-1">
-
-                                    <p class="truncate text-sm font-semibold text-slate-900">
-                                        Leather Wallet
-                                    </p>
-
-                                    <p class="mt-1 text-xs text-slate-500">
-                                        SKU: WALLET-018
-                                    </p>
-
-                                </div>
-
-                                <span class="rounded-full bg-yellow-100 px-3 py-1 text-xs font-bold text-yellow-700">
-                                    9 left
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- RECENT ACTIVITY -->
-                    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm">
-
-                        <div class="border-b border-slate-200 px-5 py-5">
-
-                            <h2 class="font-bold text-slate-900">
-                                Recent Activity
-                            </h2>
-
-                            <p class="mt-1 text-sm text-slate-500">
-                                Latest updates from your store
-                            </p>
-
-                        </div>
-
-
-                        <div class="divide-y divide-slate-100">
-
-
-                            <div class="flex gap-4 p-5">
-
-                                <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-green-100 text-green-700">
-
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            stroke-width="2"
-                                            d="M5 13l4 4L19 7"
-                                        />
-                                    </svg>
-
-                                </div>
-
-                                <div>
-
-                                    <p class="text-sm font-medium text-slate-900">
-                                        Order #ORD-PG6PIE5Z was delivered
-                                    </p>
-
-                                    <p class="mt-1 text-xs text-slate-500">
-                                        15 minutes ago
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="flex gap-4 p-5">
-
-                                <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700">
-
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            stroke-width="2"
-                                            d="M12 4v16m8-8H4"
-                                        />
-                                    </svg>
-
-                                </div>
-
-                                <div>
-
-                                    <p class="text-sm font-medium text-slate-900">
-                                        New product added
-                                    </p>
-
-                                    <p class="mt-1 text-xs text-slate-500">
-                                        Classic Sneakers · 1 hour ago
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="flex gap-4 p-5">
-
-                                <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-red-100 text-red-700">
-
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12"
-                                        />
-                                    </svg>
-
-                                </div>
-
-                                <div>
-
-                                    <p class="text-sm font-medium text-slate-900">
-                                        Order #ORD-JI0FZMBS cancelled
-                                    </p>
-
-                                    <p class="mt-1 text-xs text-slate-500">
-                                        2 hours ago
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="flex gap-4 p-5">
-
-                                <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-yellow-100 text-yellow-700">
-
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            stroke-width="2"
-                                            d="M12 9v3m0 4h.01M10.3 4.3L2.9 17a2 2 0 001.7 3h14.8a2 2 0 001.7-3L13.7 4.3a2 2 0 00-3.4 0z"
-                                        />
-                                    </svg>
-
-                                </div>
-
-                                <div>
-
-                                    <p class="text-sm font-medium text-slate-900">
-                                        Low stock alert
-                                    </p>
-
-                                    <p class="mt-1 text-xs text-slate-500">
-                                        Premium Cotton Shirt · 3 left
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
 
 
 @endsection

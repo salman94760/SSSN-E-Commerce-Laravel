@@ -1,4 +1,5 @@
 {{-- Feedback --}}
+
 <section class="relative py-20 bg-gray-50 overflow-hidden">
 
     {{-- Background Decoration --}}
@@ -488,18 +489,7 @@
                     {{-- Submit --}}
                     <button
                         type="submit"
-                        class="w-full
-                               h-13
-                               py-3.5
-                               rounded-xl
-                               bg-black
-                               text-white
-                               font-semibold
-                               hover:bg-gray-800
-                               transition
-                               flex items-center
-                               justify-center
-                               gap-2"
+                        class="w-full bg-[#292524] px-8 py-4 text-xs font-bold uppercase tracking-[2px] text-white transition hover:bg-[#59483a]"
                     >
 
                         Submit Feedback
@@ -507,6 +497,8 @@
                         <span>→</span>
 
                     </button>
+
+                    
 
 
                     <p class="text-center

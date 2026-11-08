@@ -1,4 +1,3 @@
-```blade
 @extends('layouts.admin.admin')
 
 @section('content')
@@ -32,7 +31,7 @@
                     </div>
 
                     <div>
-                        <p class="text-lg font-bold">Store Admin</p>
+                        <p class="text-lg font-bold">Store Admindfvdfv</p>
                         <p class="text-xs text-slate-400">Management Panel</p>
                     </div>
 
@@ -1556,4 +1555,3 @@
 </script>
 
 @endsection
-```

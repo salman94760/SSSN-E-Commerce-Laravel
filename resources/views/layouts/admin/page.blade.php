@@ -18,10 +18,10 @@
 
 
         <!-- TOPBAR -->
-        @include('layouts.admin.topbar')
+        {{-- @include('layouts.admin.topbar') --}}
 
 
         <!-- CONTENT -->
         @yield('adminPage')
 
-@include('layouts.admin.footer')
+{{--@include('layouts.admin.footer')--}}
