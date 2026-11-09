@@ -10,17 +10,43 @@ use Illuminate\Support\Facades\Mail;
 
 class AdminOrderController extends Controller
 {
-    public function orders()
-    {
-        $orders = Order::with([
-            'userInfo',
-            'items.product'
-        ])
-            ->latest()
-            ->paginate(15);
 
-        return view('dashboard.orders.index', compact('orders'));
-    }
+public function orders()
+{
+    // Orders Dashboard Cards Count
+    $ordersInfo = Order::selectRaw("
+        COUNT(*) AS total,
+
+        COALESCE(SUM(
+            CASE WHEN order_status = 'Pending'
+            THEN 1 ELSE 0 END
+        ), 0) AS pending,
+
+        COALESCE(SUM(
+            CASE WHEN order_status = 'Processing'
+            THEN 1 ELSE 0 END
+        ), 0) AS processing,
+
+        COALESCE(SUM(
+            CASE WHEN payment_status = 'Paid'
+            THEN 1 ELSE 0 END
+        ), 0) AS paid
+    ")->first();
+
+    // Orders List
+    $orders = Order::with([
+        'userInfo',
+        'items.product'
+    ])
+        ->latest()
+        ->paginate(15);
+
+    return view('dashboard.orders.index', compact(
+        'orders',
+        'ordersInfo'
+    ));
+}
+
     public function show($id)
     {
         $order = Order::with([

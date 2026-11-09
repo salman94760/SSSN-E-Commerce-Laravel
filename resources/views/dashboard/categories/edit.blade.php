@@ -1,190 +1,344 @@
+
 @extends('layouts.admin.page')
 
 @section('title', 'Edit Category')
 
 @section('adminPage')
 
-<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-    <div class="mx-auto max-w-7xl">
+@php
+    $cardClass = 'overflow-hidden rounded-[26px] border border-white/80 bg-white/65 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl';
 
-        <x-admin.sub-header :arr="['title'=>'Edit Category','subtitle'=>'Edit clothing category.']"/>
+    $labelClass = 'mb-2 block text-xs font-bold uppercase tracking-wide text-[#796a59]';
 
-        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-            <div class="overflow-x-auto">
-                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    $inputClass = 'w-full rounded-xl border border-[#e8dccb] bg-white/80 px-4 py-3 text-sm text-[#5d4936] outline-none transition duration-200 placeholder:text-[#b0a292] focus:border-[#a58a6d] focus:ring-2 focus:ring-[#e7d5bb]/50';
+@endphp
 
-                    <x-admin.view-table>
-    <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
+<div class="min-h-screen bg-[#f8f5ef] p-4 sm:p-6 lg:p-8">
 
-        <form
-            action="{{ route('categories.update',$category->id) }}"
-            method="POST"
-            enctype="multipart/form-data"
-        >
+    <div class="mx-auto max-w-7xl space-y-6">
 
-            @csrf
-            @method('PUT')
+        
 
-            <div class="p-6">
+        {{-- Main Card --}}
+        <div class="{{ $cardClass }}">
 
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {{-- Card Header --}}
+            <div class="border-b border-[#e8dccb]/60 bg-[#eee3d3]/30 px-6 py-5">
 
-                    {{-- Category Name --}}
+                <div class="flex flex-wrap items-center justify-between gap-3">
+
                     <div>
-                        <label
-                            for="name"
-                            class="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Category Name
-                            <span class="text-red-500">*</span>
-                        </label>
+                        <h2 class="text-lg font-bold text-[#5d4936]">
+                            Category Information
+                        </h2>
 
-                        <input
-                            type="text"
-                            name="name"
-                            id="name"
-                            value="{{ $category->name?$category->name:old('name') }}"
-                            placeholder="e.g. T-Shirt"
-                            class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
-                        >
-
-                        @error('name')
-                            <p class="mt-1 text-sm text-red-600">
-                                {{ $message }}
-                            </p>
-                        @enderror
+                        <p class="mt-1 text-xs text-[#a58a6d]">
+                            Edit category details, image and status.
+                        </p>
                     </div>
 
+                    {{-- Current Status --}}
+                    @if($category->status == 1)
 
-                    {{-- Slug --}}
-                    <div>
-                        <label
-                            for="slug"
-                            class="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Slug
-                            <span class="text-red-500">*</span>
-                        </label>
+                        <span class="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-xs font-semibold text-green-700">
+                            <span class="h-2 w-2 rounded-full bg-green-500"></span>
+                            Active
+                        </span>
 
-                        <input
-                            type="text"
-                            name="slug"
-                            id="slug"
-                            value="{{ $category->slug?$category->slug:old('slug') }}"
-                            placeholder="e.g. t-shirt"
-                            class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
-                        >
+                    @else
 
-                        @error('slug')
-                            <p class="mt-1 text-sm text-red-600">
-                                {{ $message }}
-                            </p>
-                        @enderror
-                    </div>
+                        <span class="inline-flex items-center gap-2 rounded-full bg-red-100 px-4 py-2 text-xs font-semibold text-red-700">
+                            <span class="h-2 w-2 rounded-full bg-red-500"></span>
+                            Inactive
+                        </span>
 
-
-                    {{-- Category Image --}}
-                    <div>
-                        <label
-                            for="image"
-                            class="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Category Image
-                            <span class="font-normal text-slate-400">
-                                (Optional)
-                            </span>
-                        </label>
-
-                        <input
-                            type="file"
-                            name="image"
-                            id="image"
-                            accept="image/jpeg,image/png,image/webp"
-                            class="block w-full rounded-lg border border-slate-300 bg-white text-sm text-slate-500 file:mr-4 file:border-0 file:bg-slate-800 file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-white hover:file:bg-slate-700"
-                        >
-
-                        @error('image')
-                            <p class="mt-1 text-sm text-red-600">
-                                {{ $message }}
-                            </p>
-                        @enderror
-                    </div>
-
-
-                    {{-- Status --}}
-                    <div>
-                        <label
-                            for="status"
-                            class="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Status
-                        </label>
-
-                        <select
-                            name="status"
-                            id="status"
-                            class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
-                        >
-
-                            <option value="1" {{ $category->status == 1 ? 'selected' : '' }}>
-                                Active
-                            </option>
-
-                            <option value="0" {{ $category->status === '0' ? 'selected' : '' }}>
-                                Inactive
-                            </option>
-
-                        </select>
-
-                        @error('status')
-                            <p class="mt-1 text-sm text-red-600">
-                                {{ $message }}
-                            </p>
-                        @enderror
-                    </div>
+                    @endif
 
                 </div>
 
             </div>
 
+            {{-- Edit Category Form --}}
+            <form
+                action="{{ route('categories.update', $category->id) }}"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+                @csrf
+                @method('PUT')
 
-            {{-- Footer --}}
-            <div class="flex items-center justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4">
+                <div class="p-5 sm:p-8">
 
-                <a
-                    href="{{ route('categories.index') }}"
-                    class="rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
-                >
-                    Cancel
-                </a>
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 
-                <button
-                    type="submit"
-                    class="rounded-lg bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
-                >
-                    Edit Category
-                </button>
+                        {{-- Category Name --}}
+                        <div>
 
-            </div>
+                            <label for="name" class="{{ $labelClass }}">
+                                Category Name
+                                <span class="text-red-500">*</span>
+                            </label>
 
-        </form>
+                            <input
+                                type="text"
+                                name="name"
+                                id="name"
+                                value="{{ old('name', $category->name) }}"
+                                placeholder="e.g. T-Shirt"
+                                class="{{ $inputClass }}"
+                                required
+                            >
 
-    </div>
-                    </x-admin.view-table>
-                   
+                            @error('name')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+
+                        </div>
+
+                        {{-- Slug --}}
+                        <div>
+
+                            <label for="slug" class="{{ $labelClass }}">
+                                Slug
+                                <span class="text-red-500">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="slug"
+                                id="slug"
+                                value="{{ old('slug', $category->slug) }}"
+                                placeholder="e.g. t-shirt"
+                                class="{{ $inputClass }}"
+                                required
+                            >
+
+                            @error('slug')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+
+                        </div>
+
+                        {{-- Category Image --}}
+                        <div>
+
+                            <label for="image" class="{{ $labelClass }}">
+                                Category Image
+                                <span class="font-normal text-[#a58a6d]">
+                                    (Optional)
+                                </span>
+                            </label>
+
+                            <input
+                                type="file"
+                                name="image"
+                                id="image"
+                                accept="image/jpeg,image/png,image/webp"
+                                class="block w-full rounded-xl border border-[#e8dccb] bg-white/80 text-sm text-[#796a59] file:mr-4 file:border-0 file:bg-[#6b5540] file:px-4 file:py-3 file:text-sm file:font-semibold file:text-white hover:file:bg-[#4e3c2b]"
+                            >
+
+                            <p class="mt-2 text-xs text-[#a58a6d]">
+                                Supported formats: JPG, PNG and WebP.
+                            </p>
+
+                            @error('image')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+
+                        </div>
+
+                        {{-- Status --}}
+                        <div>
+
+                            <label for="status" class="{{ $labelClass }}">
+                                Category Status
+                            </label>
+
+                            <select
+                                name="status"
+                                id="status"
+                                class="{{ $inputClass }}"
+                            >
+
+                                <option
+                                    value="1"
+                                    @selected(old('status', $category->status) == 1)
+                                >
+                                    Active
+                                </option>
+
+                                <option
+                                    value="0"
+                                    @selected(old('status', $category->status) == 0)
+                                >
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                            @error('status')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+
+                        </div>
+
                     </div>
+
+                    {{-- Existing Image & Preview --}}
+                    <div class="mt-8 border-t border-[#e8dccb]/70 pt-7">
+
+                        <h3 class="text-base font-bold text-[#5d4936]">
+                            Category Image Preview
+                        </h3>
+
+                        <p class="mt-1 text-xs text-[#a58a6d]">
+                            View your current image or preview a newly selected image.
+                        </p>
+
+                        <div class="mt-5 flex flex-wrap gap-6">
+
+                            {{-- Existing Image --}}
+                            @if(!empty($category->image))
+
+                                <div>
+
+                                    <p class="{{ $labelClass }}">
+                                        Current Image
+                                    </p>
+
+                                    <div class="rounded-2xl border border-[#e8dccb] bg-[#eee3d3]/30 p-2">
+
+                                        <img
+                                            src="{{ asset('storage/' . $category->image) }}"
+                                            alt="{{ $category->name }}"
+                                            class="h-36 w-36 rounded-xl object-cover"
+                                        >
+
+                                    </div>
+
+                                </div>
+
+                            @endif
+
+                            {{-- New Image Preview --}}
+                            <div id="image-preview-wrapper" class="hidden">
+
+                                <p class="{{ $labelClass }}">
+                                    New Image Preview
+                                </p>
+
+                                <div class="rounded-2xl border border-[#e8dccb] bg-[#eee3d3]/30 p-2">
+
+                                    <img
+                                        id="image-preview"
+                                        alt="New Category Image"
+                                        class="h-36 w-36 rounded-xl object-cover"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                            {{-- No Image Message --}}
+                            @if(empty($category->image))
+
+                                <div
+                                    id="no-image-message"
+                                    class="flex h-36 w-36 items-center justify-center rounded-2xl border border-dashed border-[#e8dccb] bg-[#eee3d3]/30 text-center text-xs text-[#938778]"
+                                >
+                                    No image uploaded
+                                </div>
+
+                            @endif
+
+                        </div>
+
+                    </div>
+
                 </div>
-            </div>
+
+                {{-- Footer Actions --}}
+                <div class="flex flex-col-reverse gap-3 border-t border-[#e8dccb]/70 bg-[#eee3d3]/25 px-6 py-5 sm:flex-row sm:items-center sm:justify-end">
+
+                    {{-- Cancel --}}
+                    <a
+                        href="{{ route('categories.index') }}"
+                        class="inline-flex items-center justify-center rounded-xl border border-[#e8dccb] bg-white/80 px-6 py-3 text-sm font-semibold text-[#6b5540] transition duration-300 hover:bg-[#eee3d3]"
+                    >
+                        Cancel
+                    </a>
+
+                    {{-- Update --}}
+                    <button
+                        type="submit"
+                        class="inline-flex items-center justify-center rounded-xl bg-[#6b5540] px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#4e3c2b]"
+                    >
+                        Update Category
+                    </button>
+
+                </div>
+
+            </form>
+
         </div>
+
     </div>
+
 </div>
+
+{{-- Image Preview Script --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const imageInput = document.getElementById('image');
+    const previewWrapper = document.getElementById('image-preview-wrapper');
+    const previewImage = document.getElementById('image-preview');
+    const noImageMessage = document.getElementById('no-image-message');
+
+    let currentImageUrl = null;
+
+    imageInput.addEventListener('change', function () {
+
+        const file = this.files[0];
+
+        if (currentImageUrl) {
+            URL.revokeObjectURL(currentImageUrl);
+            currentImageUrl = null;
+        }
+
+        if (!file || !file.type.startsWith('image/')) {
+
+            previewWrapper.classList.add('hidden');
+            previewImage.removeAttribute('src');
+
+            if (noImageMessage) {
+                noImageMessage.classList.remove('hidden');
+            }
+
+            return;
+        }
+
+        currentImageUrl = URL.createObjectURL(file);
+
+        previewImage.src = currentImageUrl;
+
+        previewWrapper.classList.remove('hidden');
+
+        if (noImageMessage) {
+            noImageMessage.classList.add('hidden');
+        }
+
+    });
+
+});
+</script>
+
 @endsection
-
-
-
-
-
-
-
-
-

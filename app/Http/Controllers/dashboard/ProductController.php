@@ -24,51 +24,91 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        $categories = Category::all();
-        $brands = Brand::all();
-        $colors = Color::all();
-        $sizes = Size::all();
-        $query = Product::query();
-        $userid = Auth::id();
-        if ($request->filled('search')) {
-            $query->where('name', 'LIKE', '%' . $request->search . '%');
-        }
-        if ($request->filled('category_id')) {
-            $query->where('category_id', '=', $request->category_id);
-        }
 
-        if ($request->filled('brand_id')) {
-            $query->where('brand_id', '=', $request->brand_id);
-        }
+public function index(Request $request)
+{
+    $categories = Category::all();
+    $brands = Brand::all();
+    $colors = Color::all();
+    $sizes = Size::all();
 
-        // if($request->filled('size_id')){
-        //     $query->where('size_id','=',$request->size_id);
-        // }
+    $userid = Auth::id();
 
-        // if($request->filled('color_id')){
-        //     $query->where('color_id','=',$request->color_id);
-        // }
+    // Products Query
+    $query = Product::with([
+        'users',
+        'category',
+        'brand',
+        'images',
+        'colors',
+        'sizes',
+        'tags'
+    ]);
 
-        if ($request->filled('status')) {
-            $query->where('status', '=', $request->status);
-        }
-
-        $products = $query->paginate(5)->withQueryString();
-
-
-        $productsInfo = Product::selectRaw('
-    count(*) total,
-    sum(status = 1) active,
-    sum(status = 2) out_stock,
-    sum(status = 3) stock
-')->first();
-
-
-
-        return view('dashboard.products.index', compact('categories', 'brands', 'products', 'userid', 'colors', 'sizes', 'productsInfo'));
+    // Search Filter
+    if ($request->filled('search')) {
+        $query->where('name', 'LIKE', '%' . $request->search . '%');
     }
+
+    // Category Filter
+    if ($request->filled('category_id')) {
+        $query->where('category_id', $request->category_id);
+    }
+
+    // Brand Filter
+    if ($request->filled('brand_id')) {
+        $query->where('brand_id', $request->brand_id);
+    }
+
+    // Status Filter
+    if ($request->filled('status') && $request->status !== 'All') {
+
+        switch ($request->status) {
+
+            case 'Active':
+                $query->where('status', 1);
+                break;
+
+            case 'Inactive':
+                $query->where('status', 0);
+                break;
+
+            case 'Stock':
+                $query->where('stock', '>', 0);
+                break;
+
+            case 'OutStock':
+                $query->where('stock', '<=', 0);
+                break;
+        }
+    }
+
+    // Pagination
+    $products = $query
+        ->latest()
+        ->paginate(5)
+        ->withQueryString();
+
+    // Dashboard Cards Statistics
+    $productsInfo = Product::selectRaw('
+        COUNT(*) AS total,
+        COALESCE(SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END), 0) AS active,
+        COALESCE(SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END), 0) AS inactive,
+        COALESCE(SUM(CASE WHEN stock > 0 THEN 1 ELSE 0 END), 0) AS stock,
+        COALESCE(SUM(CASE WHEN stock <= 0 THEN 1 ELSE 0 END), 0) AS out_stock
+    ')->first();
+
+    return view('dashboard.products.index', compact(
+        'categories',
+        'brands',
+        'products',
+        'userid',
+        'colors',
+        'sizes',
+        'productsInfo'
+    ));
+}
+
 
     /**
      * Show the form for creating a new resource.

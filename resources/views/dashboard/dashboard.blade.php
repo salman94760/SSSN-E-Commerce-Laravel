@@ -1,43 +1,23 @@
-
 @extends('layouts.admin.page')
 @section('adminPage')
 
 @php
-    // Demo fallback data - replace with controller data
-    $totalProducts = $totalProducts ?? 248;
-    $totalCategories = $totalCategories ?? 18;
-    $totalOrders = $totalOrders ?? 1256;
     $totalRevenue = $totalRevenue ?? 485600;
-
     $recentOrders = $recentOrders ?? collect();
     $topProducts = $topProducts ?? collect();
-
     $head = ['Order ID','Customer','Date','Amount','Status'];
 @endphp
 
 <div class="min-h-screen bg-[#f4f0ea] text-[#39332d]">
-
     <div class="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
-
-        {{-- HEADER --}}
         <div class="mb-10 flex flex-wrap items-center justify-between gap-5">
-
-            <div>
-                <p class="text-[10px] font-bold uppercase tracking-[4px] text-[#aa8d6b]">
-                    SSSN FASHION / MANAGEMENT
-                </p>
-
-                <h1 class="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-                    Dashboard
-                </h1>
-
-                <p class="mt-2 text-sm text-[#958c81]">
-                    Welcome back! Here's what's happening with your store.
-                </p>
-            </div>
+            <x-admin.sub-header :arr="[
+            'eyebrow' => 'SSSN FASHION / MANAGEMENT',
+            'title' => 'Dashboard',
+            'subtitle' => 'Welcome back! Here\'s what\'s happening with your store.',]"
+            />
 
             <div class="flex items-center gap-3">
-
                 <div class="hidden rounded-2xl border border-white/80 bg-white/60 px-5 py-3 shadow-sm backdrop-blur-xl sm:block">
                     <p class="text-[9px] font-bold uppercase tracking-[2px] text-[#aa8d6b]">
                         Today
@@ -50,117 +30,42 @@
                 <button class="flex h-12 w-12 items-center justify-center rounded-2xl border border-white bg-white/70 shadow-lg shadow-[#8f7655]/10 transition hover:-translate-y-1">
                     <span class="text-lg">♙</span>
                 </button>
-
             </div>
-
         </div>
 
-
-        {{-- STATISTICS --}}
         <div class="grid grid-cols-2 gap-4 xl:grid-cols-4 xl:gap-6">
+            <x-admin.view-cards 
+            :arr="[
+                'title' => 'Products',
+                'icon' => '♧',
+                'count' => $totalProducts,
+                'text' => 'Total products in store',
+            ]" />
 
-            {{-- PRODUCTS --}}
-            <div class="group relative overflow-hidden rounded-[26px] border border-white/80 bg-white/65 p-5 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:shadow-[0_25px_55px_rgba(100,75,45,0.13)] sm:p-7">
+            <x-admin.view-cards 
+            :arr="[
+                'title' => 'Categories',
+                'icon' => '▦',
+                'count' => $totalCategories,
+                'text' => 'Total categories',
+            ]" />
 
-                <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#e7d5bb]/40 blur-2xl transition group-hover:scale-150"></div>
-
-                <div class="relative flex items-center justify-between">
-                    <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#938778]">
-                        Products
-                    </p>
-
-                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eee3d3] text-xl">
-                        ♧
-                    </div>
-                </div>
-
-                <h2 class="relative mt-6 text-3xl font-semibold tracking-tight">
-                    {{ number_format($totalProducts) }}
-                </h2>
-
-                <p class="relative mt-2 text-xs text-[#a58a6d]">
-                    Total products in store
-                </p>
-
-            </div>
-
-
-            {{-- CATEGORIES --}}
-            <div class="group relative overflow-hidden rounded-[26px] border border-white/80 bg-white/65 p-5 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:shadow-[0_25px_55px_rgba(100,75,45,0.13)] sm:p-7">
-
-                <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#d9e0d4]/50 blur-2xl transition group-hover:scale-150"></div>
-
-                <div class="relative flex items-center justify-between">
-                    <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#938778]">
-                        Categories
-                    </p>
-
-                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#e4e9df] text-xl">
-                        ◈
-                    </div>
-                </div>
-
-                <h2 class="relative mt-6 text-3xl font-semibold tracking-tight">
-                    {{ number_format($totalCategories) }}
-                </h2>
-
-                <p class="relative mt-2 text-xs text-[#a58a6d]">
-                    Active product categories
-                </p>
-
-            </div>
-
-
-            {{-- ORDERS --}}
-            <div class="group relative overflow-hidden rounded-[26px] border border-white/80 bg-white/65 p-5 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:shadow-[0_25px_55px_rgba(100,75,45,0.13)] sm:p-7">
-
-                <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#ead9d9]/50 blur-2xl transition group-hover:scale-150"></div>
-
-                <div class="relative flex items-center justify-between">
-                    <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#938778]">
-                        Orders
-                    </p>
-
-                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f0e3e1] text-xl">
-                        ♧
-                    </div>
-                </div>
-
-                <h2 class="relative mt-6 text-3xl font-semibold tracking-tight">
-                    {{ number_format($totalOrders) }}
-                </h2>
-
-                <p class="relative mt-2 text-xs text-[#a58a6d]">
-                    Total customer orders
-                </p>
-
-            </div>
-
-
-            {{-- REVENUE --}}
-            <div class="group relative overflow-hidden rounded-[26px] border border-white/80 bg-white/65 p-5 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:shadow-[0_25px_55px_rgba(100,75,45,0.13)] sm:p-7">
-
-                <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#e8d9b9]/50 blur-2xl transition group-hover:scale-150"></div>
-
-                <div class="relative flex items-center justify-between">
-                    <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#938778]">
-                        Revenue
-                    </p>
-
-                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f0e6d1] text-xl">
-                        ₹
-                    </div>
-                </div>
-
-                <h2 class="relative mt-6 text-3xl font-semibold tracking-tight">
-                    ₹{{ number_format($totalRevenue) }}
-                </h2>
-
-                <p class="relative mt-2 text-xs text-[#a58a6d]">
-                    Total store revenue
-                </p>
-
-            </div>
+            <x-admin.view-cards 
+            :arr="[
+                'title' => 'Orders',
+                'icon' => '🛒',
+                'count' => $totalOrders,
+                'text' => 'Total orders received',
+            ]" />
+      
+            <x-admin.view-cards 
+            :arr="[
+                'title' => 'Revenue',
+                'icon' => '₹',
+                'currency' => '₹',
+                'count' => $totalRevenue,
+                'text' => 'Total store revenue',
+            ]" />
 
         </div>
 
@@ -225,7 +130,7 @@
                     </a>
 
 
-                    <a href="{{ url('/admin/categories') }}"
+                    <a href="{{ url('/categories') }}"
                        class="group flex items-center justify-between rounded-2xl border border-[#eae1d5] bg-white/70 p-4 transition duration-300 hover:-translate-y-1 hover:border-[#c8ad89] hover:bg-[#f7f1e8]">
 
                         <div class="flex items-center gap-3">
@@ -241,7 +146,7 @@
                     </a>
 
 
-                    <a href="{{ url('/admin/orders') }}"
+                    <a href="{{ url('/orders') }}"
                        class="group flex items-center justify-between rounded-2xl border border-[#eae1d5] bg-white/70 p-4 transition duration-300 hover:-translate-y-1 hover:border-[#c8ad89] hover:bg-[#f7f1e8]">
 
                         <div class="flex items-center gap-3">
@@ -257,7 +162,7 @@
                     </a>
 
 
-                    <a href="{{ url('/admin/customers') }}"
+                    <a href="{{ url('/customers') }}"
                        class="group flex items-center justify-between rounded-2xl border border-[#eae1d5] bg-white/70 p-4 transition duration-300 hover:-translate-y-1 hover:border-[#c8ad89] hover:bg-[#f7f1e8]">
 
                         <div class="flex items-center gap-3">

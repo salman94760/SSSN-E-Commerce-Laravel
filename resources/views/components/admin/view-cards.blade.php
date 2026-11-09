@@ -1,127 +1,26 @@
-                <!-- ================================================= -->
-                <!-- STAT CARDS -->
-                <!-- ================================================= -->
 
-                <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+@props(['arr' => []])
 
+<div class="group relative overflow-hidden rounded-[26px] border border-white/80 bg-white/65 p-5 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl transition duration-500 hover:-translate-y-2 hover:shadow-[0_25px_55px_rgba(100,75,45,0.13)] sm:p-7">
 
-                    <!-- Card -->
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#e7d5bb]/40 blur-2xl transition group-hover:scale-150"></div>
 
-                        <div class="flex items-center justify-between">
+    <div class="relative flex items-center justify-between">
+        <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#938778]">
+            {{ $arr['title'] ?? '' }}
+        </p>
 
-                            <div>
-                                <p class="text-sm font-medium text-slate-500">
-                                    Total Products
-                                </p>
+        <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#eee3d3] text-xl">
+            {{ $arr['icon'] ?? '' }}
+        </div>
+    </div>
 
-                                <p class="mt-2 text-2xl font-extrabold text-slate-900">
-                                    {{$arr['productsInfo']['total']}}
-                                </p>
-                            </div>
+    <h2 class="relative mt-6 text-3xl font-semibold tracking-tight">
+        {{ number_format($arr['count'] ?? 0) }}
+    </h2>
 
-                            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100">
+    <p class="relative mt-2 text-xs text-[#a58a6d]">
+        {{ $arr['text'] ?? '' }}
+    </p>
 
-                                <svg
-                                    class="h-5 w-5 text-slate-700"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-width="1.8"
-                                        d="M20 7l-8-4-8 4m16 0v10l-8 4-8-4V7m16 0l-8 4m0 0L4 7m8 4v10"
-                                    />
-                                </svg>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Card -->
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
-                        <div class="flex items-center justify-between">
-
-                            <div>
-
-                                <p class="text-sm font-medium text-slate-500">
-                                    Active Products
-                                </p>
-
-                                <p class="mt-2 text-2xl font-extrabold text-green-600">
-                                    {{$arr['productsInfo']['active']}}
-                                </p>
-
-                            </div>
-
-                            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50">
-
-                                <span class="h-3 w-3 rounded-full bg-green-500"></span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Card -->
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
-                        <div class="flex items-center justify-between">
-
-                            <div>
-
-                                <p class="text-sm font-medium text-slate-500">
-                                    Out of Stock
-                                </p>
-
-                                <p class="mt-2 text-2xl font-extrabold text-red-600">
-                                    {{$arr['productsInfo']['out_stock']}}
-                                </p>
-
-                            </div>
-
-                            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50">
-
-                                <span class="h-3 w-3 rounded-full bg-red-500"></span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Card -->
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
-                        <div class="flex items-center justify-between">
-
-                            <div>
-
-                                <p class="text-sm font-medium text-slate-500">
-                                    Low Stock
-                                </p>
-
-                                <p class="mt-2 text-2xl font-extrabold text-yellow-600">
-                                    {{$arr['productsInfo']['stock']}}
-                                </p>
-
-                            </div>
-
-                            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-yellow-50">
-
-                                <span class="h-3 w-3 rounded-full bg-yellow-500"></span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
+</div>

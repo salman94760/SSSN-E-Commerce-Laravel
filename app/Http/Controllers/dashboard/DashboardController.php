@@ -22,11 +22,12 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $allUsers = User::where('role', 'customer')->count();
-        $products = Product::count();
-        $categories = Category::count();
+        $totalProducts = Product::count();
+        $totalCategories = Category::count();
         $brands = Brand::count();
         $colors = Color::count();
         $sizes = Size::count();
+        $totalOrders = Order::count();
         $allSellers = User::where('role', 'seller')->count();
         $ordersCount = Order::count();
         $couponsCount = 0;
@@ -39,7 +40,7 @@ class DashboardController extends Controller
             ->pluck('total', 'payment_method');
 
         if ($user->role === 'admin' || $user->role === 'seller') {
-            return view('dashboard/dashboard', compact('allUsers', 'allSellers', 'products', 'categories', 'brands', 'colors', 'sizes', 'ordersCount', 'couponsCount', 'reviewsCount', 'toalPayments', 'totalSales', 'payments'));
+            return view('dashboard/dashboard', compact('allUsers', 'allSellers', 'totalProducts', 'totalCategories', 'totalOrders', 'brands', 'colors', 'sizes', 'ordersCount', 'couponsCount', 'reviewsCount', 'toalPayments', 'totalSales', 'payments'));
         }
         return view('/dashboard/customer-dashboard');
     }

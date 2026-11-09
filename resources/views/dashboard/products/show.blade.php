@@ -1,154 +1,358 @@
+
 @extends('layouts.admin.page')
 
-@section('title', 'Products Show')
+@section('title', 'Product Details')
 
 @section('adminPage')
 
-<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-    <div class="mx-auto max-w-7xl">
+@php
+    $mainImage = $product->images->first()?->name ?? $product->image;
 
-        <x-admin.sub-header :arr="['title'=>'Product Details','subtitle'=>'View product information']"/>
+    $cardClass = 'overflow-hidden rounded-[26px] border border-white/80 bg-white/65 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl';
 
-            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                <div class="overflow-x-auto">
-                    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                        <x-admin.view-table>
-                            <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                                <div class="grid grid-cols-1 md:grid-cols-3">
-                                    <div class="flex items-center justify-center border-b border-slate-200 bg-slate-50 p-8 md:border-b-0 md:border-r">
+    $labelClass = 'text-[10px] font-bold uppercase tracking-[1.5px] text-[#938778]';
+@endphp
 
-                                    @if(!empty($product->images->first()))
-                                    <img src="{{ asset('storage/' . $product->images->first()->name) }}" alt="{{ $product->name }}" class="h-72 w-72 rounded-xl object-cover">
-                                    @else
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="h-72 w-72 rounded-xl object-cover">
-                                    @endif
-                                    </div>
+<div class="min-h-screen bg-[#f8f5ef] p-4 sm:p-6 lg:p-8">
 
-                                    <div class="p-8 md:col-span-2">
-                                        <h2 class="text-2xl font-bold text-slate-800">
-                                            {{ $product->name }}
-                                        </h2>
+    <div class="mx-auto max-w-7xl space-y-6">
 
-                                        <p class="mt-1 text-sm text-slate-400">
-                                            {{ $product->slug }}
-                                        </p>
+        {{-- Page Header --}}
+        <x-admin.sub-header :arr="[
+            'title' => 'Product Details',
+            'subtitle' => 'View product information'
+        ]" />
 
-                                        <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                                            <div>
-                                                <p class="text-xs font-medium uppercase tracking-wide text-slate-400">
-                                                    Category
-                                                </p>
+        {{-- Product Details Card --}}
+        <div class="{{ $cardClass }}">
 
-                                                <p class="mt-1 font-medium text-slate-800">
-                                                    {{ $product->category->name ?? 'N/A' }}
-                                                </p>
-                                            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3">
 
-                                            <div>
+                {{-- LEFT: Product Image --}}
+                <div class="relative flex items-center justify-center border-b border-[#e8dccb] bg-[#eee3d3]/40 p-6 sm:p-8 lg:border-b-0 lg:border-r">
 
-                                                <p class="text-xs font-medium uppercase tracking-wide text-slate-400">Brand</p>
+                    <div class="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-[#e7d5bb]/50 blur-3xl"></div>
 
-                                                <p class="mt-1 font-medium text-slate-800">
-                                                    {{ $product->brand->name ?? 'N/A' }}
-                                                </p>
-                                            </div>
+                    <div class="relative w-full max-w-[340px]">
 
-                                             <div>
-                                                <p class="text-xs font-medium uppercase tracking-wide text-slate-400">Colors</p>
-                                                @if(!empty($product->colors))
-                                                @foreach($product->colors as $color)
-                                                    <p class="mt-1 font-medium text-slate-800">
-                                                    {{ $color->name ?? 'N/A' }}
-                                                    </p>
-                                                @endforeach
-                                                @endif
-                                            </div>
+                        @if($mainImage)
 
-                                            <div>
-                                                <p class="text-xs font-medium uppercase tracking-wide text-slate-400">Sizes</p>
-                                                @if(!empty($product->sizes))
-                                                @foreach($product->sizes as $size)
-                                                    <p class="mt-1 font-medium text-slate-800">
-                                                    {{ $size->name ?? 'N/A' }} - ₹{{ $size->pivot->price ?? 'N/A' }} 
-                                                    </p>
-                                                @endforeach
-                                                @endif
-                                            </div>
+                            <img
+                                src="{{ asset('storage/' . $mainImage) }}"
+                                alt="{{ $product->name }}"
+                                class="aspect-square w-full rounded-[24px] border border-white/80 bg-white object-cover shadow-[0_15px_35px_rgba(100,75,45,0.12)]"
+                            >
 
-                                            <div>
-                                                <p class="text-xs font-medium uppercase tracking-wide text-slate-400">Price</p>
+                        @else
 
-                                                <p class="mt-1 font-semibold text-slate-800">
-                                                    ₹{{ number_format($product->price, 2) }}
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <p class="text-xs font-medium uppercase tracking-wide text-slate-400">Sale Price</p>
-
-                                                <p class="mt-1 font-semibold text-green-600">
-                                                    @if($product->sale_price)
-                                                        ₹{{ number_format($product->sale_price, 2) }}
-                                                    @else
-                                                    —
-                                                    @endif
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <p class="text-xs font-medium uppercase tracking-wide text-slate-400">Stock</p>
-                                                <p class="mt-1 font-semibold text-slate-800">
-                                                    {{ $product->stock }}
-                                                </p>
-                                            </div>
-
-                                            <div>
-                                                <p class="text-xs font-medium uppercase tracking-wide text-slate-400">Status</p>
-                                                <div class="mt-1">
-                                                    @if($product->status)
-                                                    <span class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">Active</span>
-
-                                                    @else
-                                                    <span class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
-                                                        Inactive
-                                                    </span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="mt-7 border-t border-slate-200 pt-6">
-                                            <p class="text-xs font-medium uppercase tracking-wide text-slate-400">Description</p>
-                                            <p class="mt-2 text-sm leading-6 text-slate-600">
-                                                {{ $product->description ?: 'No description available.' }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-6 py-4">
-                                    <div class="flex gap-2">
-                                        <a href="{{ route('products.edit', $product->id) }}" class="rounded-lg bg-slate-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-700">Edit
-                                        </a>
-
-                                        <a href="{{ route('products.index') }}" class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50">Back</a>
-                                    </div>
-
-                                    <div>
-                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?')">
-                                            @csrf
-                                            @method('DELETE')
-
-                                            <button type="submit" class="rounded-lg border border-red-200 bg-white px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50">Delete Product</button>
-                                        </form>
-                                    </div>
-                                </div>
+                            <div class="flex aspect-square w-full items-center justify-center rounded-[24px] border border-[#e8dccb] bg-white/60 text-6xl text-[#a58a6d]">
+                                ♧
                             </div>
-                        </x-admin.view-table>
+
+                        @endif
+
+                        {{-- Stock Badge --}}
+                        <div class="absolute bottom-4 left-4">
+
+                            @if($product->stock > 0)
+
+                                <span class="inline-flex rounded-full bg-green-100/95 px-4 py-2 text-xs font-bold text-green-700 shadow-sm">
+                                    {{ $product->stock }} In Stock
+                                </span>
+
+                            @else
+
+                                <span class="inline-flex rounded-full bg-red-100/95 px-4 py-2 text-xs font-bold text-red-700 shadow-sm">
+                                    Out of Stock
+                                </span>
+
+                            @endif
+
+                        </div>
+
                     </div>
+
                 </div>
+
+                {{-- RIGHT: Product Information --}}
+                <div class="p-6 sm:p-8 lg:col-span-2">
+
+                    {{-- Product Title --}}
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+
+                        <div class="min-w-0">
+
+                            <h2 class="text-2xl font-bold tracking-tight text-[#5d4936] sm:text-3xl">
+                                {{ $product->name }}
+                            </h2>
+
+                            <p class="mt-2 break-all text-sm text-[#a58a6d]">
+                                {{ $product->slug }}
+                            </p>
+
+                            <p class="mt-2 text-xs font-medium text-[#938778]">
+                                Product ID: #{{ $product->id }}
+                            </p>
+
+                        </div>
+
+                        {{-- Status --}}
+                        <div class="shrink-0">
+
+                            @if($product->status == 1)
+
+                                <span class="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-xs font-bold text-green-700">
+
+                                    <span class="h-2 w-2 rounded-full bg-green-500"></span>
+                                    Active
+
+                                </span>
+
+                            @else
+
+                                <span class="inline-flex items-center gap-2 rounded-full bg-red-100 px-4 py-2 text-xs font-bold text-red-700">
+
+                                    <span class="h-2 w-2 rounded-full bg-red-500"></span>
+                                    Inactive
+
+                                </span>
+
+                            @endif
+
+                        </div>
+
+                    </div>
+
+                    {{-- Product Price --}}
+                    <div class="mt-6 rounded-2xl border border-[#e8dccb]/70 bg-[#eee3d3]/40 p-5">
+
+                        <p class="{{ $labelClass }}">
+                            Product Price
+                        </p>
+
+                        @if($product->sale_price !== null)
+
+                            <div class="mt-2 flex flex-wrap items-center gap-3">
+
+                                <span class="text-3xl font-bold text-[#6b5540]">
+                                    ₹{{ number_format($product->sale_price, 2) }}
+                                </span>
+
+                                <span class="text-base text-[#a58a6d] line-through">
+                                    ₹{{ number_format($product->price, 2) }}
+                                </span>
+
+                            </div>
+
+                            <p class="mt-2 text-xs font-medium text-green-700">
+                                Sale Price
+                            </p>
+
+                        @else
+
+                            <p class="mt-2 text-3xl font-bold text-[#6b5540]">
+                                ₹{{ number_format($product->price, 2) }}
+                            </p>
+
+                        @endif
+
+                    </div>
+
+                    {{-- Product Attributes --}}
+                    <div class="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2">
+
+                        {{-- Category --}}
+                        <div>
+                            <p class="{{ $labelClass }}">Category</p>
+
+                            <p class="mt-2 text-sm font-semibold text-[#5d4936]">
+                                {{ $product->category?->name ?? 'N/A' }}
+                            </p>
+                        </div>
+
+                        {{-- Brand --}}
+                        <div>
+                            <p class="{{ $labelClass }}">Brand</p>
+
+                            <p class="mt-2 text-sm font-semibold text-[#5d4936]">
+                                {{ $product->brand?->name ?? 'N/A' }}
+                            </p>
+                        </div>
+
+                        {{-- Colors --}}
+                        <div>
+                            <p class="{{ $labelClass }}">Available Colors</p>
+
+                            <div class="mt-3 flex flex-wrap gap-2">
+
+                                @forelse($product->colors as $color)
+
+                                    <span class="inline-flex rounded-lg bg-[#eee3d3] px-3 py-1.5 text-xs font-semibold text-[#6b5540]">
+                                        {{ $color->name }}
+                                    </span>
+
+                                @empty
+
+                                    <span class="text-sm text-[#a58a6d]">
+                                        N/A
+                                    </span>
+
+                                @endforelse
+
+                            </div>
+                        </div>
+
+                        {{-- Sizes --}}
+                        <div>
+                            <p class="{{ $labelClass }}">Available Sizes</p>
+
+                            <div class="mt-3 flex flex-wrap gap-2">
+
+                                @forelse($product->sizes as $size)
+
+                                    <span class="inline-flex rounded-lg border border-[#e8dccb] bg-white/70 px-3 py-1.5 text-xs font-semibold text-[#6b5540]">
+
+                                        {{ $size->name }}
+
+                                        @if($size->pivot?->price !== null)
+                                            - ₹{{ number_format($size->pivot->price, 2) }}
+                                        @endif
+
+                                    </span>
+
+                                @empty
+
+                                    <span class="text-sm text-[#a58a6d]">
+                                        N/A
+                                    </span>
+
+                                @endforelse
+
+                            </div>
+                        </div>
+
+                        {{-- Stock --}}
+                        <div>
+                            <p class="{{ $labelClass }}">Stock Quantity</p>
+
+                            <p class="mt-2 text-sm font-bold {{ $product->stock > 0 ? 'text-green-700' : 'text-red-600' }}">
+                                {{ $product->stock ?? 0 }}
+                            </p>
+                        </div>
+
+                        {{-- Product Status --}}
+                        <div>
+                            <p class="{{ $labelClass }}">Product Status</p>
+
+                            <p class="mt-2 text-sm font-semibold text-[#5d4936]">
+                                {{ $product->status == 1 ? 'Active' : 'Inactive' }}
+                            </p>
+                        </div>
+
+                    </div>
+
+                    {{-- Description --}}
+                    <div class="mt-8 border-t border-[#e8dccb]/70 pt-6">
+
+                        <p class="{{ $labelClass }}">
+                            Product Description
+                        </p>
+
+                        <p class="mt-3 whitespace-pre-line text-sm leading-7 text-[#796a59]">{{ $product->description ?: 'No description available.' }}</p>
+
+                    </div>
+
+                </div>
+
             </div>
+
+            {{-- Footer Actions --}}
+            <div class="flex flex-col gap-4 border-t border-[#e8dccb]/70 bg-[#eee3d3]/25 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+
+                <div class="flex flex-wrap items-center gap-3">
+
+                    {{-- Back --}}
+                    <a
+                        href="{{ route('products.index') }}"
+                        class="inline-flex items-center justify-center rounded-xl border border-[#e8dccb] bg-white/70 px-5 py-2.5 text-sm font-semibold text-[#6b5540] transition duration-300 hover:bg-[#eee3d3]"
+                    >
+                        &larr; Back
+                    </a>
+
+                    {{-- Edit --}}
+                    <a
+                        href="{{ route('products.edit', $product->id) }}"
+                        class="inline-flex items-center justify-center rounded-xl bg-[#6b5540] px-5 py-2.5 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#4e3c2b]"
+                    >
+                        ✎ Edit Product
+                    </a>
+
+                </div>
+
+                {{-- Delete --}}
+                <form
+                    action="{{ route('products.destroy', $product->id) }}"
+                    method="POST"
+                    onsubmit="return confirm('Are you sure you want to delete this product?')"
+                >
+                    @csrf
+                    @method('DELETE')
+
+                    <button
+                        type="submit"
+                        class="inline-flex w-full items-center justify-center rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-semibold text-red-600 transition duration-300 hover:bg-red-100 sm:w-auto"
+                    >
+                        🗑 Delete Product
+                    </button>
+
+                </form>
+
+            </div>
+
         </div>
+
+        {{-- Additional Product Images --}}
+        @if($product->images->count() > 1)
+
+            <div class="{{ $cardClass }}">
+
+                <div class="border-b border-[#e8dccb]/60 bg-[#eee3d3]/30 px-6 py-5">
+
+                    <h2 class="text-base font-bold text-[#5d4936]">
+                        Product Gallery
+                    </h2>
+
+                    <p class="mt-1 text-xs text-[#a58a6d]">
+                        Additional product images
+                    </p>
+
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 p-6 sm:grid-cols-3 lg:grid-cols-5">
+
+                    @foreach($product->images as $image)
+
+                        <div class="group overflow-hidden rounded-2xl border border-[#e8dccb] bg-[#eee3d3]/30">
+
+                            <img
+                                src="{{ asset('storage/' . $image->name) }}"
+                                alt="{{ $product->name }}"
+                                loading="lazy"
+                                class="aspect-square w-full object-cover transition duration-500 group-hover:scale-110"
+                            >
+
+                        </div>
+
+                    @endforeach
+
+                </div>
+
+            </div>
+
+        @endif
+
     </div>
+
 </div>
+
 @endsection

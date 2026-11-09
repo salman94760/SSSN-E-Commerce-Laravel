@@ -143,21 +143,44 @@
 
     <div class="shrink-0 border-t border-[#eee8df] p-3">
         <div class="flex items-center gap-2">
-            <div class="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-[#eee8df] bg-[#faf8f5] p-2">
-                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#a58a6d] text-sm font-semibold text-white">
-                    {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
-                </div>
+            
+<a href="{{ route('admin.profile.edit') }}"
+   class="group flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-[#eee8df] bg-[#faf8f5] p-2 transition duration-200 hover:border-[#d7c4ac] hover:bg-[#eee3d3]/60">
 
-                <div class="min-w-0 flex-1">
-                    <p class="truncate text-xs font-semibold text-[#3f3932]">
-                        {{ auth()->user()->name ?? 'Admin' }}
-                    </p>
+    <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#a58a6d] text-sm font-semibold text-white">
 
-                    <p class="truncate text-[10px] text-[#92877b]">
-                        {{ auth()->user()->email ?? 'admin@example.com' }}
-                    </p>
-                </div>
-            </div>
+        @if(auth()->user()?->profile_photo)
+            <img
+                src="{{ asset('storage/' . auth()->user()->profile_photo) }}"
+                alt="Profile"
+                class="h-full w-full object-cover"
+            >
+        @else
+            {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
+        @endif
+
+    </div>
+
+    <div class="min-w-0 flex-1">
+
+        <p class="truncate text-xs font-semibold text-[#3f3932]">
+            {{ auth()->user()->name ?? 'Admin' }}
+        </p>
+
+        <p class="truncate text-[10px] text-[#92877b]">
+            {{ auth()->user()->email ?? 'admin@example.com' }}
+        </p>
+
+    </div>
+
+    <svg class="h-4 w-4 shrink-0 text-[#a58a6d] transition group-hover:translate-x-1"
+         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              stroke-width="2" d="M9 18l6-6-6-6"/>
+    </svg>
+
+</a>
+
 
             <form method="POST" action="{{ route('logout') }}">
                 @csrf

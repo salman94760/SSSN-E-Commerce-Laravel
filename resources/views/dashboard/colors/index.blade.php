@@ -20,6 +20,7 @@
 
             {{-- Table Header --}}
             <x-admin.sub-header :arr="[
+            'eyebrow' =>'Store Management',
             'title' => 'Colors',
             'subtitle' => 'Manage your clothing colors.',
             'AddButton' => '+ Add Color',

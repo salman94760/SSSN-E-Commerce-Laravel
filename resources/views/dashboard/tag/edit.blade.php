@@ -1,166 +1,169 @@
+
 @extends('layouts.admin.page')
 
-@section('title', 'Edit tag')
+@section('title', 'Edit Tag')
 
 @section('adminPage')
 
-<div class="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-    <div class="mx-auto max-w-7xl">
+@php
+    $cardClass = 'overflow-hidden rounded-[26px] border border-white/80 bg-white/65 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl';
 
-        <x-admin.sub-header :arr="['title'=>'Edit tag','subtitle'=>'Edit clothing tag.']"/>
+    $labelClass = 'mb-2 block text-xs font-bold uppercase tracking-wide text-[#796a59]';
 
-        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-            <div class="overflow-x-auto">
-                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    $inputClass = 'w-full rounded-xl border border-[#e8dccb] bg-white/80 px-4 py-3 text-sm text-[#5d4936] outline-none transition duration-200 placeholder:text-[#b0a292] focus:border-[#a58a6d] focus:ring-2 focus:ring-[#e7d5bb]/50';
+@endphp
 
-                    <x-admin.view-table>
-    <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
+<div class="min-h-screen bg-[#f8f5ef] p-4 sm:p-6 lg:p-8">
 
-        <form
-            action="{{ route('tags.update',$tag->id) }}"
-            method="POST"
-        >
+    <div class="mx-auto max-w-7xl space-y-6">
 
-            @csrf
-            @method("PUT")
+        
 
-            <div class="p-6">
+        {{-- Main Card --}}
+        <div class="{{ $cardClass }}">
 
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {{-- Card Header --}}
+            <div class="border-b border-[#e8dccb]/60 bg-[#eee3d3]/30 px-6 py-5">
 
-                    {{-- tag Name --}}
+                <div class="flex flex-wrap items-center justify-between gap-3">
+
                     <div>
-                        <label
-                            for="name"
-                            class="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Tag Name
-                            <span class="text-red-500">*</span>
-                        </label>
+                        <h2 class="text-lg font-bold text-[#5d4936]">
+                            Tag Information
+                        </h2>
 
-                        <input
-                            type="text"
-                            name="name"
-                            id="name"
-                            value="{{ $tag->name?$tag->name:old('name') }}"
-                            placeholder="e.g. T-Shirt"
-                            class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
-                        >
-
-                        @error('name')
-                            <p class="mt-1 text-sm text-red-600">
-                                {{ $message }}
-                            </p>
-                        @enderror
+                        <p class="mt-1 text-xs text-[#a58a6d]">
+                            Edit tag details and update its status.
+                        </p>
                     </div>
 
+                    {{-- Current Status --}}
+                    @if($tag->status == 1)
 
-                  
+                        <span class="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-2 text-xs font-semibold text-green-700">
+                            <span class="h-2 w-2 rounded-full bg-green-500"></span>
+                            Active
+                        </span>
 
+                    @else
 
-                    
+                        <span class="inline-flex items-center gap-2 rounded-full bg-red-100 px-4 py-2 text-xs font-semibold text-red-700">
+                            <span class="h-2 w-2 rounded-full bg-red-500"></span>
+                            Inactive
+                        </span>
 
-
-                    {{-- Status --}}
-                    <div>
-                        <label
-                            for="status"
-                            class="mb-2 block text-sm font-medium text-slate-700"
-                        >
-                            Status
-                        </label>
-
-                        <select
-                            name="status"
-                            id="status"
-                            class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-200"
-                        >
-
-                            <option value="1" {{ $tag->status == 1 ? 'selected' : '' }}>
-                                Active
-                            </option>
-
-                            <option value="0" {{ $tag->status === '0' ? 'selected' : '' }}>
-                                Inactive
-                            </option>
-
-                        </select>
-
-                        @error('status')
-                            <p class="mt-1 text-sm text-red-600">
-                                {{ $message }}
-                            </p>
-                        @enderror
-                    </div>
+                    @endif
 
                 </div>
 
             </div>
 
+            {{-- Edit Tag Form --}}
+            <form
+                action="{{ route('tags.update', $tag->id) }}"
+                method="POST"
+            >
+                @csrf
+                @method('PUT')
 
-            {{-- Footer --}}
-            <div class="flex items-center justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4">
+                <div class="p-5 sm:p-8">
 
-                <a
-                    href="{{ route('tags.index') }}"
-                    class="rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
-                >
-                    Cancel
-                </a>
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 
-                <button
-                    type="submit"
-                    class="rounded-lg bg-slate-800 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
-                >
-                    Edit tag
-                </button>
+                        {{-- Tag Name --}}
+                        <div>
 
-            </div>
+                            <label for="name" class="{{ $labelClass }}">
+                                Tag Name
+                                <span class="text-red-500">*</span>
+                            </label>
 
-        </form>
+                            <input
+                                type="text"
+                                name="name"
+                                id="name"
+                                value="{{ old('name', $tag->name) }}"
+                                placeholder="e.g. New Arrival, Trending, Best Seller"
+                                class="{{ $inputClass }}"
+                                required
+                            >
 
-    </div>
-                    </x-admin.view-table>
-                   
+                            @error('name')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+
+                        </div>
+
+                        {{-- Status --}}
+                        <div>
+
+                            <label for="status" class="{{ $labelClass }}">
+                                Tag Status
+                            </label>
+
+                            <select
+                                name="status"
+                                id="status"
+                                class="{{ $inputClass }}"
+                            >
+
+                                <option
+                                    value="1"
+                                    @selected(old('status', $tag->status) == 1)
+                                >
+                                    Active
+                                </option>
+
+                                <option
+                                    value="0"
+                                    @selected(old('status', $tag->status) == 0)
+                                >
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                            @error('status')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+
+                        </div>
+
                     </div>
+
                 </div>
-            </div>
+
+                {{-- Footer Actions --}}
+                <div class="flex flex-col-reverse gap-3 border-t border-[#e8dccb]/70 bg-[#eee3d3]/25 px-6 py-5 sm:flex-row sm:items-center sm:justify-end">
+
+                    {{-- Cancel Button --}}
+                    <a
+                        href="{{ route('tags.index') }}"
+                        class="inline-flex items-center justify-center rounded-xl border border-[#e8dccb] bg-white/80 px-6 py-3 text-sm font-semibold text-[#6b5540] transition duration-300 hover:bg-[#eee3d3]"
+                    >
+                        Cancel
+                    </a>
+
+                    {{-- Update Button --}}
+                    <button
+                        type="submit"
+                        class="inline-flex items-center justify-center rounded-xl bg-[#6b5540] px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#4e3c2b]"
+                    >
+                        Update Tag
+                    </button>
+
+                </div>
+
+            </form>
+
         </div>
+
     </div>
+
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @endsection
