@@ -127,32 +127,80 @@ public function index(Request $request)
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProductRequest $request)
-    {
-        $path = '';
-        $product = new Product();
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
+
+public function store(ProductRequest $request)
+{
+    $path = '';
+
+    $product = new Product();
+
+    $product->category_id = $request->category_id;
+    $product->brand_id = $request->brand_id;
+    $product->name = $request->name;
+    $product->slug = $request->slug;
+    $product->description = $request->description;
+    $product->price = $request->price;
+    $product->sale_price = $request->sale_price;
+    $product->stock = $request->stock;
+    $product->image = $path;
+    $product->sku = $request->sku ?? '';
+    $product->status = $request->status;
+    $product->user_id = Auth::id();
+
+    if ($product->save()) {
+
+        // Colors
+        $product->colors()->sync($request->input('color_ids', []));
+
+        // Tags
+        $product->tags()->sync($request->input('tag_ids', []));
+
+        // Size Wise Price & Stock
+        if (is_array($request->sizes)) {
+
+            $sizeData = [];
+
+            foreach ($request->sizes as $k => $v) {
+
+                $sizeData[$v['size_id']] = [
+                    'price' => $v['price'],
+                    'stock' => $v['stock'],
+                ];
+            }
+
+            $product->sizes()->sync($sizeData);
         }
-        $product->category_id = $request->category_id;
-        $product->brand_id = $request->brand_id;
-        $product->name = $request->name;
-        $product->slug = $request->slug;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->sale_price = $request->sale_price;
-        $product->stock = $request->stock;
-        $product->image = $path;
-        $product->sku = "";
-        $product->status = $request->status;
-        $product->user_id = Auth::id();
-        if ($product->save()) {
-            NewProductLaunchMail::dispatch($product);
-            return redirect()->route('products.index')->with("success", "product Added successfully");
-        } else {
-            return back();
+
+        // Multiple Product Images
+        if ($request->hasFile('images')) {
+
+            foreach ($request->file('images') as $image) {
+
+                $path = $image->store('products', 'public');
+
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'name'       => $path,
+                ]);
+            }
         }
+
+        // New Product Launch Mail
+        NewProductLaunchMail::dispatch($product);
+
+        // Clear Cache
+        Cache::forget('feature_product');
+
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Product added successfully');
+
+    } else {
+
+        return back();
     }
+}
+
 
     /**
      * Display the specified resource.
