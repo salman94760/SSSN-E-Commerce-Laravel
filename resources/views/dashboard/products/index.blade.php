@@ -270,23 +270,36 @@
                     </td>
 
                     {{-- Stock --}}
-                    <td class="whitespace-nowrap">
+<td class="whitespace-nowrap">
 
-                        @if($product->stock > 0)
+    {{-- Overall Product Stock --}}
+    @if($product->stock > 0)
+        <span class="rounded-full bg-green-100 px-3 py-1.5 text-xs font-semibold text-green-700">
+            {{ $product->stock }} In Stock
+        </span>
+    @else
+        <span class="rounded-full bg-red-100 px-3 py-1.5 text-xs font-semibold text-red-700">
+            Out of Stock
+        </span>
+    @endif
 
-                            <span class="rounded-full bg-green-100 px-3 py-1.5 text-xs font-semibold text-green-700">
-                                {{ $product->stock }} In Stock
-                            </span>
+    {{-- Size Wise Price --}}
+    <div class="mt-2 flex min-w-[140px] flex-wrap gap-1">
 
-                        @else
+        @forelse($product->sizes as $size)
 
-                            <span class="rounded-full bg-red-100 px-3 py-1.5 text-xs font-semibold text-red-700">
-                                Out of Stock
-                            </span>
+            <span class="rounded-lg border border-[#e8dccb] bg-white/70 px-2 py-1 text-xs text-[#6b5540]">
+                {{ $size->name }} -
+                ₹{{ number_format($size->pivot->price ?? 0, 2) }}
+            </span>
 
-                        @endif
+        @empty
+            <span class="text-[#a58a6d]">N/A</span>
+        @endforelse
 
-                    </td>
+    </div>
+
+</td>
 
                 </tr>
 
