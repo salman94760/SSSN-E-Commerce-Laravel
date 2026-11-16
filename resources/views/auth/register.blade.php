@@ -217,7 +217,7 @@
 
 
                 <!-- Register Form -->
-                <form action="http://localhost:8000/register" method="POST" class="space-y-4">
+                <form action="/register" method="POST" class="space-y-4">
 
                     <input type="hidden" name="_token" value="jnPSNYXsP7Wh6iFGMJ475ZdFFhkyaq9Z9odT7ijB" autocomplete="off">
                     <!-- Full Name -->
