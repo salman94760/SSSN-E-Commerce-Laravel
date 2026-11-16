@@ -143,6 +143,7 @@ public function index(Request $request)
         $product->sale_price = $request->sale_price;
         $product->stock = $request->stock;
         $product->image = $path;
+        $product->sku = "";
         $product->status = $request->status;
         $product->user_id = Auth::id();
         if ($product->save()) {
