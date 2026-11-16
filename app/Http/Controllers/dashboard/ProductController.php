@@ -117,7 +117,11 @@ public function index(Request $request)
     {
         $categories = Category::all();
         $brands = Brand::all();
-        return view('dashboard.products.create', compact('categories', 'brands'));
+        $colors = Color::all();
+        $sizes = Size::all();
+        $product = Product::all();
+        $tags = Tag::all();
+        return view('dashboard.products.create', compact('categories', 'brands','colors','sizes','product','tags'));
     }
 
     /**

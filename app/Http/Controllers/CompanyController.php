@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class CompanyController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $companyDetail = Company::first();
-        return view('dashboard.company.index',compact('companyDetail'));
-    }
+   public function index()
+{
+    $companyDetail = Company::with('user')->paginate(5);
+    $users = User::all();
+    return view('dashboard.companies.index', compact('companyDetail','users'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -95,7 +98,14 @@ if ($company) {
      */
     public function show(Company $company)
     {
-        //
+        Gate::authorize('isAdmin');
+
+        // dd($company->user_id);
+        $allcompany = Company::where('user_id', $company->user_id)->latest()->get();
+        $totalCompanies = $allcompany->count();
+      
+        $user = User::findOrFail($company->user_id);
+        return view('dashboard.companies.show', compact('company','user','allcompany','totalCompanies'));
     }
 
     /**
@@ -109,10 +119,43 @@ if ($company) {
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Company $company)
-    {
-        //
-    }
+
+public function update(Request $request, Company $company)
+{
+    $validated = $request->validate([
+        'email' => 'nullable|email|max:255',
+        'phone' => 'nullable|string|max:20',
+        'address' => 'nullable|string|max:255',
+        'dot_number' => 'nullable|string|max:255',
+        'mc_number' => 'nullable|string|max:255',
+        'ein_number' => 'nullable|string|max:255',
+        'status' => 'nullable|string|max:255',
+        'city' => 'nullable|string|max:255',
+        'state' => 'nullable|string|max:255',
+        'zipcode' => 'nullable|string|max:20',
+        'country' => 'nullable|string|max:255',
+    ]);
+
+    $company->update([
+        'company_name' => $company->company_name,
+        'company_email' => $validated['email'] ?? null,
+        'phone' => $validated['phone'] ?? null,
+        'address' => $validated['address'] ?? null,
+        'dot_number' => $validated['dot_number'] ?? null,
+        'mc_number' => $validated['mc_number'] ?? null,
+        'ein_number' => $validated['ein_number'] ?? null,
+        'status' => $validated['status'] ?? null,
+        'city' => $validated['city'] ?? null,
+        'state' => $validated['state'] ?? null,
+        'zipcode' => $validated['zipcode'] ?? null,
+        'country' => $validated['country'] ?? null,
+    ]);
+
+    return redirect()
+        ->back()
+        ->with('success', 'Company updated successfully.');
+}
+
 
     /**
      * Remove the specified resource from storage.

@@ -1,157 +1,419 @@
-@extends('layouts.admin')
 
-@section('title', 'Add User')
+@extends('layouts.admin.page')
 
-@section('breadcrumb', 'Users / Edit User')
+@section('title', 'Edit User')
 
-@section('content')
+@section('adminPage')
 
-<div class="max-w-4xl mx-auto">
-    <div class="mb-6">
-        <h2 class="text-2xl font-bold text-slate-800">Edit User</h2>
-        <p class="text-sm text-slate-500 mt-1">Edit user account detail</p>
-    </div>
+@php
+    $cardClass = 'overflow-hidden rounded-[26px] border border-white/80 bg-white/65 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl';
 
-    <div class="bg-white rounded-xl shadow-sm border border-slate-100">
-        <form action="{{ route('users.update',$user->id) }}" method="POST" enctype="multipart/form-data">
-            @csrf
-             @method('PUT')
-            <div class="p-6 space-y-6">
-                <div class="grid grid-cols-2 gap-6">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-slate-700 mb-2">Full name *</label>
+    $labelClass = 'mb-2 block text-xs font-bold uppercase tracking-wide text-[#796a59]';
 
-                        <input type="text" id="name" name="name" value="{{ $user->name }}" placeholder="Enter full name" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 outline-none">
-                        @error('name')
-                        <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+    $inputClass = 'w-full rounded-xl border border-[#e8dccb] bg-white/80 px-4 py-3 text-sm text-[#5d4936] outline-none transition duration-200 placeholder:text-[#b0a292] focus:border-[#a58a6d] focus:ring-2 focus:ring-[#e7d5bb]/50';
+@endphp
 
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-slate-700 mb-2">Email *</label>
+<div class="min-h-screen bg-[#f8f5ef] p-4 sm:p-6 lg:p-8">
 
-                        <input type="email" id="email" name="email" value="{{ $user->email }}" placeholder="Enter email address" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 outline-none">
+    <div class="mx-auto max-w-7xl space-y-6">
 
-                        @error('email')
-                        <p class="text-sm text-red-500 mt-1">
-                            {{ $message }}
-                        </p>
-                        @enderror
-                    </div>    
-                </div>
+        {{-- Success Message --}}
+        @if(session('success'))
+            <div class="flex items-center justify-between rounded-xl border border-green-200 bg-green-50 px-5 py-4 text-sm text-green-700">
+                {{ session('success') }}
 
-                <div>
-                    <label for="address" class="block text-sm font-medium text-slate-700 mb-2">Address</label>
-
-                    <textarea id="address" name="address" placeholder="Enter address" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 outline-none">{{ $user->userInfo->address }}</textarea>
-                    @error('address')
-                    <p class="text-sm text-red-500 mt-1">
-                        {{ $message }}
-                    </p>
-                    @enderror
-                </div>
-
-                <div class="grid grid-cols-2 gap-6">
-                    <div>
-                        <label for="phone" class="block text-sm font-medium text-slate-700 mb-2">Phone *</label>
-
-                        <input type="text" id="phone" name="phone" value="{{ $user->userInfo->phone }}" placeholder="Enter phone number" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 outline-none">
-                        @error('phone')
-                        <p class="text-sm text-red-500 mt-1">
-                            {{ $message }}
-                        </p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="zipcode" class="block text-sm font-medium text-slate-700 mb-2">Zipcode *</label>
-
-                        <input type="text" id="zipcode" name="zipcode" value="{{ $user->userInfo->zipcode }}" placeholder="Enter zipcode" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 outline-none">
-                        @error('zipcode')
-                        <p class="text-sm text-red-500 mt-1">
-                            {{ $message }}
-                        </p>
-                        @enderror
-                    </div>    
-                </div>
-
-                <div class="grid grid-cols-2 gap-6">
-                    <div>
-                        <label for="landmark" class="block text-sm font-medium text-slate-700 mb-2">Landmark</label>
-
-                        <input type="text" id="landmark" name="landmark" value="{{ $user->userInfo->landmark }}" placeholder="Landmark" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 outline-none">
-                        
-                    </div>
-
-                    <div>
-                    <label for="role"
-                           class="block text-sm font-medium text-slate-700 mb-2">
-                        Role
-                    </label>
-
-                    <select
-                        id="role"
-                        name="role"
-                        class="w-full rounded-lg border border-slate-300 px-4 py-2.5
-                               focus:border-slate-500 focus:ring-2 focus:ring-slate-200
-                               outline-none"
-                    >
-                        <option value="">Select Role</option>
-                        <option value="customer"
-                            {{ $user->role == 'customer' ? 'selected' : '' }}>
-                            Customer
-                        </option>
-
-                        <option value="seller"
-                            {{ $user->role == 'seller' ? 'selected' : '' }}>
-                            Seller
-                        </option>
-
-                        <option value="admin"
-                            {{ $user->role == 'admin' ? 'selected' : '' }}>
-                            Admin
-                        </option>
-                    </select>
-
-                    @error('role')
-                        <p class="text-sm text-red-500 mt-1">
-                            {{ $message }}
-                        </p>
-                    @enderror
-                </div>   
-                </div>
-
-                  <div>
-                    <label for="image" class="block text-sm font-medium text-slate-700 mb-2">Image/ Photo</label>
-
-                    <input type="file" id="image" name="image" placeholder="Enter address" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 focus:border-slate-500 focus:ring-2 focus:ring-slate-200 outline-none">
-                </div>
-                <div class="h-20"><img class="w-20 h-20" src="{{asset('storage/'.$user->userInfo->image)}}" /></div>
-            </div>
-
-
-            {{-- Footer --}}
-            <div class="border-t bg-slate-50 px-6 py-4 flex justify-end gap-3">
-
-                <a href="{{ route('users.index') }}"
-                   class="px-5 py-2.5 rounded-lg border border-slate-300
-                          text-slate-700 hover:bg-white">
-                    Cancel
-                </a>
-
-                <button
-                    type="submit"
-                    class="px-5 py-2.5 rounded-lg bg-slate-900 text-white
-                           hover:bg-slate-700">
-                    Edit User
+                <button type="button"
+                        onclick="this.parentElement.remove()"
+                        class="font-bold">
+                    &times;
                 </button>
+            </div>
+        @endif
+
+        {{-- Validation Summary --}}
+        @if($errors->any())
+            <div class="rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+                Please correct the highlighted fields.
+            </div>
+        @endif
+
+        {{-- Main Card --}}
+        <div class="{{ $cardClass }}">
+
+            {{-- Card Header --}}
+            <div class="border-b border-[#e8dccb]/60 bg-[#eee3d3]/30 px-6 py-5">
+
+                <div class="flex flex-wrap items-center justify-between gap-3">
+
+                    <div>
+                        <h2 class="text-lg font-bold text-[#5d4936]">
+                            User Information
+                        </h2>
+
+                        <p class="mt-1 text-xs text-[#a58a6d]">
+                            Edit user personal details, account role and profile photo.
+                        </p>
+                    </div>
+
+                    {{-- Current Role --}}
+                    <span class="inline-flex items-center gap-2 rounded-full bg-[#eee3d3] px-4 py-2 text-xs font-semibold capitalize text-[#6b5540]">
+                        <span class="h-2 w-2 rounded-full bg-[#a58a6d]"></span>
+                        {{ $user->role ?? 'User' }}
+                    </span>
+
+                </div>
 
             </div>
 
-        </form>
+            {{-- Edit User Form --}}
+            <form action="{{ route('users.update', $user->id) }}"
+                  method="POST"
+                  enctype="multipart/form-data">
+
+                @csrf
+                @method('PUT')
+
+                <div class="p-5 sm:p-8">
+
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                        {{-- Full Name --}}
+                        <div>
+                            <label for="name" class="{{ $labelClass }}">
+                                Full Name
+                                <span class="text-red-500">*</span>
+                            </label>
+
+                            <input type="text"
+                                   name="name"
+                                   id="name"
+                                   value="{{ old('name', $user->name) }}"
+                                   placeholder="Enter full name"
+                                   class="{{ $inputClass }}"
+                                   required>
+
+                            @error('name')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        {{-- Email --}}
+                        <div>
+                            <label for="email" class="{{ $labelClass }}">
+                                Email Address
+                                <span class="text-red-500">*</span>
+                            </label>
+
+                            <input type="email"
+                                   name="email"
+                                   id="email"
+                                   value="{{ old('email', $user->email) }}"
+                                   placeholder="Enter email address"
+                                   class="{{ $inputClass }}"
+                                   required>
+
+                            @error('email')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        {{-- Phone --}}
+                        <div>
+                            <label for="phone" class="{{ $labelClass }}">
+                                Phone Number
+                                <span class="text-red-500">*</span>
+                            </label>
+
+                            <input type="tel"
+                                   name="phone"
+                                   id="phone"
+                                   value="{{ old('phone', $user->userInfo?->phone) }}"
+                                   placeholder="Enter phone number"
+                                   class="{{ $inputClass }}"
+                                   required>
+
+                            @error('phone')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        {{-- Zipcode --}}
+                        <div>
+                            <label for="zipcode" class="{{ $labelClass }}">
+                                Zipcode
+                                <span class="text-red-500">*</span>
+                            </label>
+
+                            <input type="text"
+                                   name="zipcode"
+                                   id="zipcode"
+                                   value="{{ old('zipcode', $user->userInfo?->zipcode) }}"
+                                   placeholder="Enter zipcode"
+                                   class="{{ $inputClass }}"
+                                   required>
+
+                            @error('zipcode')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        {{-- Address --}}
+                        <div class="md:col-span-2">
+                            <label for="address" class="{{ $labelClass }}">
+                                Address
+                            </label>
+
+                            <textarea name="address"
+                                      id="address"
+                                      rows="3"
+                                      placeholder="Enter complete address"
+                                      class="{{ $inputClass }} resize-none">{{ old('address', $user->userInfo?->address) }}</textarea>
+
+                            @error('address')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        {{-- Landmark --}}
+                        <div>
+                            <label for="landmark" class="{{ $labelClass }}">
+                                Landmark
+                            </label>
+
+                            <input type="text"
+                                   name="landmark"
+                                   id="landmark"
+                                   value="{{ old('landmark', $user->userInfo?->landmark) }}"
+                                   placeholder="Enter nearby landmark"
+                                   class="{{ $inputClass }}">
+
+                            @error('landmark')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        {{-- User Role --}}
+                        <div>
+                            <label for="role" class="{{ $labelClass }}">
+                                User Role
+                                <span class="text-red-500">*</span>
+                            </label>
+
+                            <select name="role"
+                                    id="role"
+                                    class="{{ $inputClass }}"
+                                    required>
+
+                                <option value="">Select Role</option>
+
+                                <option value="customer"
+                                    @selected(old('role', $user->role) == 'customer')>
+                                    Customer
+                                </option>
+
+                                <option value="seller"
+                                    @selected(old('role', $user->role) == 'seller')>
+                                    Seller
+                                </option>
+
+                                <option value="admin"
+                                    @selected(old('role', $user->role) == 'admin')>
+                                    Admin
+                                </option>
+
+                            </select>
+
+                            @error('role')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        {{-- Profile Image --}}
+                        <div class="md:col-span-2">
+
+                            <label for="image" class="{{ $labelClass }}">
+                                Profile Image
+                                <span class="font-normal text-[#a58a6d]">
+                                    (Optional)
+                                </span>
+                            </label>
+
+                            <input type="file"
+                                   name="image"
+                                   id="image"
+                                   accept="image/jpeg,image/png,image/webp"
+                                   class="block w-full rounded-xl border border-[#e8dccb] bg-white/80 text-sm text-[#796a59] file:mr-4 file:border-0 file:bg-[#6b5540] file:px-4 file:py-3 file:text-sm file:font-semibold file:text-white hover:file:bg-[#4e3c2b]">
+
+                            <p class="mt-2 text-xs text-[#a58a6d]">
+                                Supported formats: JPG, PNG and WebP.
+                            </p>
+
+                            @error('image')
+                                <p class="mt-2 text-xs text-red-600">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+
+                        </div>
+
+                    </div>
+
+                    {{-- Existing Image & Preview --}}
+                    <div class="mt-8 border-t border-[#e8dccb]/70 pt-7">
+
+                        <h3 class="text-base font-bold text-[#5d4936]">
+                            Profile Image Preview
+                        </h3>
+
+                        <p class="mt-1 text-xs text-[#a58a6d]">
+                            View the current profile photo or preview a newly selected image.
+                        </p>
+
+                        <div class="mt-5 flex flex-wrap gap-6">
+
+                            {{-- Existing Image --}}
+                            @if(!empty($user->userInfo?->image))
+
+                                <div>
+                                    <p class="{{ $labelClass }}">
+                                        Current Image
+                                    </p>
+
+                                    <div class="rounded-2xl border border-[#e8dccb] bg-[#eee3d3]/30 p-2">
+
+                                        <img src="{{ asset('storage/' . $user->userInfo->image) }}"
+                                             alt="{{ $user->name }}"
+                                             class="h-36 w-36 rounded-xl object-cover">
+
+                                    </div>
+                                </div>
+
+                            @endif
+
+                            {{-- New Image Preview --}}
+                            <div id="image-preview-wrapper" class="hidden">
+
+                                <p class="{{ $labelClass }}">
+                                    New Image Preview
+                                </p>
+
+                                <div class="rounded-2xl border border-[#e8dccb] bg-[#eee3d3]/30 p-2">
+
+                                    <img id="image-preview"
+                                         alt="New User Image"
+                                         class="h-36 w-36 rounded-xl object-cover">
+
+                                </div>
+
+                            </div>
+
+                            {{-- No Image Message --}}
+                            @if(empty($user->userInfo?->image))
+
+                                <div id="no-image-message"
+                                     class="flex h-36 w-36 items-center justify-center rounded-2xl border border-dashed border-[#e8dccb] bg-[#eee3d3]/30 text-center text-xs text-[#938778]">
+
+                                    No image uploaded
+
+                                </div>
+
+                            @endif
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {{-- Footer Actions --}}
+                <div class="flex flex-col-reverse gap-3 border-t border-[#e8dccb]/70 bg-[#eee3d3]/25 px-6 py-5 sm:flex-row sm:items-center sm:justify-end">
+
+                    <a href="{{ route('users.index') }}"
+                       class="inline-flex items-center justify-center rounded-xl border border-[#e8dccb] bg-white/80 px-6 py-3 text-sm font-semibold text-[#6b5540] transition duration-300 hover:bg-[#eee3d3]">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="inline-flex items-center justify-center rounded-xl bg-[#6b5540] px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#4e3c2b]">
+
+                        Update User
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 
 </div>
+
+{{-- Image Preview Script --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const imageInput = document.getElementById('image');
+    const previewWrapper = document.getElementById('image-preview-wrapper');
+    const previewImage = document.getElementById('image-preview');
+    const noImageMessage = document.getElementById('no-image-message');
+
+    let currentImageUrl = null;
+
+    imageInput.addEventListener('change', function () {
+
+        const file = this.files[0];
+
+        if (currentImageUrl) {
+            URL.revokeObjectURL(currentImageUrl);
+            currentImageUrl = null;
+        }
+
+        if (!file || !file.type.startsWith('image/')) {
+
+            previewWrapper.classList.add('hidden');
+            previewImage.removeAttribute('src');
+
+            if (noImageMessage) {
+                noImageMessage.classList.remove('hidden');
+            }
+
+            return;
+        }
+
+        currentImageUrl = URL.createObjectURL(file);
+
+        previewImage.src = currentImageUrl;
+        previewWrapper.classList.remove('hidden');
+
+        if (noImageMessage) {
+            noImageMessage.classList.add('hidden');
+        }
+
+    });
+
+    window.addEventListener('beforeunload', function () {
+        if (currentImageUrl) {
+            URL.revokeObjectURL(currentImageUrl);
+        }
+    });
+
+});
+</script>
 
 @endsection

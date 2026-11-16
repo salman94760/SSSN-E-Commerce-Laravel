@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\User;
 class Company extends Model
 {
     protected $fillable = [
@@ -17,5 +17,19 @@ class Company extends Model
     'instagram',
     'youtube',
     'whatsapp',
+    'user_id',
+    'dot_number',
+    'mc_number',
+    'ein_number',
+    'status',
+    'city',
+    'state',
+    'zipcode',
+    'country',
 ];
+
+public function user()
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
 }

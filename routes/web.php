@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\auth\AuthController;
-use App\Http\Controllers\CompanyController;
+
 
 use App\Http\Controllers\customer\CustomerController;
 
@@ -94,7 +94,7 @@ Route::middleware("check.login")->group(function () {
         Route::put('/profile-update/{id}', 'profileUpdate')->name('profile.update');
     });
 
-    Route::resource('/company', CompanyController::class);
+    
     Route::post('/admin/logo/upload', [AdminController::class, 'uploadLogo'])->name('admin.logo.upload');
 
 

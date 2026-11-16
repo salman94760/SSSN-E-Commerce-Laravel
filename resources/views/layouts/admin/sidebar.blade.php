@@ -65,6 +65,33 @@
                 link="/brands"
                 text="Brands"
             />
+
+            <x-admin.side-bar-button
+                linecap="round"
+                linejoin="round"
+                width="2"
+                d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+                link="/users"
+                text="Users"
+            />
+
+            <x-admin.side-bar-button
+                linecap="round"
+                linejoin="round"
+                width="2"
+                d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+                link="/sellers"
+                text="Sellers"
+            />
+
+            <x-admin.side-bar-button
+                linecap="round"
+                linejoin="round"
+                width="2"
+                d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+                link="/companies"
+                text="Companies"
+            />
         </nav>
 
         <p class="mb-3 mt-6 px-3 text-[11px] font-bold uppercase tracking-widest text-[#a49a8e]">

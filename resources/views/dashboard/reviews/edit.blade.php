@@ -17,10 +17,7 @@
 
     <div class="mx-auto max-w-7xl space-y-6">
 
-        <x-admin.sub-header :arr="[
-            'title' => 'Edit Review',
-            'subtitle' => 'Update customer review information.'
-        ]" />
+       
 
         <div class="{{ $cardClass }}">
 

@@ -1,0 +1,19 @@
+1. Register
+      ↓
+2. Login
+      ↓
+3. Logout
+      ↓
+4. Email Verification
+      ↓
+5. Forgot Password
+      ↓
+6. Role Middleware
+      ↓
+7. Admin / Seller / Customer Dashboard
+      ↓
+8. Product CRUD
+      ↓
+9. Policy
+      ↓
+10. Permissions / Gates

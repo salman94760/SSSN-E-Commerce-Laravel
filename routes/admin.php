@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\dashboard\AdminOrderController;
 use App\Http\Controllers\dashboard\BrandController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\dashboard\PaymentController;
 use App\Http\Controllers\dashboard\ReportController;
 use App\Http\Controllers\dashboard\ReviewController;
 use App\Http\Controllers\dashboard\ProfileController;
+use App\Http\Controllers\dashboard\SellerController;
 
 Route::middleware(['check.login', 'role:admin,seller'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
@@ -22,6 +24,8 @@ Route::middleware(['check.login', 'role:admin,seller'])->group(function () {
     Route::resource('/categories', CategoryController::class);
     Route::resource('/brands', BrandController::class);
     Route::resource('/coupons', CouponController::class);
+    Route::resource('/sellers', SellerController::class);
+    Route::resource('/companies', CompanyController::class);
     Route::post('/coupon/apply', [CouponController::class, 'apply'])->name('coupon.apply');
     Route::post('/coupon/remove', [CouponController::class, 'remove'])->name('coupon.remove');
     Route::get('/payments', [PaymentController::class, "index"])->name('admin.payments');
