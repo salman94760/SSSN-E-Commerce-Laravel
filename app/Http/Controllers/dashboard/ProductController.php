@@ -188,8 +188,7 @@ public function store(ProductRequest $request)
         // New Product Launch Mail
         NewProductLaunchMail::dispatch($product);
 
-        // Clear Cache
-        Cache::forget('feature_product');
+       
 
         return redirect()
             ->route('products.index')
@@ -301,7 +300,6 @@ public function store(ProductRequest $request)
             StockUpdateJob::dispatch($product,auth()->user()->email);
         }
 
-        Cache::forget('feature_product');
         return redirect()->route('products.index')->with('success', 'Product updated successfully');
     }
 

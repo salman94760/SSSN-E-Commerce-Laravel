@@ -685,7 +685,7 @@
         border: 1px solid #e8dccb !important;
         border-radius: 12px !important;
         background: rgba(255,255,255,0.8) !important;
-        padding: 6px 8px;
+        padding: 6px 15px;
     }
 
     .select2-container--default.select2-container--focus

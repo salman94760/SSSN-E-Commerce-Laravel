@@ -1,25 +1,40 @@
-<div class="bg-white border border-gray-200 rounded-2xl overflow-hidden group hover:shadow-xl transition">
-    <div class="relative aspect-square overflow-hidden bg-gray-100">
 
-        {{-- Product Image --}}<x-products.image :product="$product"/>
-        {{-- Wishlist --}}<x-products.wishlistButton :product="$product"/>
+<div class="group relative overflow-hidden rounded-2xl border border-[#e8dccb] bg-[#fffdf9] shadow-[0_8px_24px_rgba(91,68,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-[#cbb596] hover:shadow-[0_18px_40px_rgba(91,68,42,0.13)]">
+
+    {{-- PRODUCT IMAGE --}}
+    <div class="relative aspect-square overflow-hidden bg-[#f5efe6]">
+        <div class="h-full w-full transition-transform duration-500 group-hover:scale-105">
+            <x-products.image :product="$product"/>
+        </div>
+
+        {{-- WISHLIST --}}
+        <div class="absolute right-3 top-3 z-20">
+            <x-products.wishlistButton :product="$product"/>
+        </div>
+
+        {{-- SALE BADGE --}}
+        @if($product->price > $product->sale_price && $product->price > 0)
+            @php
+                $discount = round((($product->price - $product->sale_price) / $product->price) * 100);
+            @endphp
+            <span class="absolute left-3 top-3 z-10 rounded-full bg-[#5c4630] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-md">
+                {{ $discount }}% OFF
+            </span>
+        @endif
     </div>
 
     {{-- PRODUCT INFO --}}
-    <div class="p-2">
+    <div class="p-3 sm:p-4">
 
-        {{-- Category --}}
-        <div class="h-[52px] flex items-center justify-between w-full">
-            <div class="w-17"> 
-                <p class="text-xs text-gray-400">
-                    {{ $product->category->name ?? 'Fashion' }}
-                </p>
+        {{-- CATEGORY & SIZES --}}
+        <div class="flex min-h-[48px] items-start justify-between gap-2">
 
-                
-            </div>
-            
-            <div class="text-xs text-gray-400">                 
-                {{-- Available Sizes --}}
+            <p class="min-w-0 truncate pt-1 text-[11px] font-semibold uppercase tracking-[1.3px] text-[#a58a6d]">
+                {{ $product->category->name ?? 'Fashion' }}
+            </p>
+
+            {{-- AVAILABLE SIZES --}}
+            <div class="flex max-w-[65%] flex-wrap justify-end gap-1">
                 @if(!empty($product->sizes))
                     @foreach($product->sizes as $size)
                         @php
@@ -33,54 +48,59 @@
                                 $sizeName = $size;
                             }
                         @endphp
+
                         @if(!empty($sizeName))
-                        <span class="inline-flex items-center justify-center px-2 py-1 border border-gray-200 rounded-md text-xs text-gray-700">
-                            {{ $sizeName }}
-                        </span>
+                            <span class="inline-flex items-center justify-center rounded-md border border-[#e8dccb] bg-[#f8f3eb] px-2 py-1 text-[10px] font-semibold text-[#79654e]">
+                                {{ $sizeName }}
+                            </span>
                         @endif
                     @endforeach
                 @endif
             </div>
         </div>
 
-        {{-- NAME --}}
-        <h3 class="font-semibold mt-2 h-[48px]" style="text-overflow: ellipsis;" >{{ $product->name }}</h3>
+        {{-- PRODUCT NAME --}}
+        <h3 class="mt-2 min-h-[44px] text-sm font-bold leading-5 text-[#493825] transition-colors group-hover:text-[#9a744c] sm:text-base"
+            title="{{ $product->name }}">
+            {{ $product->name }}
+        </h3>
 
-{{-- PRICE --}}
-<div class="flex items-center justify-between mt-3 w-full">
+        {{-- PRICE & RATING --}}
+        <div class="mt-3 flex items-center justify-between gap-2">
 
-    {{-- PRICE LEFT --}}
-    <div>
-        <span class="font-bold text-lg">
-            ₹{{ number_format($product->sale_price) }}
-        </span>
+            {{-- PRICE --}}
+            <div class="min-w-0">
+                <span class="text-base font-extrabold text-[#493825] sm:text-lg">
+                    ₹{{ number_format($product->sale_price) }}
+                </span>
 
-        @if($product->price > $product->sale_price)
-            <span class="text-sm text-gray-400 line-through ml-1">
-                ₹{{ number_format($product->price) }}
-            </span>
-        @endif
-    </div>
-
-    {{-- RATING RIGHT --}}
-    <div class="flex items-center gap-1 text-sm">
-        <span class="text-yellow-500">★</span>
-        <span class="font-semibold">
-            @if(isset($product->reviews[0]))
-                {{ $product->reviews[0]->rating ?? 0 }}
-            @else
-                @if(!empty($product->reviews))
-                    {{ $product->reviews?->first()?->rating ?? 0 }}
+                @if($product->price > $product->sale_price)
+                    <span class="ml-1 text-xs font-medium text-[#b5a38d] line-through">
+                        ₹{{ number_format($product->price) }}
+                    </span>
                 @endif
-            @endif
-        </span>
-    </div>
+            </div>
 
-</div>
+            {{-- RATING --}}
+            <div class="flex shrink-0 items-center gap-1 rounded-lg bg-[#f8f1e5] px-2 py-1">
+                <span class="text-sm text-[#c18b35]">★</span>
+                <span class="text-xs font-bold text-[#79654e]">
+                    @if(isset($product->reviews[0]))
+                        {{ $product->reviews[0]->rating ?? 0 }}
+                    @else
+                        {{ $product->reviews?->first()?->rating ?? 0 }}
+                    @endif
+                </span>
+            </div>
+        </div>
 
+        {{-- DIVIDER --}}
+        <div class="my-3 border-t border-[#eee4d7]"></div>
 
-        {{-- CART --}}
-        {{-- Add To Cart --}}
-        <x-products.addToCart :product="$product"/>
+        {{-- ADD TO CART --}}
+        <div class="product-card-cart">
+            <x-products.addToCart :product="$product"/>
+        </div>
+
     </div>
 </div>

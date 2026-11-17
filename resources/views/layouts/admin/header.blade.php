@@ -8,7 +8,8 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-     <link rel="icon" type="image/png" href="{{ asset('logo/logo.ico') }}">
+     <!-- <link rel="icon" type="image/png" href="{{ asset('logo/logo.ico') }}"> -->
+     <link rel="icon" type="image/png" href="{{ asset('logo/favicon.png') }}">
 
     <!-- Inter Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -341,12 +341,12 @@
         {{-- Footer Actions --}}
         <div class="flex flex-col-reverse gap-3 rounded-[26px] border border-white/80 bg-white/65 px-6 py-5 shadow-[0_15px_45px_rgba(100,75,45,0.06)] backdrop-blur-2xl sm:flex-row sm:items-center sm:justify-end">
 
-            <a href="{{ route('users.index') }}"
+            <a href="{{ route('sellers.index') }}"
                class="inline-flex items-center justify-center rounded-xl border border-[#e8dccb] bg-white/80 px-6 py-3 text-sm font-semibold text-[#6b5540] transition duration-300 hover:bg-[#eee3d3]">
                 Back to Sellers
             </a>
 
-            <a href="{{ route('users.edit', $user->id) }}"
+            <a href="{{ route('sellers.edit', $user->id) }}"
                class="inline-flex items-center justify-center rounded-xl bg-[#6b5540] px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#4e3c2b]">
                 Edit Seller
             </a>

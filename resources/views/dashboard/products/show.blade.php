@@ -57,7 +57,9 @@
                             @if($product->stock > 0)
 
                                 <span class="inline-flex rounded-full bg-green-100/95 px-4 py-2 text-xs font-bold text-green-700 shadow-sm">
-                                    {{ $product->stock }} In Stock
+                                    {{ $product->sizes->sum('pivot.stock') }} In Stock
+
+
                                 </span>
 
                             @else
@@ -234,10 +236,41 @@
                         {{-- Stock --}}
                         <div>
                             <p class="{{ $labelClass }}">Stock Quantity</p>
+                            
 
+
+                            @forelse($product->sizes as $size)
                             <p class="mt-2 text-sm font-bold {{ $product->stock > 0 ? 'text-green-700' : 'text-red-600' }}">
-                                {{ $product->stock ?? 0 }}
+                                {{ $size->name }}
+
+                                        @if($size->pivot?->price !== null)
+                                            - {{ $size->pivot->stock }}
+                                        @endif
                             </p>
+
+                                   
+
+                                @empty
+
+                                    <span class="text-sm text-[#a58a6d]">
+                                        N/A
+                                    </span>
+
+                                @endforelse
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            
                         </div>
 
                         {{-- Product Status --}}

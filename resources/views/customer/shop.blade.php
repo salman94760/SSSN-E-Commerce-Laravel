@@ -3,940 +3,310 @@
 @section('title', 'SSSN | SHOP')
 
 @section('customerContent')
+{{-- NAVBAR: STATIC --}}
+<nav class="announcement sticky left-0 top-0 z-30 w-full border-b border-white/20">
 
-{{-- =========================================================
-SHOP HERO
-========================================================= --}}
+    <div class="mx-auto flex max-w-[1500px] items-center justify-between px-6 py-6 lg:px-20">
 
+        {{-- LOGO --}}
+        <a href="{{ url('/') }}"
+           class="fashion-font text-3xl font-bold tracking-[3px] text-white">
+            SSSN
+            <span class="text-sm font-normal tracking-[4px]">FASHION</span>
+        </a>
 
+        {{-- NAVIGATION LINKS --}}
+        <div class="hidden items-center gap-9 md:flex">
 
-{{-- =========================================================
-SHOP MAIN
-========================================================= --}}
+            <a href="{{ url('/') }}"
+               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
+                Home
+            </a>
 
-<main class="w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <a href="{{ url('/shop') }}"
+               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
+                Shop
+            </a>
 
-    <div class="flex flex-col lg:flex-row gap-8">
+            <a href="#categories"
+               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
+                Categories
+            </a>
 
-        {{-- =================================================
-            SIDEBAR
-        ================================================= --}}
-        <aside class="lg:w-64 xl:w-72 flex-shrink-0">
+            <a href="#brands"
+               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
+                Brands
+            </a>
 
-            {{-- MOBILE FILTER BUTTON --}}
-            <button
-                type="button"
+            <a href="#contact"
+               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
+                Contact
+            </a>
+
+        </div>
+
+        {{-- LOGIN & CART --}}
+        <div class="flex items-center gap-5">
+
+            <a href="{{ route('userLogin') }}"
+               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
+                Login
+            </a>
+
+            <a href="{{ url('/cart') }}"
+               class="border border-white/60 px-5 py-3 text-xs font-bold uppercase tracking-[2px] text-white transition hover:bg-white hover:text-[#493825]">
+                Cart
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<main class="relative mx-auto w-full max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+    <div class="pointer-events-none absolute left-0 top-10 -z-10 h-64 w-64 rounded-full bg-[#eadcc9]/30 blur-3xl"></div>
+    <div class="pointer-events-none absolute right-0 top-1/3 -z-10 h-72 w-72 rounded-full bg-[#d9c5aa]/20 blur-3xl"></div>
+
+    <div class="flex flex-col gap-7 lg:flex-row lg:gap-8">
+
+        {{-- SIDEBAR --}}
+        <aside class="w-full flex-shrink-0 lg:w-64 xl:w-72">
+            <button type="button"
                 onclick="document.getElementById('filterBox').classList.toggle('hidden')"
-                class="lg:hidden w-full mb-4 flex items-center justify-between
-                       bg-white border border-slate-200 rounded-2xl px-4 py-3
-                       font-semibold text-slate-800
-                       shadow-sm hover:shadow-md hover:border-slate-300
-                       transition-all duration-200">
-                <span>Filters</span>
-                <span class="text-slate-500">☰</span>
+                class="mb-4 flex w-full items-center justify-between rounded-2xl border border-[#e8dccb] bg-white/80 px-4 py-3 font-semibold text-[#594632] shadow-sm backdrop-blur-xl transition hover:bg-[#fbf7f1] lg:hidden">
+                <span>☷ &nbsp; Filters</span><span class="text-[#9b8469]">☰</span>
             </button>
 
+            <div id="filterBox"
+                class="sticky top-24 hidden rounded-3xl border border-[#e8dccb] bg-[#fffdf9]/90 p-5 shadow-[0_14px_40px_rgba(91,68,42,0.08)] backdrop-blur-xl lg:block">
 
-            {{-- FILTER BOX --}}
-            <div
-                id="filterBox"
-                class="hidden lg:block bg-white border border-slate-200
-                       rounded-2xl p-5 sticky top-24
-                       shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
-
-                {{-- =========================================
-                    CATEGORIES
-                ========================================== --}}
+                {{-- CATEGORIES --}}
                 <div>
-
                     <div class="flex items-center justify-between">
-
-                        <h3 class="font-bold text-slate-900">
-                            Categories
-                        </h3>
-
-                        <span class="text-xs text-slate-400">
-                            {{ $productCount }}
-                        </span>
-
+                        <h3 class="font-bold tracking-tight text-[#493825]">Categories</h3>
+                        <span class="rounded-full bg-[#f4ede3] px-2.5 py-1 text-xs font-semibold text-[#9a8062]">{{ $productCount }}</span>
                     </div>
-
-
-                    <div class="mt-4 space-y-1">
-
-                        {{-- ALL PRODUCTS --}}
-                        <a
-                            href="{{ url('/shop') }}"
-                            class="flex items-center justify-between px-3 py-2.5
-                                   rounded-xl text-sm transition-all duration-200
-                                   {{ !request('category')
-                                       ? 'bg-slate-900 text-white shadow-md shadow-slate-900/15'
-                                       : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}"
-                        >
-
-                            <span>
-                                All Products
-                            </span>
-
-                            <span class="text-xs opacity-70">
-                                {{ $productCount }}
-                            </span>
-
+                    <div class="mt-4 space-y-1.5">
+                        <a href="{{ url('/shop') }}"
+                            class="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition {{ !request('category') ? 'bg-[#5c4630] text-white shadow-md shadow-[#5c4630]/15' : 'text-[#79654e] hover:bg-[#f5eee5] hover:text-[#493825]' }}">
+                            <span>All Products</span><span class="text-xs opacity-70">{{ $productCount }}</span>
                         </a>
-
-
-                        {{-- CATEGORIES --}}
                         @foreach($categories as $category)
-
                             @if($category->products_count > 0)
-
-                                <a
-                                    href="{{ url('/shop') }}?category={{ $category->slug }}"
-                                    class="flex items-center justify-between px-3 py-2.5
-                                           rounded-xl text-sm transition-all duration-200
-                                           {{ request('category') === $category->slug
-                                               ? 'bg-slate-900 text-white shadow-md shadow-slate-900/15'
-                                               : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}"
-                                >
-
-                                    <span>
-                                        {{ $category->name }}
-                                    </span>
-
-                                    <span class="text-xs opacity-70">
-                                        {{ $category->products_count }}
-                                    </span>
-
+                                <a href="{{ url('/shop') }}?category={{ $category->slug }}"
+                                    class="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition {{ request('category') === $category->slug ? 'bg-[#5c4630] text-white shadow-md shadow-[#5c4630]/15' : 'text-[#79654e] hover:bg-[#f5eee5] hover:text-[#493825]' }}">
+                                    <span>{{ $category->name }}</span><span class="text-xs opacity-70">{{ $category->products_count }}</span>
                                 </a>
-
                             @endif
-
                         @endforeach
-
                     </div>
-
                 </div>
 
+                <div class="my-6 border-t border-[#eee4d7]"></div>
 
-                <div class="border-t border-slate-100 my-6"></div>
-
-
-                {{-- =========================================
-                    MULTIPLE SIZE FILTER
-                ========================================== --}}
+                {{-- SIZE FILTER --}}
                 <div>
-
                     <div class="flex items-center justify-between">
-
-                        <h3 class="font-bold text-slate-900">
-                            Size
-                        </h3>
-
+                        <h3 class="font-bold text-[#493825]">Size</h3>
                         @if(request('size'))
-
-                            <a
-                                href="{{ url('/shop') }}"
-                                class="text-xs text-slate-400 hover:text-slate-900 transition"
-                            >
-                                Clear
-                            </a>
-
+                            <a href="{{ url('/shop') }}" class="text-xs text-[#a58a6d] hover:text-[#5c4630]">Clear</a>
                         @endif
-
                     </div>
-
-
-                    <form
-                        action="{{ url('/shop') }}"
-                        method="GET"
-                        class="mt-4"
-                    >
-
-                        {{-- SEARCH PRESERVE --}}
-                        @if(request('search'))
-
-                            <input
-                                type="hidden"
-                                name="search"
-                                value="{{ request('search') }}"
-                            >
-
-                        @endif
-
-
-                        {{-- CATEGORY PRESERVE --}}
-                        @if(request('category'))
-
-                            <input
-                                type="hidden"
-                                name="category"
-                                value="{{ request('category') }}"
-                            >
-
-                        @endif
-
-
-                        {{-- SORT PRESERVE --}}
-                        @if(request('sort'))
-
-                            <input
-                                type="hidden"
-                                name="sort"
-                                value="{{ request('sort') }}"
-                            >
-
-                        @endif
-
+                    <form action="{{ url('/shop') }}" method="GET" class="mt-4">
+                        @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
+                        @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
+                        @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
 
                         @php
-
                             $selectedSizes = request('size', []);
-
-                            if (!is_array($selectedSizes)) {
-                                $selectedSizes = [$selectedSizes];
-                            }
-
+                            if (!is_array($selectedSizes)) $selectedSizes = [$selectedSizes];
                         @endphp
 
-
                         <div class="grid grid-cols-3 gap-2">
-
                             @foreach($sizes as $size)
-
-                                @php
-
-                                    $isSelected = in_array(
-                                        $size->name,
-                                        $selectedSizes
-                                    );
-
-                                @endphp
-
-
+                                @php $isSelected = in_array($size->name, $selectedSizes); @endphp
                                 <label class="cursor-pointer">
-
-                                    <input
-                                        type="checkbox"
-                                        name="size[]"
-                                        value="{{ $size->name }}"
-                                        class="hidden peer"
-                                        {{ $isSelected ? 'checked' : '' }}
-                                    >
-
-                                    <span
-                                        class="h-10 px-2 rounded-xl border
-                                               border-slate-200
-                                               bg-white
-                                               flex items-center justify-center
-                                               text-xs font-semibold
-                                               text-slate-600
-                                               transition-all duration-200
-                                               hover:border-slate-400
-                                               hover:bg-slate-50
-                                               peer-checked:bg-slate-900
-                                               peer-checked:text-white
-                                               peer-checked:border-slate-900
-                                               peer-checked:shadow-sm"
-                                    >
+                                    <input type="checkbox" name="size[]" value="{{ $size->name }}" class="peer hidden" {{ $isSelected ? 'checked' : '' }}>
+                                    <span class="flex h-10 items-center justify-center rounded-xl border border-[#e8dccb] bg-white/80 px-2 text-xs font-semibold text-[#79654e] transition hover:border-[#cbb596] hover:bg-[#f9f4ec] peer-checked:border-[#5c4630] peer-checked:bg-[#5c4630] peer-checked:text-white">
                                         {{ $size->name }}
                                     </span>
-
                                 </label>
-
                             @endforeach
-
                         </div>
-
-
-                        {{-- APPLY SIZE --}}
-                        <button
-                            type="submit"
-                            class="w-full mt-4 py-2.5
-                                   bg-slate-900 text-white
-                                   rounded-xl text-sm font-semibold
-                                   shadow-sm
-                                   hover:bg-slate-800
-                                   hover:shadow-lg hover:shadow-slate-900/15
-                                   active:scale-[0.98]
-                                   transition-all duration-200"
-                        >
+                        <button type="submit" class="mt-4 w-full rounded-xl bg-[#5c4630] py-2.5 text-sm font-semibold text-white shadow-md shadow-[#5c4630]/15 transition hover:bg-[#493825] active:scale-[0.98]">
                             Apply Size
                         </button>
-
                     </form>
-
                 </div>
 
+                <div class="my-6 border-t border-[#eee4d7]"></div>
 
-                <div class="border-t border-slate-100 my-6"></div>
-
-
-                {{-- =========================================
-                    RATING
-                ========================================== --}}
+                {{-- RATING --}}
                 <div>
-
-                    <h3 class="font-bold text-slate-900">
-                        Rating
-                    </h3>
-
-
-                    <div class="space-y-3 mt-4">
-
+                    <h3 class="font-bold text-[#493825]">Rating</h3>
+                    <div class="mt-4 space-y-3">
                         @foreach([5, 4, 3] as $rating)
-
-                            <label class="flex items-center gap-2 cursor-pointer group">
-
-                                <input
-                                    type="checkbox"
-                                    name="rating"
-                                    value="{{ $rating }}"
-                                    class="rounded border-slate-300
-                                           text-slate-900
-                                           focus:ring-slate-900"
-                                >
-
-                                <span class="text-amber-400 text-sm
-                                             group-hover:text-amber-500 transition">
-
-                                    {{ str_repeat('★', $rating) }}
-
-                                    <span class="text-slate-400">
-                                        & up
-                                    </span>
-
+                            <label class="group flex cursor-pointer items-center gap-2">
+                                <input type="checkbox" name="rating" value="{{ $rating }}" class="rounded border-[#d9cbb8] text-[#5c4630] focus:ring-[#cbb596]">
+                                <span class="text-sm text-[#c18b35] group-hover:text-[#a87525]">
+                                    {{ str_repeat('★', $rating) }} <span class="text-[#a58a6d]">& up</span>
                                 </span>
-
                             </label>
-
                         @endforeach
-
                     </div>
-
                 </div>
 
-
-                {{-- CLEAR FILTERS --}}
-                <a
-                    href="{{ url('/shop') }}"
-                    class="block w-full mt-6 py-2.5
-                           border border-slate-200
-                           rounded-xl text-sm font-semibold
-                           text-center text-slate-600
-                           hover:bg-slate-50
-                           hover:text-slate-900
-                           hover:border-slate-300
-                           transition-all duration-200"
-                >
+                <a href="{{ url('/shop') }}"
+                    class="mt-6 block w-full rounded-xl border border-[#e8dccb] bg-white/70 py-2.5 text-center text-sm font-semibold text-[#79654e] transition hover:border-[#cbb596] hover:bg-[#f7f0e7] hover:text-[#493825]">
                     Clear Filters
                 </a>
-
             </div>
-
         </aside>
 
+        {{-- PRODUCTS --}}
+        <div class="min-w-0 flex-1">
 
-
-        {{-- =================================================
-            PRODUCTS AREA
-        ================================================= --}}
-        <div class="flex-1 min-w-0">
-
-
-            {{-- =============================================
-                TOP BAR
-            ============================================== --}}
-            <div class="flex flex-col lg:flex-row lg:items-center
-                        justify-between gap-4 mb-6">
-
-
-                {{-- LEFT --}}
+            {{-- TOP BAR --}}
+            <div class="mb-6 flex flex-col justify-between gap-4 rounded-3xl border border-[#e8dccb] bg-[#fffdf9]/80 p-5 shadow-[0_10px_30px_rgba(91,68,42,0.05)] backdrop-blur-xl sm:p-6 lg:flex-row lg:items-center">
                 <div>
-
-                    <h2 class="font-bold text-xl text-slate-900">
-                        All Products
-                    </h2>
-
-                    <p class="text-sm text-slate-500 mt-1">
-                        Showing {{ $products->total() }} products
-                    </p>
-
+                    <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-[#a58a6d]">Curated Collection</p>
+                    <h2 class="mt-1 text-xl font-bold tracking-tight text-[#493825] sm:text-2xl">All Products</h2>
+                    <p class="mt-1 text-sm text-[#9a846b]">Showing {{ $products->total() }} products</p>
                 </div>
 
-
-                {{-- RIGHT --}}
-                <div class="flex flex-col sm:flex-row
-                            items-stretch sm:items-center gap-3">
-
-
-                    {{-- =====================================
-                        SEARCH
-                    ====================================== --}}
-                    <form
-                        action="{{ url('/shop') }}"
-                        method="GET"
-                        class="relative"
-                    >
-
-                        {{-- CATEGORY --}}
-                        @if(request('category'))
-
-                            <input
-                                type="hidden"
-                                name="category"
-                                value="{{ request('category') }}"
-                            >
-
-                        @endif
-
-
-                        {{-- SORT --}}
-                        @if(request('sort'))
-
-                            <input
-                                type="hidden"
-                                name="sort"
-                                value="{{ request('sort') }}"
-                            >
-
-                        @endif
-
-
-                        {{-- MULTIPLE SIZE --}}
+                <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+                    {{-- SEARCH --}}
+                    <form action="{{ url('/shop') }}" method="GET" class="relative">
+                        @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
+                        @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
                         @foreach((array) request('size', []) as $selectedSize)
-
-                            <input
-                                type="hidden"
-                                name="size[]"
-                                value="{{ $selectedSize }}"
-                            >
-
+                            <input type="hidden" name="size[]" value="{{ $selectedSize }}">
                         @endforeach
-
-
-                        <input
-                            type="text"
-                            name="search"
-                            value="{{ request('search') }}"
-                            placeholder="Search products..."
-                            class="w-full sm:w-64 lg:w-72 h-11
-                                   pl-10 pr-20
-                                   rounded-xl
-                                   border border-slate-200
-                                   bg-white
-                                   text-slate-800
-                                   placeholder:text-slate-400
-                                   shadow-sm
-                                   focus:border-slate-400
-                                   focus:ring-4 focus:ring-slate-100
-                                   outline-none
-                                   transition-all duration-200"
-                        >
-
-
-                        <span
-                            class="absolute left-3.5 top-1/2
-                                   -translate-y-1/2
-                                   text-slate-400"
-                        >
-                            🔍
-                        </span>
-
-
-                        <button
-                            type="submit"
-                            class="absolute right-1.5 top-1.5
-                                   h-8 px-3
-                                   bg-slate-900 text-white
-                                   rounded-lg
-                                   text-xs font-semibold
-                                   hover:bg-slate-800
-                                   hover:shadow-md
-                                   transition-all duration-200"
-                        >
-                            Search
-                        </button>
-
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products..."
+                            class="h-11 w-full rounded-xl border border-[#e8dccb] bg-white/85 py-2 pl-10 pr-20 text-sm text-[#594632] shadow-sm outline-none transition placeholder:text-[#b5a38d] focus:border-[#b99d79] focus:ring-4 focus:ring-[#eadfce]/60 sm:w-64 lg:w-72">
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#a58a6d]">🔍</span>
+                        <button type="submit" class="absolute right-1.5 top-1.5 h-8 rounded-lg bg-[#5c4630] px-3 text-xs font-semibold text-white transition hover:bg-[#493825]">Search</button>
                     </form>
 
-
-
-                    {{-- =====================================
-                        SORT
-                    ====================================== --}}
+                    {{-- SORT --}}
                     <div class="flex items-center gap-2">
-
-                        <span class="hidden xl:block text-sm text-slate-500">
-                            Sort by
-                        </span>
-
-
-                        <select
-                            id="filters"
-                            onchange="reloadFilter()"
-                            class="h-11 px-4
-                                   rounded-xl
-                                   border border-slate-200
-                                   bg-white
-                                   text-slate-700
-                                   text-sm font-medium
-                                   shadow-sm
-                                   outline-none
-                                   focus:border-slate-400
-                                   focus:ring-4 focus:ring-slate-100
-                                   transition-all duration-200"
-                        >
-
-                            <option
-                                value=""
-                                {{ !request('sort') ? 'selected' : '' }}
-                            >
-                                Featured
-                            </option>
-
-
-                            <option
-                                value="newest"
-                                {{ request('sort') === 'newest' ? 'selected' : '' }}
-                            >
-                                Newest
-                            </option>
-
-
-                            <option
-                                value="low"
-                                {{ request('sort') === 'low' ? 'selected' : '' }}
-                            >
-                                Price: Low to High
-                            </option>
-
-
-                            <option
-                                value="high"
-                                {{ request('sort') === 'high' ? 'selected' : '' }}
-                            >
-                                Price: High to Low
-                            </option>
-
-                            <option
-                                value="asc"
-                                {{ request('sort') === 'asc' ? 'selected' : '' }}
-                            >
-                                Product : A-Z
-                            </option>
-
-                            <option
-                                value="desc"
-                                {{ request('sort') === 'desc' ? 'selected' : '' }}
-                            >
-                                Product : Z-A
-                            </option>
-
+                        <span class="hidden text-sm text-[#9a846b] xl:block">Sort by</span>
+                        <select id="filters" onchange="reloadFilter()"
+                            class="h-11 w-full rounded-xl border border-[#e8dccb] bg-white/85 px-4 text-sm font-medium text-[#79654e] shadow-sm outline-none transition focus:border-[#b99d79] focus:ring-4 focus:ring-[#eadfce]/60 sm:w-auto">
+                            <option value="" {{ !request('sort') ? 'selected' : '' }}>Featured</option>
+                            <option value="newest" {{ request('sort') === 'newest' ? 'selected' : '' }}>Newest</option>
+                            <option value="low" {{ request('sort') === 'low' ? 'selected' : '' }}>Price: Low to High</option>
+                            <option value="high" {{ request('sort') === 'high' ? 'selected' : '' }}>Price: High to Low</option>
+                            <option value="asc" {{ request('sort') === 'asc' ? 'selected' : '' }}>Product: A-Z</option>
+                            <option value="desc" {{ request('sort') === 'desc' ? 'selected' : '' }}>Product: Z-A</option>
                         </select>
-
                     </div>
-
                 </div>
-
             </div>
 
-
-
-            {{-- =============================================
-                ACTIVE FILTERS
-            ============================================== --}}
+            {{-- ACTIVE FILTERS --}}
             @if(request('search') || request('category') || request('size'))
-
-                <div class="flex flex-wrap items-center gap-2 mb-6">
-
-                    <span class="text-xs text-slate-400 mr-1">
-                        Filters:
-                    </span>
-
-
-                    {{-- SEARCH --}}
+                <div class="mb-6 flex flex-wrap items-center gap-2">
+                    <span class="mr-1 text-xs font-semibold uppercase tracking-wider text-[#a58a6d]">Filters:</span>
                     @if(request('search'))
-
-                        <span
-                            class="inline-flex items-center px-3 py-1.5
-                                   rounded-full
-                                   bg-slate-100
-                                   text-slate-700
-                                   text-xs font-medium"
-                        >
-                            Search: {{ request('search') }}
-                        </span>
-
+                        <span class="inline-flex items-center rounded-full border border-[#e8dccb] bg-[#f7f0e7] px-3 py-1.5 text-xs font-medium text-[#79654e]">Search: {{ request('search') }}</span>
                     @endif
-
-
-                    {{-- CATEGORY --}}
                     @if(request('category'))
-
-                        <span
-                            class="inline-flex items-center px-3 py-1.5
-                                   rounded-full
-                                   bg-slate-100
-                                   text-slate-700
-                                   text-xs font-medium"
-                        >
-                            Category: {{ request('category') }}
-                        </span>
-
+                        <span class="inline-flex items-center rounded-full border border-[#e8dccb] bg-[#f7f0e7] px-3 py-1.5 text-xs font-medium text-[#79654e]">Category: {{ request('category') }}</span>
                     @endif
-
-
-                    {{-- SIZES --}}
                     @php
-
                         $activeSizes = request('size', []);
-
-                        if (!is_array($activeSizes)) {
-                            $activeSizes = [$activeSizes];
-                        }
-
+                        if (!is_array($activeSizes)) $activeSizes = [$activeSizes];
                     @endphp
-
-
                     @foreach($activeSizes as $activeSize)
-
-                        <span
-                            class="inline-flex items-center px-3 py-1.5
-                                   rounded-full
-                                   bg-slate-900
-                                   text-white
-                                   text-xs font-medium
-                                   shadow-sm"
-                        >
-                            Size: {{ $activeSize }}
-                        </span>
-
+                        <span class="inline-flex items-center rounded-full border border-[#d8c6ad] bg-[#5c4630] px-3 py-1.5 text-xs font-medium text-white">Size: {{ $activeSize }}</span>
                     @endforeach
-
-
-                    {{-- CLEAR ALL --}}
-                    <a
-                        href="{{ url('/shop') }}"
-                        class="text-xs font-semibold
-                               text-slate-600
-                               underline ml-1
-                               hover:text-slate-900
-                               hover:no-underline
-                               transition"
-                    >
-                        Clear all
-                    </a>
-
+                    <a href="{{ url('/shop') }}" class="ml-1 text-xs font-semibold text-[#79654e] underline transition hover:text-[#493825] hover:no-underline">Clear all</a>
                 </div>
-
             @endif
 
-
-
-            {{-- =============================================
-                PRODUCT GRID
-            ============================================== --}}
-            <div
-                class="grid
-                       grid-cols-2
-                       sm:grid-cols-3
-                       lg:grid-cols-4
-                       xl:grid-cols-5
-                       2xl:grid-cols-6
-                       gap-4
-                       sm:gap-5"
-            >
-
+            {{-- PRODUCT GRID --}}
+            <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                 @forelse($products as $product)
-
                     <x-products.productCard :product="$product" />
-
                 @empty
-
-                    {{-- EMPTY STATE --}}
-                    <div class="col-span-full py-20 text-center">
-
-                        <div class="text-5xl mb-5">
-                            🔍
-                        </div>
-
-
-                        <h3 class="font-bold text-lg text-slate-900">
-                            No products found
-                        </h3>
-
-
-                        <p class="text-sm text-slate-500 mt-2">
-                            Try changing your search or filters.
-                        </p>
-
-
-                        <a
-                            href="{{ url('/shop') }}"
-                            class="inline-flex mt-5
-                                   px-5 py-2.5
-                                   bg-slate-900 text-white
-                                   rounded-xl
-                                   text-sm font-semibold
-                                   shadow-sm
-                                   hover:bg-slate-800
-                                   hover:shadow-lg
-                                   transition-all duration-200"
-                        >
+                    <div class="col-span-full rounded-3xl border border-[#e8dccb] bg-[#fffdf9]/85 py-20 text-center shadow-[0_10px_30px_rgba(91,68,42,0.05)]">
+                        <div class="mb-5 text-5xl">🔍</div>
+                        <h3 class="text-lg font-bold text-[#493825]">No products found</h3>
+                        <p class="mt-2 text-sm text-[#9a846b]">Try changing your search or filters.</p>
+                        <a href="{{ url('/shop') }}" class="mt-5 inline-flex rounded-xl bg-[#5c4630] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-[#493825]">
                             View All Products
                         </a>
-
                     </div>
-
                 @endforelse
-
             </div>
 
-
-
-            {{-- =============================================
-                PAGINATION
-            ============================================== --}}
+            {{-- PAGINATION --}}
             @if($products->hasPages())
-
-                <div class="flex items-center justify-center
-                            gap-1.5 mt-10">
-
-
-                    {{-- PREVIOUS --}}
+                <div class="mt-10 flex items-center justify-center gap-1.5">
                     @if($products->onFirstPage())
-
-                        <span
-                            class="w-9 h-9
-                                   rounded-xl
-                                   border border-slate-200
-                                   flex items-center justify-center
-                                   text-slate-300 text-sm"
-                        >
-                            ←
-                        </span>
-
+                        <span class="flex h-9 w-9 items-center justify-center rounded-xl border border-[#e8dccb] text-sm text-[#c8b9a5]">←</span>
                     @else
-
-                        <a
-                            href="{{ $products->previousPageUrl() }}"
-                            class="w-9 h-9
-                                   rounded-xl
-                                   border border-slate-200
-                                   flex items-center justify-center
-                                   text-slate-600 text-sm
-                                   hover:bg-slate-900
-                                   hover:text-white
-                                   hover:border-slate-900
-                                   hover:shadow-md
-                                   transition-all duration-200"
-                        >
-                            ←
-                        </a>
-
+                        <a href="{{ $products->previousPageUrl() }}" class="flex h-9 w-9 items-center justify-center rounded-xl border border-[#e8dccb] bg-white/80 text-sm text-[#79654e] transition hover:border-[#5c4630] hover:bg-[#5c4630] hover:text-white">←</a>
                     @endif
 
-
-
-                    {{-- PAGE NUMBERS --}}
-                    @foreach(
-                        $products->getUrlRange(
-                            max(1, $products->currentPage() - 2),
-                            min($products->lastPage(), $products->currentPage() + 2)
-                        ) as $page => $url
-                    )
-
+                    @foreach($products->getUrlRange(max(1, $products->currentPage() - 2), min($products->lastPage(), $products->currentPage() + 2)) as $page => $url)
                         @if($page == $products->currentPage())
-
-                            <span
-                                class="w-9 h-9
-                                       rounded-xl
-                                       bg-slate-900 text-white
-                                       flex items-center justify-center
-                                       text-sm font-semibold
-                                       shadow-md shadow-slate-900/15"
-                            >
-                                {{ $page }}
-                            </span>
-
+                            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#5c4630] text-sm font-semibold text-white shadow-md shadow-[#5c4630]/15">{{ $page }}</span>
                         @else
-
-                            <a
-                                href="{{ $url }}"
-                                class="w-9 h-9
-                                       rounded-xl
-                                       border border-slate-200
-                                       flex items-center justify-center
-                                       text-slate-600
-                                       text-sm font-medium
-                                       hover:bg-slate-900
-                                       hover:text-white
-                                       hover:border-slate-900
-                                       hover:shadow-md
-                                       transition-all duration-200"
-                            >
-                                {{ $page }}
-                            </a>
-
+                            <a href="{{ $url }}" class="flex h-9 w-9 items-center justify-center rounded-xl border border-[#e8dccb] bg-white/80 text-sm font-medium text-[#79654e] transition hover:border-[#5c4630] hover:bg-[#5c4630] hover:text-white">{{ $page }}</a>
                         @endif
-
                     @endforeach
 
-
-
-                    {{-- NEXT --}}
                     @if($products->hasMorePages())
-
-                        <a
-                            href="{{ $products->nextPageUrl() }}"
-                            class="w-9 h-9
-                                   rounded-xl
-                                   border border-slate-200
-                                   flex items-center justify-center
-                                   text-slate-600 text-sm
-                                   hover:bg-slate-900
-                                   hover:text-white
-                                   hover:border-slate-900
-                                   hover:shadow-md
-                                   transition-all duration-200"
-                        >
-                            →
-                        </a>
-
+                        <a href="{{ $products->nextPageUrl() }}" class="flex h-9 w-9 items-center justify-center rounded-xl border border-[#e8dccb] bg-white/80 text-sm text-[#79654e] transition hover:border-[#5c4630] hover:bg-[#5c4630] hover:text-white">→</a>
                     @else
-
-                        <span
-                            class="w-9 h-9
-                                   rounded-xl
-                                   border border-slate-200
-                                   flex items-center justify-center
-                                   text-slate-300 text-sm"
-                        >
-                            →
-                        </span>
-
+                        <span class="flex h-9 w-9 items-center justify-center rounded-xl border border-[#e8dccb] text-sm text-[#c8b9a5]">→</span>
                     @endif
-
                 </div>
-
             @endif
-
         </div>
-
     </div>
-
 </main>
 
-
-
-{{-- =========================================================
-NEWSLETTER
-========================================================= --}}
-
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-
-    <div
-        class="rounded-3xl
-               bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800
-               text-white
-               p-8 sm:p-10
-               flex flex-col lg:flex-row
-               items-center justify-between
-               gap-8
-               shadow-[0_20px_60px_rgba(15,23,42,0.18)]"
-    >
-
-        <div>
-
-            <p class="text-xs uppercase tracking-widest text-slate-400">
-                Stay Updated
-            </p>
-
-
-            <h2 class="text-2xl sm:text-3xl font-bold mt-2">
-                Get 10% off your first order
-            </h2>
-
-
-            <p class="text-sm text-slate-400 mt-2">
-                Subscribe to receive new arrivals, offers and exclusive deals.
-            </p>
-
+{{-- NEWSLETTER --}}
+<section class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+    <div class="relative overflow-hidden rounded-[2rem] border border-[#6b533a]/20 bg-gradient-to-br from-[#6b533a] via-[#59432f] to-[#3f3023] p-8 text-white shadow-[0_20px_60px_rgba(91,68,42,0.20)] sm:p-10">
+        <div class="pointer-events-none absolute -right-10 -top-20 h-64 w-64 rounded-full border border-white/10"></div>
+        <div class="pointer-events-none absolute -right-2 -top-12 h-48 w-48 rounded-full border border-white/10"></div>
+        <div class="relative flex flex-col items-center justify-between gap-8 lg:flex-row">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-[#ddc8aa]">Stay Updated</p>
+                <h2 class="mt-2 text-2xl font-bold sm:text-3xl">Get 10% off your first order</h2>
+                <p class="mt-2 text-sm text-[#e0d2bf]">Subscribe to receive new arrivals, offers and exclusive deals.</p>
+            </div>
+            <form method="POST" action="{{ route('customer.subscription') }}"
+                class="flex w-full overflow-hidden rounded-xl border border-white/20 bg-white shadow-xl shadow-black/20 lg:w-auto">
+                @csrf
+                <input type="email" name="email" required placeholder="Your email address"
+                    class="h-12 w-full bg-white px-4 text-sm text-[#493825] outline-none placeholder:text-[#b5a38d] lg:w-72">
+                <button type="submit" class="h-12 shrink-0 bg-[#eadcc9] px-5 text-sm font-bold text-[#493825] transition hover:bg-white">Subscribe</button>
+            </form>
         </div>
-
-
-
-        <form
-            method="POST"
-            action="{{ route('customer.subscription') }}"
-            class="flex w-full lg:w-auto
-                   shadow-xl shadow-black/20
-                   rounded-xl overflow-hidden"
-        >
-
-            @csrf
-
-            <input
-                type="email"
-                name="email"
-                required
-                placeholder="Your email address"
-                class="w-full lg:w-72 h-12
-                       px-4
-                       bg-white text-slate-900
-                       placeholder:text-slate-400
-                       outline-none"
-            >
-
-
-            <button
-                type="submit"
-                class="h-12 px-5
-                       bg-white text-slate-900
-                       font-semibold text-sm
-                       hover:bg-slate-100
-                       transition-all duration-200"
-            >
-                Subscribe
-            </button>
-
-        </form>
-
     </div>
-
 </section>
 
-
-
-{{-- =========================================================
-SORT SCRIPT
-========================================================= --}}
-
+{{-- SORT SCRIPT --}}
 <script>
-
     function reloadFilter() {
-
         const sort = document.getElementById('filters').value;
-
         const url = new URL(window.location.href);
 
         if (sort) {
-
             url.searchParams.set('sort', sort);
-
         } else {
-
             url.searchParams.delete('sort');
-
         }
 
-        // Reset pagination after sorting
         url.searchParams.delete('page');
-
         window.location.href = url.toString();
-
     }
-
 </script>
 
 @endsection

@@ -113,22 +113,27 @@ class CustomerController extends Controller
         return view('customer.cart', compact('cartitems', 'total', 'discountedPrice'));
     }
 
-    public function addToCart(Request $request, string $id)
+
+public function addToCart(Request $request, string $id)
 {
     $product = Product::findOrFail($id);
+
+    $request->validate([
+        'quantity' => 'required|integer|min:1',
+        'size_id'  => 'nullable|exists:sizes,id',
+        'color_id' => 'nullable|exists:colors,id',
+    ]);
 
     $sessionId = $request->session()->getId();
     $userId = Auth::id();
 
     // Existing cart find karo
     $cart = Cart::where(function ($query) use ($userId, $sessionId) {
-
         if ($userId) {
             $query->where('user_id', $userId);
         } else {
             $query->where('session_id', $sessionId);
         }
-
     })->first();
 
     // Cart nahi hai to create karo
@@ -139,6 +144,16 @@ class CustomerController extends Controller
         ]);
     }
 
+    // Selected size find karo
+    $size = $product->sizes()
+        ->where('sizes.id', $request->size_id)
+        ->first();
+
+    // Selected size product se belong nahi karta
+    if ($request->filled('size_id') && !$size) {
+        return back()->with('error', 'Invalid product size selected.');
+    }
+
     // Product + Size + Color ke basis par cart item check karo
     $cartItem = CartItem::where('cart_id', $cart->id)
         ->where('product_id', $product->id)
@@ -146,31 +161,32 @@ class CustomerController extends Controller
         ->where('color_id', $request->color_id)
         ->first();
 
+    // Unit price calculate karo
+    $unitPrice = $size?->pivot?->price
+        ?? $product->sale_price
+        ?? $product->price;
+
     if ($cartItem) {
 
-        // Same product + same size + same color hai
         $cartItem->increment('quantity', $request->quantity);
 
     } else {
-        $size = $product->sizes->where('id', $request->size_id)->first();
-        $unitPrice = $size?->pivot?->price
-                                    ?? $item->price
-                                    ?? $product->sale_price;
-        // Different size/color hai -> new cart item
-        CartItem::create([
-            'cart_id'    => $cart->id,
-            'product_id' => $product->id,
-            'quantity'   => $request->quantity,
-            'price'      => $unitPrice,
-            'color_id'   => $request->color_id,
-            'size_id'    => $request->size_id,
-        ]);
+
+        // CartItem::create([
+        //     'cart_id'    => $cart->id,
+        //     'product_id' => $product->id,
+        //     'quantity'   => $request->quantity,
+        //     'price'      => $unitPrice,
+        //     'color_id'   => $request->color_id,
+        //     'size_id'    => $request->size_id,
+        // ]);
     }
 
     return redirect()
         ->route('customer.cart')
         ->with('success', 'Added to cart successfully');
 }
+
     public function increase($item)
     {
         $cartItem = CartItem::findOrFail($item);

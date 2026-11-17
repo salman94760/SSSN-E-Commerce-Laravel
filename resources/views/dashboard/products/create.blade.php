@@ -376,7 +376,7 @@
         border: 1px solid #e8dccb !important;
         border-radius: 8px !important;
         color: #6b5540 !important;
-        padding: 3px 8px;
+        padding: 3px 15px;
     }
 
     .select2-dropdown {
@@ -396,7 +396,9 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
+
 $(document).ready(function () {
+
     // Initialize Select2
     $('.select2').select2({
         width: '100%',
@@ -410,47 +412,67 @@ $(document).ready(function () {
     const inputClasses =
         'w-full rounded-xl border border-[#e8dccb] bg-white/80 px-4 py-3 text-sm text-[#5d4936] outline-none transition focus:border-[#a58a6d] focus:ring-2 focus:ring-[#e7d5bb]/50';
 
-    // Preserve entered prices if the selected sizes are changed.
+    // Preserve old values after validation failure
     const sizeData = {};
+
     @if(old('sizes'))
         @foreach(old('sizes') as $sizeId => $values)
             sizeData[@json((string) $sizeId)] = {
-                price: @json($values['price'] ?? '')
+                price: @json($values['price'] ?? ''),
+                stock: @json($values['stock'] ?? '')
             };
         @endforeach
     @endif
 
-    function createPriceInput(sizeId, value) {
+    // Create input
+    function createInput(name, value, placeholder, step) {
         return $('<input>', {
             type: 'number',
-            name: `sizes[${sizeId}][price]`,
+            name: name,
             min: 0,
-            step: '0.01',
-            placeholder: 'Enter price',
+            step: step,
+            placeholder: placeholder,
             class: inputClasses
         }).val(value ?? '');
     }
 
+    // Save current entered values
     function saveCurrentValues() {
+
         container.find('.size-price-row').each(function () {
+
             const id = String($(this).data('size-id'));
+
             sizeData[id] = {
-                price: $(this).find('input[name$="[price]"]').val()
+                price: $(this).find('input[name$="[price]"]').val(),
+                stock: $(this).find('input[name$="[stock]"]').val()
             };
+
         });
+
     }
 
+    // Render size rows
     function renderSizeRows() {
+
         saveCurrentValues();
 
         const selectedSizes = $('#size_ids').val() || [];
+
         container.empty();
 
         selectedSizes.forEach(function (sizeId) {
+
             const id = String(sizeId);
+
             const sizeName = $('#size_ids option').filter(function () {
                 return this.value === id;
             }).text().trim();
+
+            const values = sizeData[id] || {
+                price: '',
+                stock: ''
+            };
 
             const row = $('<div>', {
                 class: 'size-price-row rounded-2xl border border-[#e8dccb] bg-[#eee3d3]/30 p-4'
@@ -460,47 +482,92 @@ $(document).ready(function () {
                 class: 'grid grid-cols-1 items-end gap-4 sm:grid-cols-5'
             });
 
-            const sizeColumn = $('<div>', { class: 'sm:col-span-1' });
+            // Size column
+            const sizeColumn = $('<div>', {
+                class: 'sm:col-span-1'
+            });
+
             sizeColumn.append($('<p>', {
                 class: 'text-xs font-bold uppercase tracking-wide text-[#938778]',
                 text: 'Size'
             }));
+
             sizeColumn.append($('<p>', {
                 class: 'mt-2 text-sm font-bold text-[#6b5540]',
                 text: sizeName
             }));
+
             sizeColumn.append($('<input>', {
                 type: 'hidden',
                 name: `sizes[${id}][size_id]`,
                 value: id
             }));
 
-            const priceColumn = $('<div>', { class: 'sm:col-span-4' });
+            // Price column
+            const priceColumn = $('<div>', {
+                class: 'sm:col-span-2'
+            });
+
             priceColumn.append($('<label>', {
                 class: 'mb-2 block text-xs font-bold uppercase tracking-wide text-[#796a59]',
                 text: 'Price (₹)'
             }));
-            priceColumn.append(createPriceInput(id, sizeData[id]?.price ?? ''));
 
-            grid.append(sizeColumn, priceColumn);
+            priceColumn.append(
+                createInput(
+                    `sizes[${id}][price]`,
+                    values.price,
+                    'Enter price',
+                    '0.01'
+                )
+            );
+
+            // Stock column
+            const stockColumn = $('<div>', {
+                class: 'sm:col-span-2'
+            });
+
+            stockColumn.append($('<label>', {
+                class: 'mb-2 block text-xs font-bold uppercase tracking-wide text-[#796a59]',
+                text: 'Stock'
+            }));
+
+            stockColumn.append(
+                createInput(
+                    `sizes[${id}][stock]`,
+                    values.stock,
+                    'Enter stock',
+                    '1'
+                )
+            );
+
+            grid.append(sizeColumn, priceColumn, stockColumn);
+
             row.append(grid);
+
             container.append(row);
+
         });
 
         emptyMessage.toggleClass('hidden', selectedSizes.length > 0);
+
     }
 
+    // Size selection change
     $('#size_ids').on('change', renderSizeRows);
 
-    // Rebuild rows with validation values after a failed submission.
+    // Initial render
     renderSizeRows();
 
     // Image Preview
     $('#images').on('change', function () {
+
         const preview = $('#image-preview-container');
+
         preview.empty();
 
         const files = Array.from(this.files || []);
+
         if (files.length === 0) {
             preview.addClass('hidden').removeClass('grid');
             return;
@@ -509,11 +576,13 @@ $(document).ready(function () {
         preview.removeClass('hidden').addClass('grid');
 
         files.forEach(function (file) {
+
             if (!file.type.startsWith('image/')) {
                 return;
             }
 
             const url = URL.createObjectURL(file);
+
             const wrapper = $('<div>', {
                 class: 'overflow-hidden rounded-2xl border border-[#e8dccb] bg-[#eee3d3]/30 p-2'
             });
@@ -530,9 +599,13 @@ $(document).ready(function () {
 
             wrapper.append(img);
             preview.append(wrapper);
+
         });
+
     });
+
 });
+
 </script>
 
 @endsection
