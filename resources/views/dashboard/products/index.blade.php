@@ -288,10 +288,10 @@
 
         @forelse($product->sizes as $size)
 
-            <span class="rounded-lg border border-[#e8dccb] bg-white/70 px-2 py-1 text-xs text-[#6b5540]">
-                {{ $size->name }} -
-                ₹{{ number_format($size->pivot->price ?? 0, 2) }}
-            </span>
+            
+            <span class="rounded-full bg-green-100 px-3 py-1.5 text-xs font-semibold text-green-700">
+            {{ $size->name }} - {{ $size->pivot->stock ?? 0 }} In Stock
+        </span>
 
         @empty
             <span class="text-[#a58a6d]">N/A</span>

@@ -34,7 +34,8 @@ class AuthController extends Controller
                 $user = $this->user->create([
                     'name' => $request->name,
                     'email' => $request->email,
-                    'password' => $request->password
+                    'password' => $request->password,
+                    'role' => $request->role??'customer'
                 ]);
 
                 if($user){
