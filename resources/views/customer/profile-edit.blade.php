@@ -4,364 +4,377 @@
 
 @section('customerContent')
 
-<section class="bg-white border-b">
+{{-- PAGE HEADER --}}
+<section class="bg-[#fffdf9] border-b border-[#e8dccb]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <span class="text-xs uppercase tracking-widest text-gray-400">Account Settings</span>
-        <h1 class="text-4xl font-bold mt-3">Edit Profile</h1>
-        <p class="text-gray-500 mt-2">
+
+        <span class="text-xs uppercase tracking-[0.2em] text-[#9a846a]">
+            Account Settings
+        </span>
+
+        <h1 class="text-4xl font-bold mt-3 text-[#493825]">
+            Edit Profile
+        </h1>
+
+        <p class="text-[#79654e] mt-2">
             Update your personal information and delivery details.
         </p>
+
     </div>
 </section>
 
-<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <form action="{{route('profile.update', auth()->user()->id)}}" method="POST" enctype="multipart/form-data" class="space-y-6">
-        @csrf
-        @method('PUT')
 
-        <div class="bg-white border border-gray-200 rounded-3xl p-6 sm:p-8">
-            <div>
-                <span class="text-xs uppercase tracking-widest text-gray-400">Profile</span>
-                <h2 class="text-xl font-bold mt-1">Profile Photo</h2>
-            </div>
+{{-- PROFILE FORM --}}
+<section class="bg-[#faf7f2]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
-            <div class="flex flex-col sm:flex-row items-center gap-6 mt-7">
-                <div class="relative w-28 h-28">
-                    @if(auth()->user()->userInfo?->image)
-                    <img id="profilePreview" src="{{ asset('storage/' . auth()->user()->userInfo->image) }}" class="w-full h-full object-cover rounded-full border-4 border-white shadow-lg">
-                    @else
-                    <div id="profilePreview" class="w-full h-full rounded-full bg-black text-white flex items-center justify-center text-4xl font-bold">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
+        <form action="{{ route('profile.update', auth()->user()->id) }}"
+              method="POST"
+              enctype="multipart/form-data"
+              class="space-y-6">
+
+            @csrf
+            @method('PUT')
+
+
+            {{-- PROFILE PHOTO --}}
+            <div class="bg-white border border-[#e8dccb]
+                        rounded-3xl p-6 sm:p-8 shadow-sm">
+
+                <div>
+                    <span class="text-xs uppercase tracking-[0.2em] text-[#9a846a]">
+                        Profile
+                    </span>
+
+                    <h2 class="text-xl font-bold mt-1 text-[#493825]">
+                        Profile Photo
+                    </h2>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-6 mt-7">
+
+                    <div class="relative w-28 h-28 shrink-0">
+
+                        @if(auth()->user()->userInfo?->image)
+
+                            <img id="profilePreview"
+                                 src="{{ asset('storage/' . auth()->user()->userInfo->image) }}"
+                                 class="w-full h-full object-cover rounded-full
+                                        border-4 border-[#f5efe6] shadow-md">
+
+                        @else
+
+                            <div id="profilePreview"
+                                 class="w-full h-full rounded-full bg-[#493825]
+                                        text-white flex items-center justify-center
+                                        text-4xl font-bold border-4 border-[#f5efe6]
+                                        shadow-md">
+
+                                {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
+
+                            </div>
+
+                        @endif
+
                     </div>
-                    @endif
+
+
+                    <div>
+
+                        <label class="inline-flex items-center gap-2
+                                      px-5 py-3 rounded-xl
+                                      bg-[#493825] text-white
+                                      text-sm font-semibold cursor-pointer
+                                      hover:bg-[#5c4630] transition duration-300">
+
+                            <i class="fa-solid fa-camera"></i>
+                            Choose New Photo
+
+                            <input type="file"
+                                   name="image"
+                                   accept="image/*"
+                                   class="hidden"
+                                   onchange="previewImage(event)">
+
+                        </label>
+
+                        <p class="text-xs text-[#9a846a] mt-3">
+                            JPG, PNG or WEBP. Maximum 2MB.
+                        </p>
+
+                        @error('image')
+                            <p class="text-xs text-red-500 mt-2">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
                 </div>
 
+            </div>
+
+
+            {{-- PERSONAL DETAILS --}}
+            <div class="bg-white border border-[#e8dccb]
+                        rounded-3xl p-6 sm:p-8 shadow-sm">
+
                 <div>
-                    <label
-                        class="inline-flex items-center
-                               px-5 py-3
-                               rounded-xl
-                               bg-black text-white
+                    <span class="text-xs uppercase tracking-[0.2em] text-[#9a846a]">
+                        Personal Information
+                    </span>
+
+                    <h2 class="text-xl font-bold mt-1 text-[#493825]">
+                        Basic Details
+                    </h2>
+                </div>
+
+
+                <div class="grid sm:grid-cols-2 gap-5 mt-7">
+
+                    {{-- NAME --}}
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-[#493825]">
+                            Full Name <x-required />
+                        </label>
+
+                        <input type="text"
+                               name="name"
+                               value="{{ old('name', auth()->user()->name) }}"
+                               placeholder="Enter your name"
+                               class="w-full h-12 px-4 rounded-xl
+                                      border border-[#e8dccb] bg-[#faf7f2]
+                                      text-[#493825] placeholder-[#b3a38f]
+                                      focus:bg-white focus:border-[#79654e]
+                                      outline-none transition">
+
+                        @error('name')
+                            <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+
+                    {{-- EMAIL --}}
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-[#493825]">
+                            Email Address <x-required />
+                        </label>
+
+                        <input type="email"
+                               name="email"
+                               value="{{ old('email', auth()->user()->email) }}"
+                               placeholder="Enter your email"
+                               class="w-full h-12 px-4 rounded-xl
+                                      border border-[#e8dccb] bg-[#faf7f2]
+                                      text-[#493825] placeholder-[#b3a38f]
+                                      focus:bg-white focus:border-[#79654e]
+                                      outline-none transition">
+
+                        @error('email')
+                            <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+
+                    {{-- PHONE --}}
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-[#493825]">
+                            Phone Number <x-required />
+                        </label>
+
+                        <input type="text"
+                               name="phone"
+                               value="{{ old('phone', auth()->user()->userInfo?->phone) }}"
+                               placeholder="+91 98765 43210"
+                               class="w-full h-12 px-4 rounded-xl
+                                      border border-[#e8dccb] bg-[#faf7f2]
+                                      text-[#493825] placeholder-[#b3a38f]
+                                      focus:bg-white focus:border-[#79654e]
+                                      outline-none transition">
+
+                        @error('phone')
+                            <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+
+                    {{-- ZIPCODE --}}
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-[#493825]">
+                            Zip Code <x-required />
+                        </label>
+
+                        <input type="text"
+                               name="zipcode"
+                               value="{{ old('zipcode', auth()->user()->userInfo?->zipcode) }}"
+                               placeholder="123456"
+                               class="w-full h-12 px-4 rounded-xl
+                                      border border-[#e8dccb] bg-[#faf7f2]
+                                      text-[#493825] placeholder-[#b3a38f]
+                                      focus:bg-white focus:border-[#79654e]
+                                      outline-none transition">
+
+                        @error('zipcode')
+                            <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- ADDRESS DETAILS --}}
+            <div class="bg-white border border-[#e8dccb]
+                        rounded-3xl p-6 sm:p-8 shadow-sm">
+
+                <div>
+                    <span class="text-xs uppercase tracking-[0.2em] text-[#9a846a]">
+                        Delivery
+                    </span>
+
+                    <h2 class="text-xl font-bold mt-1 text-[#493825]">
+                        Address Details
+                    </h2>
+                </div>
+
+
+                <div class="space-y-5 mt-7">
+
+                    {{-- FULL ADDRESS --}}
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-[#493825]">
+                            Full Address
+                        </label>
+
+                        <textarea name="address"
+                                  rows="4"
+                                  placeholder="House number, street, area..."
+                                  class="w-full px-4 py-3 rounded-xl
+                                         border border-[#e8dccb] bg-[#faf7f2]
+                                         text-[#493825] placeholder-[#b3a38f]
+                                         focus:bg-white focus:border-[#79654e]
+                                         outline-none resize-none transition">{{ old('address', auth()->user()->userInfo?->address) }}</textarea>
+
+                        @error('address')
+                            <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+
+                    {{-- CITY AND STATE --}}
+                    <div class="grid sm:grid-cols-2 gap-5">
+
+                        {{-- CITY --}}
+                        <div>
+                            <label class="block text-sm font-semibold mb-2 text-[#493825]">
+                                City
+                            </label>
+
+                            <input type="text"
+                                   name="city"
+                                   value="{{ old('city', auth()->user()->userInfo?->city) }}"
+                                   placeholder="Enter your city"
+                                   class="w-full h-12 px-4 rounded-xl
+                                          border border-[#e8dccb] bg-[#faf7f2]
+                                          text-[#493825] placeholder-[#b3a38f]
+                                          focus:bg-white focus:border-[#79654e]
+                                          outline-none transition">
+
+                            @error('city')
+                                <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+
+                        {{-- STATE --}}
+                        <div>
+                            <label class="block text-sm font-semibold mb-2 text-[#493825]">
+                                State
+                            </label>
+
+                            <input type="text"
+                                   name="state"
+                                   value="{{ old('state', auth()->user()->userInfo?->state) }}"
+                                   placeholder="Enter your state"
+                                   class="w-full h-12 px-4 rounded-xl
+                                          border border-[#e8dccb] bg-[#faf7f2]
+                                          text-[#493825] placeholder-[#b3a38f]
+                                          focus:bg-white focus:border-[#79654e]
+                                          outline-none transition">
+
+                            @error('state')
+                                <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                    </div>
+
+
+                    {{-- LANDMARK --}}
+                    <div>
+                        <label class="block text-sm font-semibold mb-2 text-[#493825]">
+                            Landmark
+                        </label>
+
+                        <input type="text"
+                               name="landmark"
+                               value="{{ old('landmark', auth()->user()->userInfo?->landmark) }}"
+                               placeholder="Near school, hospital, market..."
+                               class="w-full h-12 px-4 rounded-xl
+                                      border border-[#e8dccb] bg-[#faf7f2]
+                                      text-[#493825] placeholder-[#b3a38f]
+                                      focus:bg-white focus:border-[#79654e]
+                                      outline-none transition">
+
+                        @error('landmark')
+                            <p class="text-xs text-red-500 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- BUTTONS --}}
+            <div class="flex flex-col-reverse sm:flex-row
+                        sm:justify-end gap-3">
+
+                <a href="{{ route('profile') }}"
+                   class="h-12 px-7 rounded-xl
+                          border border-[#e8dccb] bg-white
+                          flex items-center justify-center
+                          text-sm font-semibold text-[#79654e]
+                          hover:bg-[#f5efe6] transition">
+
+                    Cancel
+
+                </a>
+
+
+                <button type="submit"
+                        class="h-12 px-8 rounded-xl
+                               bg-[#493825] text-white
                                text-sm font-semibold
-                               cursor-pointer
-                               hover:bg-gray-800">
+                               hover:bg-[#5c4630]
+                               transition duration-300">
 
-                        Choose New Photo
+                    <i class="fa-solid fa-check mr-2"></i>
+                    Save Changes
 
-                        <input
-                            type="file"
-                            name="image"
-                            accept="image/*"
-                            class="hidden"
-                            onchange="previewImage(event)">
-
-                    </label>
-
-                    <p class="text-xs text-gray-400 mt-3">
-                        JPG, PNG or WEBP. Maximum 2MB.
-                    </p>
-
-                    @error('image')
-                        <p class="text-xs text-red-500 mt-2">
-                            {{ $message }}
-                        </p>
-                    @enderror
-
-                </div>
+                </button>
 
             </div>
 
-        </div>
+        </form>
 
-
-        {{-- PERSONAL DETAILS --}}
-        <div class="bg-white
-                    border border-gray-200
-                    rounded-3xl
-                    p-6 sm:p-8">
-
-            <div>
-
-                <span class="text-xs uppercase
-                             tracking-widest text-gray-400">
-                    Personal Information
-                </span>
-
-                <h2 class="text-xl font-bold mt-1">
-                    Basic Details
-                </h2>
-
-            </div>
-
-
-            <div class="grid sm:grid-cols-2
-                        gap-5 mt-7">
-
-
-                {{-- NAME --}}
-                <div>
-
-                    <label class="block text-sm
-                                  font-semibold mb-2">
-                        Full Name <x-required />
-                    </label>
-
-                    <input
-                        type="text"
-                        name="name"
-                        value="{{ old('name', auth()->user()->name) }}"
-                        placeholder="Enter your name"
-                        class="w-full h-12 px-4
-                               rounded-xl
-                               border border-gray-200
-                               bg-gray-50
-                               focus:bg-white
-                               focus:border-black
-                               outline-none">
-
-                    @error('name')
-                        <p class="text-xs text-red-500 mt-2">
-                            {{ $message }}
-                        </p>
-                    @enderror
-
-                </div>
-
-
-                {{-- EMAIL --}}
-                <div>
-
-                    <label class="block text-sm
-                                  font-semibold mb-2">
-                        Email Address <x-required />
-                    </label>
-
-                    <input
-                        type="email"
-                        name="email"
-                        value="{{ old('email', auth()->user()->email) }}"
-                        placeholder="Enter your email"
-                        class="w-full h-12 px-4
-                               rounded-xl
-                               border border-gray-200
-                               bg-gray-50
-                               focus:bg-white
-                               focus:border-black
-                               outline-none">
-
-                    @error('email')
-                        <p class="text-xs text-red-500 mt-2">
-                            {{ $message }}
-                        </p>
-                    @enderror
-
-                </div>
-
-
-                {{-- PHONE --}}
-                <div>
-
-                    <label class="block text-sm
-                                  font-semibold mb-2">
-                        Phone Number <x-required />
-                    </label>
-
-                    <input
-                        type="text"
-                        name="phone"
-                        value="{{ old(
-                            'phone',
-                            auth()->user()->userInfo?->phone
-                        ) }}"
-                        placeholder="+91 98765 43210"
-                        class="w-full h-12 px-4
-                               rounded-xl
-                               border border-gray-200
-                               bg-gray-50
-                               focus:bg-white
-                               focus:border-black
-                               outline-none">
-
-                    @error('phone')
-                        <p class="text-xs text-red-500 mt-2">
-                            {{ $message }}
-                        </p>
-                    @enderror
-
-                </div>
-
-
-                {{-- ZIPCODE --}}
-                <div>
-
-                    <label class="block text-sm
-                                  font-semibold mb-2">
-                        Zip Code <x-required />
-                    </label>
-
-                    <input
-                        type="text"
-                        name="zipcode"
-                        value="{{ old(
-                            'zipcode',
-                            auth()->user()->userInfo?->zipcode
-                        ) }}"
-                        placeholder="123456"
-                        class="w-full h-12 px-4
-                               rounded-xl
-                               border border-gray-200
-                               bg-gray-50
-                               focus:bg-white
-                               focus:border-black
-                               outline-none">
-
-                    @error('zipcode')
-                        <p class="text-xs text-red-500 mt-2">
-                            {{ $message }}
-                        </p>
-                    @enderror
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        {{-- ADDRESS --}}
-        <div class="bg-white
-                    border border-gray-200
-                    rounded-3xl
-                    p-6 sm:p-8">
-
-            <div>
-
-                <span class="text-xs uppercase
-                             tracking-widest text-gray-400">
-                    Delivery
-                </span>
-
-                <h2 class="text-xl font-bold mt-1">
-                    Address Details
-                </h2>
-
-            </div>
-
-
-            <div class="space-y-5 mt-7">
-
-
-                {{-- ADDRESS --}}
-                <div>
-
-                    <label class="block text-sm
-                                  font-semibold mb-2">
-                        Full Address
-                    </label>
-
-                    <textarea
-                        name="address"
-                        rows="4"
-                        placeholder="House number, street, area..."
-                        class="w-full px-4 py-3
-                               rounded-xl
-                               border border-gray-200
-                               bg-gray-50
-                               focus:bg-white
-                               focus:border-black
-                               outline-none
-                               resize-none">{{ old(
-    'address',
-    auth()->user()->userInfo?->address
-) }}</textarea>
-
-                    @error('address')
-                        <p class="text-xs text-red-500 mt-2">
-                            {{ $message }}
-                        </p>
-                    @enderror
-
-                </div>
-
-
-                {{-- LANDMARK --}}
-                <div>
-
-                    <label class="block text-sm
-                                  font-semibold mb-2">
-                        Landmark
-                    </label>
-
-                    <input
-                        type="text"
-                        name="landmark"
-                        value="{{ old(
-                            'landmark',
-                            auth()->user()->userInfo?->landmark
-                        ) }}"
-                        placeholder="Near school, hospital, market..."
-                        class="w-full h-12 px-4
-                               rounded-xl
-                               border border-gray-200
-                               bg-gray-50
-                               focus:bg-white
-                               focus:border-black
-                               outline-none">
-
-                    @error('landmark')
-                        <p class="text-xs text-red-500 mt-2">
-                            {{ $message }}
-                        </p>
-                    @enderror
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        {{-- BUTTONS --}}
-        <div class="flex flex-col-reverse
-                    sm:flex-row
-                    sm:justify-end
-                    gap-3">
-
-            <a href="{{ route('profile') }}"
-               class="h-12 px-7
-                      rounded-xl
-                      border border-gray-200
-                      bg-white
-                      flex items-center
-                      justify-center
-                      text-sm font-semibold
-                      hover:bg-gray-50">
-
-                Cancel
-
-            </a>
-
-
-            <button
-                type="submit"
-                class="h-12 px-8
-                       rounded-xl
-                       bg-black text-white
-                       text-sm font-semibold
-                       hover:bg-gray-800">
-
-                Save Changes
-
-            </button>
-
-        </div>
-
-    </form>
-
+    </div>
 </section>
 
-<script>
 
+{{-- IMAGE PREVIEW --}}
+<script>
 function previewImage(event)
 {
     const input = event.target;
@@ -376,7 +389,6 @@ function previewImage(event)
 
         const preview = document.getElementById('profilePreview');
 
-        // Agar div hai to img create karo
         if (preview.tagName !== 'IMG') {
 
             const img = document.createElement('img');
@@ -384,7 +396,7 @@ function previewImage(event)
             img.id = 'profilePreview';
 
             img.className =
-                'w-full h-full object-cover rounded-full border-4 border-white shadow-lg';
+                'w-full h-full object-cover rounded-full border-4 border-[#f5efe6] shadow-md';
 
             preview.replaceWith(img);
 
@@ -400,10 +412,6 @@ function previewImage(event)
 
     reader.readAsDataURL(input.files[0]);
 }
-
 </script>
 
 @endsection
-
-
-

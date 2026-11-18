@@ -1,4 +1,4 @@
-<div class="absolute top-3 right-3 z-10 flex items-center gap-2">
+<div class="absolute top-2 right-2 z-10 flex items-center gap-2">
 
     {{-- WISHLIST BUTTON --}}
     <button

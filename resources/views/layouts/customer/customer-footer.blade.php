@@ -109,3 +109,56 @@
         </div>
 
     </footer>
+
+    <script>
+async function wishListProduct(productId) {
+
+    try {
+        const response = await fetch('/wishlist/toggle', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                product_id: productId
+            })
+        });
+
+        const res = await response.json();
+
+        if (!response.ok) {
+            throw new Error(res.message || 'Something went wrong');
+        }
+
+        const html = document.getElementById(`product_${productId}`);
+
+        if (html) {
+            if (res.status === 'added') {
+                html.innerHTML = '<span class="heart_2">♥</span>';
+            } else {
+                html.innerHTML = '<span class="heart_2">♡</span>';
+            }
+        }
+
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
+    }
+}
+    
+function toggleUserMenu() {
+    document.getElementById('userDropdown').classList.toggle('show');
+}
+
+document.addEventListener('click', function(event) {
+    const menu = document.querySelector('.user-menu');
+    const dropdown = document.getElementById('userDropdown');
+
+    if (menu && dropdown && !menu.contains(event.target)) {
+        dropdown.classList.remove('show');
+    }
+});
+
+</script>

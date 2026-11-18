@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Company;
 use App\Models\User;
 use App\Models\Wishlist;
@@ -45,6 +46,11 @@ class AppServiceProvider extends ServiceProvider
 
                 })
                 ->first();
+
+            $cartCount = 0;
+            if ($cart) {
+                $cartCount = CartItem::where('cart_id', $cart->id)->count();
+            }   
                 
             $wishlist = Wishlist::where('user_id', $userId)
                 ->with('product')
@@ -53,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
             $company = Company::first();
             $view->with([
                 'globalCart' => $cart,
+                'globalCartCount' => $cartCount,
                 'globalWishlist' => $wishlist,
                 'globalComapnyDetail' => $company
             ]);

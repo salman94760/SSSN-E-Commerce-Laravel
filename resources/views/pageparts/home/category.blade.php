@@ -29,8 +29,9 @@
                 @php
                     $categoryImage = $category->image ?? null;
                 @endphp
+                
 
-                <a href="{{ url('/category/' . ($category->slug ?? $category->id)) }}"
+                <a href="{{ url('/shop?category='.$category->slug) }}"
                    class="category-card group relative block overflow-hidden bg-[#eee9e2]">
 
                     <div class="aspect-[4/5] overflow-hidden">

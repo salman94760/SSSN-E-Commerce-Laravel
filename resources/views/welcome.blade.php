@@ -11,7 +11,7 @@
 
 @include('pageparts.home.feature')
 
-@include('pageparts.home.collection')
+<!-- @include('pageparts.home.collection') -->
 
 @include('pageparts.home.whychooseus')
 
@@ -20,7 +20,7 @@
 @include('pageparts.home.brands')
 
 @include('pageparts.home.reviews')
-
+ss
 @include('pageparts.home.feedback')
 
 @include('pageparts.home.newsletter')

@@ -21,6 +21,7 @@ class OrderController extends Controller
 {
     public function placeOrder(Request $request)
     {
+        
        
         $customer = Auth::user();
 

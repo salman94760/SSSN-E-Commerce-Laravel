@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\auth;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
@@ -19,37 +20,38 @@ class AuthController extends Controller
         $this->user = new User();
     }
 
-    public function register(Request $request){
-        if($request->isMethod('POST')){
+    public function register(Request $request)
+    {
+        if ($request->isMethod('POST')) {
             $userInfo = new user_info();
-            try{
+            try {
                 $request->validate([
                     'name' => 'required|string|max:255',
                     'email' => 'required|email|unique:users,email',
                     'password' => 'required|string|min:6|max:16|confirmed',
                     'password_confirmation' => 'required|string',
                 ]);
-            
+
                 $password = $request->password;
                 $user = $this->user->create([
                     'name' => $request->name,
                     'email' => $request->email,
                     'password' => $request->password,
-                    'role' => $request->role??'customer'
+                    'role' => $request->role ?? 'customer'
                 ]);
 
-                if($user){
+                if ($user) {
                     event(new Registered($user));
                     $user->userInfo()->create([
-                        'address' => 'XXXXXX', 
+                        'address' => 'XXXXXX',
                         'phone' => 0000000000,
-                        'zipcode' => 000000, 
-                        'landmark' => 'XXXXXXX', 
+                        'zipcode' => 000000,
+                        'landmark' => 'XXXXXXX',
                         'password_hint' => $password
                     ]);
                     return redirect()->route('userRegister')->with('success', 'User registered successfully');
                 }
-            }catch(\Exception $e){
+            } catch (\Exception $e) {
                 Log::error('User registration error: ' . $e->getMessage());
                 // return back()->with('error', 'Something went wrong');
                 dd($e->getMessage());
@@ -58,27 +60,36 @@ class AuthController extends Controller
         return view("auth.register");
     }
 
-    public function login(Request $request){
-        if($request->isMethod("POST")){
-        // dd($request->all());
+    public function login(Request $request)
+    {
+        if ($request->isMethod("POST")) {
             $remember = $request->boolean('remember');
-            if(Auth::attempt(['email'=>$request->email,'password'=>$request->password],$remember)){
-                if(auth()->user()->role === 'customer'){
+            if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember)) {
+                if (auth()->user()->role === 'customer') {
                     return redirect('/');
                 }
                 return redirect('dashboard');
-            }else{
-                return back()->with('error','Username or password not match');
+            } else {
+                return back()->with('error', 'Username or password not match');
             }
-       
+        }
+        if (Auth::user()) {
+            if (Auth::user()->role === "admin") {
+                return redirect('dashboard');
+            } else if (Auth::user()->role === "seller") {
+                return redirect('seller-dashboard');
+            } else if (Auth::user()->role === "customer") {
+                return redirect('/');
+            }
         }
         return view('auth.login');
     }
 
-    public function logout(){
-        $userrole = auth()->user()->role;
+    public function logout()
+    {
+        $userrole = Auth::user()->role;
         Auth::logout();
-        if($userrole === 'customer'){
+        if ($userrole === 'customer') {
             return redirect('/');
         }
         return redirect()->route('userLogin');

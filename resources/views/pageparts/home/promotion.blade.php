@@ -20,7 +20,7 @@
 
                 <div class="mt-9">
 
-                    <a href="#collection"
+                    <a href="{{ url('/shop') }}"
                        class="inline-flex items-center gap-4 bg-[#d2b99c] px-8 py-4 text-xs font-bold uppercase tracking-[2px] text-[#292524] transition hover:bg-white">
                         Explore Collection →
                     </a>

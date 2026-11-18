@@ -23,6 +23,10 @@ use App\Models\Product;
 
 use Illuminate\Support\Facades\Route;
 
+Route::match(['get', 'post'], '/register', [AuthController::class, "register"])->name('userRegister');
+Route::match(['get', 'post'], '/login', [AuthController::class, "login"])->name('userLogin');
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
 Route::get('/test-subscription-mail', function () {
     $product = Product::limit(3)->first();
     $order = Order::where('order_number', 'ORD-LW2WQEV0')->first();
@@ -33,7 +37,7 @@ Route::get('/test-subscription-mail', function () {
     ]);
 });
 
-Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
 
 
 
@@ -54,8 +58,7 @@ Route::get('product-review/{id}', [CustomerController::class, 'productReview'])-
 Route::post('product-review-store', [CustomerController::class, 'productReviewStore'])->name('product.review.store');
 
 
-Route::match(['get', 'post'], '/register', [AuthController::class, "register"])->name('userRegister');
-Route::match(['get', 'post'], '/login', [AuthController::class, "login"])->name('userLogin');
+
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])->name('social.redirect');
@@ -81,6 +84,8 @@ Route::middleware("check.login")->group(function () {
 
     Route::controller(CustomerController::class)->group(function () {
         Route::get('/cart', 'cart')->name('customer.cart');
+        Route::get('/return-refund', 'returnRefund');
+         Route::get('/notifications', 'notifications');
         Route::delete('/remove-item/{id}', 'removeCartitems');
         Route::post('/cart/{id}', 'addToCart')->name('cart.add');
         Route::post('/cart/{item}/increase', 'increase')->name('cart.increase');

@@ -84,7 +84,8 @@ class CustomerController extends Controller
         }
 
 
-        $total = $subtotal - $discount;return view('customer.checkout', compact('total', 'subtotal', 'discount', 'cartitems', 'userDetail'));
+        $total = $subtotal - $discount;
+        return view('customer.checkout', compact('total', 'subtotal', 'discount', 'cartitems', 'userDetail'));
     }
 
     public function cart()
@@ -115,102 +116,100 @@ class CustomerController extends Controller
 
 
 
-public function addToCart(Request $request, string $id)
-{
-    $product = Product::with('sizes')->findOrFail($id);
+    public function addToCart(Request $request, string $id)
+    {
+        $product = Product::with('sizes')->findOrFail($id);
 
-    $request->validate([
-        'quantity' => 'required|integer|min:1',
-        'size_id'  => 'nullable|integer',
-        'color_id' => 'nullable|exists:colors,id',
-    ]);
-
-    // Check product sizes
-    $availableSizes = $product->sizes;
-
-    // Multiple sizes: selection required
-    if ($availableSizes->count() > 1 && !$request->filled('size_id')) {
-        return back()->with('error', 'Please select a size.');
-    }
-
-    // Single size: automatically select
-    if ($availableSizes->count() === 1 && !$request->filled('size_id')) {
-        $request->merge([
-            'size_id' => $availableSizes->first()->id
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+            'size_id'  => 'nullable|integer',
+            'color_id' => 'nullable|exists:colors,id',
         ]);
-    }
 
-    // Validate selected size belongs to product
-    $size = null;
+        // Check product sizes
+        $availableSizes = $product->sizes;
 
-    if ($request->filled('size_id')) {
+        // Multiple sizes: selection required
+        if ($availableSizes->count() > 1 && !$request->filled('size_id')) {
+            return back()->with('error', 'Please select a size.');
+        }
 
-        $size = $product->sizes()
-            ->where('sizes.id', $request->size_id)
+        // Single size: automatically select
+        if ($availableSizes->count() === 1 && !$request->filled('size_id')) {
+            $request->merge([
+                'size_id' => $availableSizes->first()->id
+            ]);
+        }
+
+        // Validate selected size belongs to product
+        $size = null;
+
+        if ($request->filled('size_id')) {
+
+            $size = $product->sizes()
+                ->where('sizes.id', $request->size_id)
+                ->first();
+
+            if (!$size) {
+                return back()->with('error', 'Invalid product size selected.');
+            }
+        }
+
+        // Session and user
+        $sessionId = $request->session()->getId();
+        $userId = Auth::id();
+
+        // Find cart
+        $cart = Cart::where(function ($query) use ($userId, $sessionId) {
+
+            if ($userId) {
+                $query->where('user_id', $userId);
+            } else {
+                $query->where('session_id', $sessionId);
+            }
+        })->first();
+
+        // Create cart if not exists
+        if (!$cart) {
+
+            $cart = Cart::create([
+                'user_id'    => $userId,
+                'session_id' => $sessionId,
+            ]);
+        }
+
+        // Find existing cart item
+        $cartItem = CartItem::where('cart_id', $cart->id)
+            ->where('product_id', $product->id)
+            ->where('size_id', $request->size_id)
+            ->where('color_id', $request->color_id)
             ->first();
 
-        if (!$size) {
-            return back()->with('error', 'Invalid product size selected.');
-        }
-    }
+        // Calculate price
+        $unitPrice = $size?->pivot?->price
+            ?? $product->sale_price
+            ?? $product->price;
 
-    // Session and user
-    $sessionId = $request->session()->getId();
-    $userId = Auth::id();
+        if ($cartItem) {
 
-    // Find cart
-    $cart = Cart::where(function ($query) use ($userId, $sessionId) {
-
-        if ($userId) {
-            $query->where('user_id', $userId);
+            // Same product + same size + same color
+            $cartItem->increment('quantity', $request->quantity);
         } else {
-            $query->where('session_id', $sessionId);
+
+            CartItem::create([
+                'cart_id'    => $cart->id,
+                'product_id' => $product->id,
+                'quantity'   => $request->quantity,
+                'price'      => $unitPrice,
+                'color_id'   => $request->color_id,
+                'size_id'    => $request->size_id,
+            ]);
         }
 
-    })->first();
-
-    // Create cart if not exists
-    if (!$cart) {
-
-        $cart = Cart::create([
-            'user_id'    => $userId,
-            'session_id' => $sessionId,
-        ]);
+        return redirect()
+            ->route('customer.cart')
+            ->with('success', 'Added to cart successfully');
     }
-
-    // Find existing cart item
-    $cartItem = CartItem::where('cart_id', $cart->id)
-        ->where('product_id', $product->id)
-        ->where('size_id', $request->size_id)
-        ->where('color_id', $request->color_id)
-        ->first();
-
-    // Calculate price
-    $unitPrice = $size?->pivot?->price
-        ?? $product->sale_price
-        ?? $product->price;
-
-    if ($cartItem) {
-
-        // Same product + same size + same color
-        $cartItem->increment('quantity', $request->quantity);
-
-    } else {
-
-        CartItem::create([
-            'cart_id'    => $cart->id,
-            'product_id' => $product->id,
-            'quantity'   => $request->quantity,
-            'price'      => $unitPrice,
-            'color_id'   => $request->color_id,
-            'size_id'    => $request->size_id,
-        ]);
-    }
-
-    return redirect()
-        ->route('customer.cart')
-        ->with('success', 'Added to cart successfully');
-}
 
 
     public function increase($item)
@@ -247,8 +246,6 @@ public function addToCart(Request $request, string $id)
         }
 
         return redirect('/cart')->with('error', 'Something went wrong.');
-
-        
     }
 
 
@@ -259,12 +256,12 @@ public function addToCart(Request $request, string $id)
         $search     = $request->search ?? '';
         $sort       = $request->sort ?? '';
         $size       = $request->size ?? [];
-       if(!empty($size)){
-        $size = Size::whereIn('name', $size)->pluck('id');
-       }
-        
-         
-        $products = Product::with(['reviews','sizes', 'category', 'wishlist' => function ($query) {
+        if (!empty($size)) {
+            $size = Size::whereIn('name', $size)->pluck('id');
+        }
+
+
+        $products = Product::with(['reviews', 'sizes', 'category', 'wishlist' => function ($query) {
             $query->where('user_id', Auth::id());
         }])
             ->when($category, function ($query) use ($category) {
@@ -334,6 +331,8 @@ public function addToCart(Request $request, string $id)
 
     public function profileUpdate(Request $request, string $id)
     {
+        $profilephoto = "";
+
         $request->validate([
             'name'      => 'required|string|max:45',
             'email'     => 'required',
@@ -341,15 +340,34 @@ public function addToCart(Request $request, string $id)
             'zipcode'   => 'required|digits:6'
         ]);
 
+        if ($request->hasFile('image')) {
+
+            $file = $request->file('image');
+
+            // Original file name
+            $filename = $file->getClientOriginalName();
+
+            // Upload
+            $file->move(
+                public_path('/profilePhoto/'.$id),
+                $filename
+            );
+
+            $profilephoto = $filename;
+        }
+
         $user = User::find($id);
         if ($user) {
             $user->name = $request->name;
             $user->email = $request->email;
+            $user->profile_photo = $profilephoto;
             if ($user->update()) {
                 $user->userInfo->update([
                     'phone'     => $request->phone,
                     'zipcode'   => $request->zipcode,
                     'address'   => $request->address,
+                    'city'      => $request->city,
+                    'state'     => $request->state,
                     'landmark'  => $request->landmark
                 ]);
                 return redirect()->route('profile')->with('success', 'Detail updated successfully');
@@ -361,7 +379,6 @@ public function addToCart(Request $request, string $id)
 
     public function toggle(Request $request)
     {
-
 
         $wishlist = Wishlist::where('user_id', Auth::id())->where('product_id', $request->product_id)->first();
 
@@ -407,12 +424,24 @@ public function addToCart(Request $request, string $id)
         // });
     }
 
-    public function productReview($orderId){
+    public function productReview($orderId)
+    {
         $order = Order::find($orderId);
-        return view('customer.product-review',compact('order'));
+        return view('customer.product-review', compact('order'));
     }
 
-    public function productReviewStore(Request $request){
+    public function returnRefund()
+    {
+        return view('customer.return');
+    }
+
+        public function notifications()
+    {
+        return view('customer.notifications');
+    }
+
+    public function productReviewStore(Request $request)
+    {
         $review = ProductReview::create([
             'product_id'    => $request->product_id,
             'user_id'       => Auth::id(),
@@ -422,21 +451,21 @@ public function addToCart(Request $request, string $id)
             'status'        => 1
         ]);
 
-        if($review){
-      
-    return redirect()->route('product.review.thankyou');
-}
-        
+        if ($review) {
+
+            return redirect()->route('product.review.thankyou');
+        }
     }
 
-    public function notify(String $productId){
+    public function notify(String $productId)
+    {
         $notify = ProductNotify::create([
             'product_id'    => $productId,
             'user_id'       => Auth::id()
         ]);
 
-        if(!empty($notify)){
-            return redirect('/shop')->with('success','Product reminder set successfully');
+        if (!empty($notify)) {
+            return redirect('/shop')->with('success', 'Product reminder set successfully');
         }
     }
 }

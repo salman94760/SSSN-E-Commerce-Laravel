@@ -1,3 +1,4 @@
+
 @extends('layouts.customer.customer-layout')
 
 @section('title', 'SSSN | CHECKOUT')
@@ -8,13 +9,13 @@
     action="{{ route('order.place') }}"
     method="POST"
     id="checkout-form"
-    class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10"
+    class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8"
 >
     @csrf
 
-    {{-- ERROR MESSAGE --}}
+    {{-- ERROR MESSAGES --}}
     @if($errors->any())
-        <div class="mb-6 bg-red-50 border border-red-200 text-red-700 rounded-2xl p-4">
+        <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
             @foreach($errors->all() as $error)
                 <p class="text-sm">{{ $error }}</p>
             @endforeach
@@ -22,56 +23,58 @@
     @endif
 
     @if(session('success'))
-        <div class="mb-6 bg-green-50 border border-green-200 text-green-700 rounded-2xl p-4">
+        <div class="mb-6 rounded-2xl border border-green-200 bg-green-50 p-4 text-green-800">
             {{ session('success') }}
         </div>
     @endif
 
+    {{-- HEADER --}}
+    <div class="mb-9">
+        <p class="mb-2 text-[10px] font-semibold uppercase tracking-[3px] text-[#a18461]">
+            SSSN Fashion / Secure Checkout
+        </p>
 
-    <div class="grid lg:grid-cols-3 gap-8">
+        <h1 class="font-serif text-3xl font-medium text-[#493825] sm:text-4xl">
+            Complete Your Order
+        </h1>
 
-        {{-- ========================================================= --}}
-        {{-- LEFT --}}
-        {{-- ========================================================= --}}
+        <p class="mt-2 text-sm text-[#8b7964]">
+            Almost there! Please review your details before placing your order.
+        </p>
+    </div>
 
-        <div class="lg:col-span-2 space-y-6">
+    <div class="grid items-start gap-8 lg:grid-cols-3">
 
+        {{-- LEFT SECTION --}}
+        <div class="space-y-6 lg:col-span-2">
 
-            {{-- ===================================================== --}}
-            {{-- STEP 1 : ADDRESS --}}
-            {{-- ===================================================== --}}
+            {{-- DELIVERY ADDRESS --}}
+            <section class="rounded-3xl border border-[#e8dccb] bg-[#fffdf9] p-5 shadow-sm sm:p-8">
 
-            <div class="bg-white border border-gray-200 rounded-3xl p-6 sm:p-8">
-
-                <div class="flex items-center justify-between">
-
-                    <div>
-
-                        <span class="text-xs uppercase tracking-widest text-gray-400">
-                            Step 1
-                        </span>
-
-                        <h2 class="text-xl font-bold mt-1">
-                            Delivery Address
-                        </h2>
-
-                    </div>
-
-                    <span class="w-9 h-9 rounded-xl bg-gray-100
-                                 flex items-center justify-center">
-                        📍
+                <div class="mb-7 flex items-center gap-4">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-full bg-[#493825] font-serif text-sm text-white">
+                        01
                     </span>
 
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#a18461]">
+                            Step One
+                        </p>
+                        <h2 class="mt-1 font-serif text-2xl text-[#493825]">
+                            Delivery Address
+                        </h2>
+                    </div>
+
+                    <span class="ml-auto text-xl text-[#a18461]">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </span>
                 </div>
 
-
-                <div class="grid sm:grid-cols-2 gap-5 mt-7">
-
+                <div class="grid gap-5 sm:grid-cols-2">
 
                     {{-- NAME --}}
                     <div class="sm:col-span-2">
-
-                        <label class="block text-sm font-semibold mb-2">
+                        <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#594630]">
                             Full Name
                         </label>
 
@@ -81,19 +84,13 @@
                             value="{{ old('name', auth()->user()->name ?? '') }}"
                             placeholder="Enter full name"
                             required
-                            class="w-full h-12 px-4 rounded-xl
-                                   border border-gray-200
-                                   bg-gray-50 focus:bg-white
-                                   focus:border-black outline-none"
+                            class="h-12 w-full rounded-xl border border-[#e8dccb] bg-white px-4 text-sm text-[#493825] outline-none transition placeholder:text-[#b4a794] focus:border-[#9b7b55] focus:ring-2 focus:ring-[#d2b99c]/25"
                         >
-
                     </div>
-
 
                     {{-- PHONE --}}
                     <div>
-
-                        <label class="block text-sm font-semibold mb-2">
+                        <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#594630]">
                             Phone Number
                         </label>
 
@@ -103,19 +100,13 @@
                             value="{{ old('phone', $userDetail->userInfo->phone ?? '') }}"
                             placeholder="+91 98765 43210"
                             required
-                            class="w-full h-12 px-4 rounded-xl
-                                   border border-gray-200
-                                   bg-gray-50 focus:bg-white
-                                   focus:border-black outline-none"
+                            class="h-12 w-full rounded-xl border border-[#e8dccb] bg-white px-4 text-sm text-[#493825] outline-none transition placeholder:text-[#b4a794] focus:border-[#9b7b55] focus:ring-2 focus:ring-[#d2b99c]/25"
                         >
-
                     </div>
 
-
-                    {{-- PIN --}}
+                    {{-- PIN CODE --}}
                     <div>
-
-                        <label class="block text-sm font-semibold mb-2">
+                        <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#594630]">
                             PIN Code
                         </label>
 
@@ -125,20 +116,14 @@
                             value="{{ old('zipcode', $userDetail->userInfo->zipcode ?? '') }}"
                             placeholder="123456"
                             required
-                            class="w-full h-12 px-4 rounded-xl
-                                   border border-gray-200
-                                   bg-gray-50 focus:bg-white
-                                   focus:border-black outline-none"
+                            class="h-12 w-full rounded-xl border border-[#e8dccb] bg-white px-4 text-sm text-[#493825] outline-none transition placeholder:text-[#b4a794] focus:border-[#9b7b55] focus:ring-2 focus:ring-[#d2b99c]/25"
                         >
-
                     </div>
-
 
                     {{-- ADDRESS --}}
                     <div class="sm:col-span-2">
-
-                        <label class="block text-sm font-semibold mb-2">
-                            Address
+                        <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#594630]">
+                            Full Address
                         </label>
 
                         <textarea
@@ -146,19 +131,13 @@
                             rows="3"
                             placeholder="House number, street, area..."
                             required
-                            class="w-full px-4 py-3 rounded-xl
-                                   border border-gray-200
-                                   bg-gray-50 focus:bg-white
-                                   focus:border-black outline-none resize-none"
+                            class="w-full resize-none rounded-xl border border-[#e8dccb] bg-white px-4 py-3 text-sm text-[#493825] outline-none transition placeholder:text-[#b4a794] focus:border-[#9b7b55] focus:ring-2 focus:ring-[#d2b99c]/25"
                         >{{ old('shipping_address', $userDetail->userInfo->address ?? '') }}</textarea>
-
                     </div>
-
 
                     {{-- CITY --}}
                     <div>
-
-                        <label class="block text-sm font-semibold mb-2">
+                        <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#594630]">
                             City
                         </label>
 
@@ -166,21 +145,15 @@
                             type="text"
                             name="city"
                             value="{{ old('city') }}"
-                            placeholder="City"
+                            placeholder="Enter city"
                             required
-                            class="w-full h-12 px-4 rounded-xl
-                                   border border-gray-200
-                                   bg-gray-50 focus:bg-white
-                                   focus:border-black outline-none"
+                            class="h-12 w-full rounded-xl border border-[#e8dccb] bg-white px-4 text-sm text-[#493825] outline-none transition placeholder:text-[#b4a794] focus:border-[#9b7b55] focus:ring-2 focus:ring-[#d2b99c]/25"
                         >
-
                     </div>
-
 
                     {{-- STATE --}}
                     <div>
-
-                        <label class="block text-sm font-semibold mb-2">
+                        <label class="mb-2 block text-xs font-bold uppercase tracking-wider text-[#594630]">
                             State
                         </label>
 
@@ -188,938 +161,655 @@
                             type="text"
                             name="state"
                             value="{{ old('state') }}"
-                            placeholder="State"
+                            placeholder="Enter state"
                             required
-                            class="w-full h-12 px-4 rounded-xl
-                                   border border-gray-200
-                                   bg-gray-50 focus:bg-white
-                                   focus:border-black outline-none"
+                            class="h-12 w-full rounded-xl border border-[#e8dccb] bg-white px-4 text-sm text-[#493825] outline-none transition placeholder:text-[#b4a794] focus:border-[#9b7b55] focus:ring-2 focus:ring-[#d2b99c]/25"
                         >
-
                     </div>
 
                 </div>
 
-
-                <label class="flex items-center gap-3 mt-6 cursor-pointer">
-
+                <label class="mt-6 flex cursor-pointer items-center gap-3">
                     <input
                         type="checkbox"
                         name="save_address"
                         value="1"
-                        class="w-4 h-4 rounded"
+                        class="h-4 w-4 accent-[#493825]"
                     >
 
-                    <span class="text-sm text-gray-600">
+                    <span class="text-sm text-[#79654e]">
                         Save this address for future orders
                     </span>
-
                 </label>
 
-            </div>
+            </section>
 
+            {{-- DELIVERY METHOD --}}
+            <section class="rounded-3xl border border-[#e8dccb] bg-[#fffdf9] p-5 shadow-sm sm:p-8">
 
+                <div class="mb-7 flex items-center gap-4">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-full bg-[#493825] font-serif text-sm text-white">
+                        02
+                    </span>
 
-            {{-- ===================================================== --}}
-            {{-- STEP 2 : DELIVERY --}}
-            {{-- ===================================================== --}}
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#a18461]">
+                            Step Two
+                        </p>
+                        <h2 class="mt-1 font-serif text-2xl text-[#493825]">
+                            Delivery Method
+                        </h2>
+                    </div>
+                </div>
 
-            <div class="bg-white border border-gray-200 rounded-3xl p-6 sm:p-8">
+                <div class="space-y-3">
 
-                <span class="text-xs uppercase tracking-widest text-gray-400">
-                    Step 2
-                </span>
-
-                <h2 class="text-xl font-bold mt-1">
-                    Delivery Method
-                </h2>
-
-
-                <div class="space-y-3 mt-6">
-
-
-                    {{-- STANDARD --}}
-                    <label
-                        class="delivery-option flex items-center justify-between
-                               border-2 border-black rounded-2xl p-5 cursor-pointer"
-                    >
+                    <label class="delivery-option flex cursor-pointer items-center justify-between gap-4 rounded-2xl border-2 border-[#493825] bg-[#f8f3eb] p-5 transition">
 
                         <div class="flex items-center gap-4">
-
                             <input
                                 type="radio"
                                 name="delivery"
                                 value="standard"
                                 checked
+                                class="h-4 w-4 accent-[#493825]"
                             >
 
                             <div>
-
-                                <p class="font-semibold">
+                                <p class="text-sm font-semibold text-[#493825]">
                                     Standard Delivery
                                 </p>
 
-                                <p class="text-xs text-gray-500 mt-1">
-                                    Delivery within 3-7 business days
+                                <p class="mt-1 text-xs text-[#8b7964]">
+                                    Delivery within 3–7 business days
                                 </p>
-
                             </div>
-
                         </div>
 
-                        <span class="font-semibold text-green-600">
-                            FREE
+                        <span class="text-xs font-bold uppercase text-green-700">
+                            Free
                         </span>
-
                     </label>
 
-
-                    {{-- EXPRESS --}}
-                    <label
-                        class="delivery-option flex items-center justify-between
-                               border border-gray-200 rounded-2xl p-5
-                               cursor-pointer hover:border-gray-400"
-                    >
+                    <label class="delivery-option flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-[#e8dccb] bg-white p-5 transition hover:border-[#b99a72]">
 
                         <div class="flex items-center gap-4">
-
                             <input
                                 type="radio"
                                 name="delivery"
                                 value="express"
+                                class="h-4 w-4 accent-[#493825]"
                             >
 
                             <div>
-
-                                <p class="font-semibold">
+                                <p class="text-sm font-semibold text-[#493825]">
                                     Express Delivery
                                 </p>
 
-                                <p class="text-xs text-gray-500 mt-1">
-                                    Delivery within 1-2 business days
+                                <p class="mt-1 text-xs text-[#8b7964]">
+                                    Delivery within 1–2 business days
                                 </p>
-
                             </div>
-
                         </div>
 
-                        <span class="font-semibold">
+                        <span class="text-sm font-semibold text-[#493825]">
                             ₹149
                         </span>
-
                     </label>
 
                 </div>
+            </section>
 
-            </div>
+            {{-- PAYMENT METHOD --}}
+            <section class="rounded-3xl border border-[#e8dccb] bg-[#fffdf9] p-5 shadow-sm sm:p-8">
 
+                <div class="mb-7 flex items-center gap-4">
+                    <span class="flex h-11 w-11 items-center justify-center rounded-full bg-[#493825] font-serif text-sm text-white">
+                        03
+                    </span>
 
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-[2px] text-[#a18461]">
+                            Step Three
+                        </p>
 
-            {{-- ===================================================== --}}
-            {{-- STEP 3 : PAYMENT --}}
-            {{-- ===================================================== --}}
+                        <h2 class="mt-1 font-serif text-2xl text-[#493825]">
+                            Payment Method
+                        </h2>
+                    </div>
+                </div>
 
-            <div class="bg-white border border-gray-200 rounded-3xl p-6 sm:p-8">
-
-                <span class="text-xs uppercase tracking-widest text-gray-400">
-                    Step 3
-                </span>
-
-                <h2 class="text-xl font-bold mt-1">
-                    Payment Method
-                </h2>
-
-
-                {{-- PAYMENT OPTIONS --}}
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6">
-
+                <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 
                     {{-- RAZORPAY --}}
-                    <label
-                        class="payment-option border-2 border-black rounded-2xl p-5
-                               cursor-pointer transition"
-                        data-payment="razorpay"
-                    >
+                    <label class="payment-option cursor-pointer rounded-2xl border-2 border-[#493825] bg-[#f8f3eb] p-5 transition hover:border-[#9b7b55]" data-payment="razorpay">
+                        <input type="radio" name="payment_method" value="razorpay" class="payment-radio h-4 w-4 accent-[#493825]" checked>
 
-                        <input
-                            type="radio"
-                            name="payment_method"
-                            value="razorpay"
-                            class="payment-radio"
-                            checked
-                        >
-
-                        <div class="text-2xl mt-3">
-                            💳
+                        <div class="mt-4 text-2xl text-[#8b6d49]">
+                            <i class="fa-regular fa-credit-card"></i>
                         </div>
 
-                        <p class="font-semibold mt-3">
-                            Razorpay
-                        </p>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            Card, UPI, Net Banking
-                        </p>
-
+                        <p class="mt-3 text-sm font-semibold text-[#493825]">Razorpay</p>
+                        <p class="mt-1 text-xs text-[#8b7964]">Card, UPI, Net Banking</p>
                     </label>
-
 
                     {{-- PAYU --}}
-                    <label
-                        class="payment-option border border-gray-200 rounded-2xl p-5
-                               cursor-pointer hover:border-gray-400 transition"
-                        data-payment="payu"
-                    >
+                    <label class="payment-option cursor-pointer rounded-2xl border border-[#e8dccb] bg-white p-5 transition hover:border-[#9b7b55]" data-payment="payu">
+                        <input type="radio" name="payment_method" value="payu" class="payment-radio h-4 w-4 accent-[#493825]">
 
-                        <input
-                            type="radio"
-                            name="payment_method"
-                            value="payu"
-                            class="payment-radio"
-                        >
-
-                        <div class="text-2xl mt-3">
-                            💰
+                        <div class="mt-4 text-2xl text-[#8b6d49]">
+                            <i class="fa-solid fa-wallet"></i>
                         </div>
 
-                        <p class="font-semibold mt-3">
-                            PayU
-                        </p>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            Card, UPI & Net Banking
-                        </p>
-
+                        <p class="mt-3 text-sm font-semibold text-[#493825]">PayU</p>
+                        <p class="mt-1 text-xs text-[#8b7964]">Card, UPI & Net Banking</p>
                     </label>
-
 
                     {{-- STRIPE --}}
-                    <label
-                        class="payment-option border border-gray-200 rounded-2xl p-5
-                               cursor-pointer hover:border-gray-400 transition"
-                        data-payment="stripe"
-                    >
+                    <label class="payment-option cursor-pointer rounded-2xl border border-[#e8dccb] bg-white p-5 transition hover:border-[#9b7b55]" data-payment="stripe">
+                        <input type="radio" name="payment_method" value="stripe" class="payment-radio h-4 w-4 accent-[#493825]">
 
-                        <input
-                            type="radio"
-                            name="payment_method"
-                            value="stripe"
-                            class="payment-radio"
-                        >
-
-                        <div class="text-2xl mt-3">
-                            🌎
+                        <div class="mt-4 text-2xl text-[#8b6d49]">
+                            <i class="fa-solid fa-globe"></i>
                         </div>
 
-                        <p class="font-semibold mt-3">
-                            Stripe
-                        </p>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            International Cards
-                        </p>
-
+                        <p class="mt-3 text-sm font-semibold text-[#493825]">Stripe</p>
+                        <p class="mt-1 text-xs text-[#8b7964]">International Cards</p>
                     </label>
-
 
                     {{-- PHONEPE --}}
-                    <label
-                        class="payment-option border border-gray-200 rounded-2xl p-5
-                               cursor-pointer hover:border-gray-400 transition"
-                        data-payment="phonepe"
-                    >
+                    <label class="payment-option cursor-pointer rounded-2xl border border-[#e8dccb] bg-white p-5 transition hover:border-[#9b7b55]" data-payment="phonepe">
+                        <input type="radio" name="payment_method" value="phonepe" class="payment-radio h-4 w-4 accent-[#493825]">
 
-                        <input
-                            type="radio"
-                            name="payment_method"
-                            value="phonepe"
-                            class="payment-radio"
-                        >
-
-                        <div class="text-2xl mt-3">
-                            📱
+                        <div class="mt-4 text-2xl text-[#8b6d49]">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
                         </div>
 
-                        <p class="font-semibold mt-3">
-                            PhonePe
-                        </p>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            UPI & Online Payment
-                        </p>
-
+                        <p class="mt-3 text-sm font-semibold text-[#493825]">PhonePe</p>
+                        <p class="mt-1 text-xs text-[#8b7964]">UPI & Online Payment</p>
                     </label>
-
 
                     {{-- PAYTM --}}
-                    <label
-                        class="payment-option border border-gray-200 rounded-2xl p-5
-                               cursor-pointer hover:border-gray-400 transition"
-                        data-payment="paytm"
-                    >
+                    <label class="payment-option cursor-pointer rounded-2xl border border-[#e8dccb] bg-white p-5 transition hover:border-[#9b7b55]" data-payment="paytm">
+                        <input type="radio" name="payment_method" value="paytm" class="payment-radio h-4 w-4 accent-[#493825]">
 
-                        <input
-                            type="radio"
-                            name="payment_method"
-                            value="paytm"
-                            class="payment-radio"
-                        >
-
-                        <div class="text-2xl mt-3">
-                            📲
+                        <div class="mt-4 text-2xl text-[#8b6d49]">
+                            <i class="fa-solid fa-money-bill-transfer"></i>
                         </div>
 
-                        <p class="font-semibold mt-3">
-                            Paytm
-                        </p>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            UPI, Card & Net Banking
-                        </p>
-
+                        <p class="mt-3 text-sm font-semibold text-[#493825]">Paytm</p>
+                        <p class="mt-1 text-xs text-[#8b7964]">UPI, Card & Net Banking</p>
                     </label>
 
-
                     {{-- COD --}}
-                    <label
-                        class="payment-option border border-gray-200 rounded-2xl p-5
-                               cursor-pointer hover:border-gray-400 transition"
-                        data-payment="cod"
-                    >
+                    <label class="payment-option cursor-pointer rounded-2xl border border-[#e8dccb] bg-white p-5 transition hover:border-[#9b7b55]" data-payment="cod">
+                        <input type="radio" name="payment_method" value="COD" class="payment-radio h-4 w-4 accent-[#493825]">
 
-                        <input
-                            type="radio"
-                            name="payment_method"
-                            value="cod"
-                            class="payment-radio"
-                        >
-
-                        <div class="text-2xl mt-3">
-                            💵
+                        <div class="mt-4 text-2xl text-[#8b6d49]">
+                            <i class="fa-solid fa-money-bill-wave"></i>
                         </div>
 
-                        <p class="font-semibold mt-3">
-                            Cash on Delivery
-                        </p>
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            Pay in cash when delivered
-                        </p>
-
+                        <p class="mt-3 text-sm font-semibold text-[#493825]">Cash on Delivery</p>
+                        <p class="mt-1 text-xs text-[#8b7964]">Pay when delivered</p>
                     </label>
 
                 </div>
 
+                {{-- PAYMENT INFO --}}
+                <div class="mt-6 rounded-2xl border border-[#e8dccb] bg-[#f8f3eb] p-5">
+                    <div class="flex items-center gap-4">
 
-                {{-- PAYMENT INFORMATION --}}
-                <div class="mt-7">
+                        <div id="payment-icon" class="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-lg text-[#8b6d49]">
+                            <i class="fa-regular fa-credit-card"></i>
+                        </div>
 
-                    <div
-                        id="payment-info"
-                        class="bg-gray-50 border border-gray-200 rounded-2xl p-5"
-                    >
+                        <div>
+                            <h3 id="payment-title" class="text-sm font-semibold text-[#493825]">
+                                Razorpay
+                            </h3>
 
-                        <div class="flex items-center gap-3">
-
-                            <div
-                                id="payment-icon"
-                                class="w-11 h-11 rounded-xl bg-white border
-                                       flex items-center justify-center text-xl"
-                            >
-                                💳
-                            </div>
-
-                            <div>
-
-                                <h3
-                                    id="payment-title"
-                                    class="font-semibold"
-                                >
-                                    Razorpay
-                                </h3>
-
-                                <p
-                                    id="payment-description"
-                                    class="text-xs text-gray-500 mt-1"
-                                >
-                                    Secure payment using Card, UPI or Net Banking.
-                                </p>
-
-                            </div>
-
+                            <p id="payment-description" class="mt-1 text-xs text-[#8b7964]">
+                                Secure payment using Card, UPI or Net Banking.
+                            </p>
                         </div>
 
                     </div>
-
                 </div>
 
-            </div>
-
+            </section>
         </div>
 
+        {{-- RIGHT SIDE: ORDER SUMMARY --}}
+        <aside class="lg:sticky lg:top-6">
 
+            <div class="overflow-hidden rounded-3xl border border-[#e8dccb] bg-[#fffdf9] shadow-[0_12px_40px_rgba(73,56,37,0.07)]">
 
-        {{-- ========================================================= --}}
-        {{-- RIGHT : ORDER SUMMARY --}}
-        {{-- ========================================================= --}}
+                <div class="bg-[#493825] px-6 py-6 text-white">
+                    <p class="text-[10px] font-bold uppercase tracking-[2.5px] text-[#d2b99c]">
+                        Your Selection
+                    </p>
 
-        <div>
+                    <h2 class="mt-2 font-serif text-2xl">
+                        Order Summary
+                    </h2>
 
-            <div
-                class="bg-white border border-gray-200
-                       rounded-3xl p-6 sticky top-6"
-            >
+                    <p class="mt-1 text-xs text-white/65">
+                        Review your items before checkout
+                    </p>
+                </div>
 
-                <h2 class="text-xl font-bold">
-                    Order Summary
-                </h2>
+                <div class="p-5 sm:p-6">
 
+                    {{-- PRODUCTS --}}
+                    <div class="max-h-[390px] space-y-5 overflow-y-auto pr-1">
 
-                {{-- PRODUCTS --}}
-                @foreach($cartitems as $item)
+                        @foreach($cartitems as $item)
 
-                    @php
+                            @php
+                                $size = $item->product->sizes
+                                    ->where('id', $item->size_id)
+                                    ->first();
 
-                        $size = $item->product->sizes
-                            ->where('id', $item->size_id)
-                            ->first();
+                                $unitPrice =
+                                    $size?->pivot?->price
+                                    ?? $item->price
+                                    ?? $item->product->sale_price;
+                            @endphp
 
-                        $unitPrice =
-                            $size?->pivot?->price
-                            ?? $item->price
-                            ?? $item->product->sale_price;
+                            <div class="flex gap-4">
 
-                    @endphp
+                                {{-- PRODUCT IMAGE --}}
+                                @if($item->product && $item->product->images->first())
 
+                                    <img
+                                        src="{{ asset('storage/' . $item->product->images->first()->name) }}"
+                                        alt="{{ $item->product->name }}"
+                                        class="h-24 w-20 rounded-xl border border-[#eee4d8] object-cover"
+                                    >
 
-                    <div class="flex gap-3 mt-5">
+                                @else
 
-                        {{-- IMAGE --}}
-                        @if(
-                            $item->product &&
-                            $item->product->images->first()
-                        )
+                                    <div class="flex h-24 w-20 items-center justify-center rounded-xl bg-[#f5efe6] text-xs text-[#a18b70]">
+                                        No Image
+                                    </div>
 
-                            <img
-                                src="{{ asset('storage/' . $item->product->images->first()->name) }}"
-                                alt="{{ $item->product->name }}"
-                                class="w-20 h-24 rounded-xl object-cover"
-                            >
+                                @endif
+
+                                <div class="min-w-0 flex-1">
+
+                                    <h3 class="text-sm font-semibold text-[#493825]">
+                                        {{ $item->product->name }}
+                                    </h3>
+
+                                    <p class="mt-1 text-xs text-[#8b7964]">
+                                        {{ $item->color->name }}
+                                        <span class="px-1 text-[#c6b49e]">·</span>
+                                        {{ $item->size->name }}
+                                    </p>
+
+                                    <p class="mt-1 text-xs text-[#8b7964]">
+                                        Quantity: {{ $item->quantity }}
+                                    </p>
+
+                                    <p class="mt-3 text-sm font-semibold text-[#493825]">
+                                        ₹{{ number_format($unitPrice, 2) }}
+                                    </p>
+
+                                </div>
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+                    {{-- COUPON --}}
+                    <div class="mt-7 border-t border-[#e8dccb] pt-6">
+
+                        @if(session('coupon'))
+
+                            <div class="flex items-center justify-between gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3">
+
+                                <div>
+                                    <p class="text-sm font-semibold text-green-800">
+                                        {{ session('coupon.code') }} Applied
+                                    </p>
+
+                                    <p class="mt-1 text-xs text-green-700">
+                                        Discount: ₹{{ number_format(session('coupon.discount'), 2) }}
+                                    </p>
+                                </div>
+
+                                <button
+                                    onclick="removeCoupon()"
+                                    type="button"
+                                    class="text-xs font-semibold text-red-600"
+                                >
+                                    Remove
+                                </button>
+
+                            </div>
 
                         @else
 
-                            <div
-                                class="w-20 h-24 rounded-xl
-                                       bg-gray-100 flex items-center
-                                       justify-center"
-                            >
-                                <span class="text-gray-400 text-xs">
-                                    No Image
-                                </span>
+                            <label for="coupon_code" class="block text-xs font-bold uppercase tracking-wider text-[#594630]">
+                                Have a Coupon?
+                            </label>
+
+                            <div class="mt-3 flex gap-2">
+
+                                <input
+                                    type="text"
+                                    id="coupon_code"
+                                    placeholder="Enter coupon code"
+                                    class="h-11 min-w-0 flex-1 rounded-xl border border-[#e8dccb] bg-white px-3 text-sm uppercase text-[#493825] outline-none placeholder:normal-case placeholder:text-[#b4a794] focus:border-[#9b7b55]"
+                                >
+
+                                <button
+                                    type="button"
+                                    onclick="ApplyCoupon()"
+                                    class="rounded-xl bg-[#f0e6d8] px-4 text-xs font-bold uppercase tracking-wider text-[#493825] transition hover:bg-[#e5d4bd]"
+                                >
+                                    Apply
+                                </button>
+
                             </div>
 
                         @endif
+                    </div>
 
+                    {{-- PRICE BREAKDOWN --}}
+                    <div class="mt-6 space-y-4 border-t border-[#e8dccb] pt-6">
 
-                        <div class="flex-1">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-[#8b7964]">Subtotal</span>
+                            <span class="font-medium text-[#493825]">
+                                ₹{{ number_format($subtotal, 2) }}
+                            </span>
+                        </div>
 
-                            <h3 class="font-semibold text-sm">
-                                {{ $item->product->name }}
-                            </h3>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-[#8b7964]">Shipping</span>
+                            <span class="font-medium text-green-700">Free</span>
+                        </div>
 
-                            <p class="text-xs text-gray-500 mt-1">
-                                {{ $item->color->name }}
-                                ·
-                                {{ $item->size->name }}
-                            </p>
-
-                            <p class="text-xs text-gray-500 mt-1">
-                                Quantity · {{ $item->quantity }}
-                            </p>
-
-                            <p class="font-semibold mt-3">
-                                Price :
-                                ₹{{ number_format($unitPrice, 2) }}
-                            </p>
-
+                        <div class="flex justify-between text-sm">
+                            <span class="text-[#8b7964]">Discount</span>
+                            <span class="font-medium text-[#493825]">
+                                − ₹{{ number_format($discount, 2) }}
+                            </span>
                         </div>
 
                     </div>
 
-                @endforeach
+                    {{-- TOTAL --}}
+                    <div class="mt-6 flex items-center justify-between border-t border-[#e8dccb] pt-5">
 
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-[#8b7964]">
+                                Total Amount
+                            </p>
 
-
-                {{-- COUPON --}}
-                <div class="mt-7">
-
-                    @if(session('coupon'))
-
-                        <div
-                            class="flex items-center justify-between
-                                   rounded-lg bg-green-50
-                                   px-4 py-3"
-                        >
-
-                            <div>
-
-                                <p class="text-sm font-semibold text-green-800">
-                                    {{ session('coupon.code') }} Applied
-                                </p>
-
-                                <p class="text-xs text-green-600">
-                                    Discount:
-                                    ₹{{ number_format(session('coupon.discount'), 2) }}
-                                </p>
-
-                            </div>
-
-
-                            <button
-                                onclick="removeCoupon()"
-                                type="button"
-                                class="text-sm font-medium text-red-600"
-                            >
-                                Remove
-                            </button>
-
+                            <p class="mt-1 text-[10px] text-[#a99883]">
+                                Inclusive of applicable charges
+                            </p>
                         </div>
 
-                    @else
-
-                        <label class="text-sm font-semibold">
-                            Coupon Code
-                        </label>
-
-                        <div class="flex gap-2 mt-2">
-
-                            <input
-                                type="text"
-                                id="coupon_code"
-                                placeholder="Coupon code"
-                                class="flex-1 min-w-0 h-11 px-3
-                                       rounded-xl border border-gray-200
-                                       outline-none"
-                            >
-
-                            <button
-                                type="button"
-                                onclick="ApplyCoupon()"
-                                class="px-4 rounded-xl bg-gray-100
-                                       text-sm font-semibold"
-                            >
-                                Apply
-                            </button>
-
-                        </div>
-
-                    @endif
-
-                </div>
-
-
-
-                {{-- PRICING --}}
-                <div class="border-t mt-7 pt-6 space-y-4">
-
-
-                    {{-- SUBTOTAL --}}
-                    <div class="flex justify-between text-sm">
-
-                        <span class="text-gray-500">
-                            Subtotal
-                        </span>
-
-                        <span>
-                            ₹{{ number_format($subtotal, 2) }}
+                        <span class="font-serif text-2xl font-semibold text-[#493825]">
+                            ₹{{ number_format($total, 2) }}
                         </span>
 
                     </div>
 
+                    {{-- PLACE ORDER --}}
+                    <button
+                        type="submit"
+                        id="place-order-btn"
+                        class="mt-7 flex h-14 w-full items-center justify-center gap-3 rounded-xl bg-[#493825] px-5 text-xs font-bold uppercase tracking-[2px] text-white shadow-lg shadow-[#493825]/15 transition duration-300 hover:bg-[#5c4630] focus:outline-none focus:ring-2 focus:ring-[#d2b99c] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                        <span>Place Order</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
 
-                    {{-- SHIPPING --}}
-                    <div class="flex justify-between text-sm">
+                    <div class="mt-6 space-y-3 text-center">
 
-                        <span class="text-gray-500">
-                            Shipping
-                        </span>
+                        <p class="flex items-center justify-center gap-2 text-[11px] text-[#8b7964]">
+                            <i class="fa-solid fa-lock text-[#a18461]"></i>
+                            Secure checkout & protected payment
+                        </p>
 
-                        <span class="text-green-600">
-                            Free
-                        </span>
-
-                    </div>
-
-
-                    {{-- DISCOUNT --}}
-                    <div class="flex justify-between text-sm">
-
-                        <span class="text-gray-500">
-                            Discount
-                        </span>
-
-                        <span>
-                            - ₹{{ number_format($discount, 2) }}
-                        </span>
+                        <p class="text-[10px] leading-relaxed text-[#a99883]">
+                            By placing your order, you agree to our Terms & Conditions.
+                        </p>
 
                     </div>
 
                 </div>
-
-
-
-                {{-- TOTAL --}}
-                <div
-                    class="border-t mt-5 pt-5
-                           flex justify-between items-center"
-                >
-
-                    <span class="font-semibold">
-                        Total
-                    </span>
-
-                    <span class="text-2xl font-bold">
-                        ₹{{ number_format($total, 2) }}
-                    </span>
-
-                </div>
-
-
-
-                {{-- PLACE ORDER --}}
-                <button
-                    type="submit"
-                    id="place-order-btn"
-                    class="w-full h-13 mt-6 rounded-xl
-                           bg-black text-white
-                           font-semibold hover:bg-gray-800
-                           transition"
-                >
-                    Place Order · ₹{{ number_format($total, 2) }}
-                </button>
-
-
-                <div class="mt-5 text-center">
-
-                    <p class="text-xs text-gray-400">
-                        🔒 Your payment information is secure
-                    </p>
-
-                    <p class="text-xs text-gray-400 mt-2">
-                        By placing your order, you agree
-                        to our Terms & Conditions.
-                    </p>
-
-                </div>
-
             </div>
-
-        </div>
+        </aside>
 
     </div>
-
 </form>
 
 
-
-{{-- =============================================================== --}}
 {{-- JAVASCRIPT --}}
-{{-- =============================================================== --}}
-
 <script>
 
+/* PAYMENT OPTIONS */
 
-/*
-|--------------------------------------------------------------------------
-| PAYMENT OPTIONS
-|--------------------------------------------------------------------------
-*/
+const paymentRadios = document.querySelectorAll('.payment-radio');
+const paymentOptions = document.querySelectorAll('.payment-option');
 
-const paymentRadios =
-    document.querySelectorAll('.payment-radio');
-
-const paymentOptions =
-    document.querySelectorAll('.payment-option');
-
-const paymentIcon =
-    document.getElementById('payment-icon');
-
-const paymentTitle =
-    document.getElementById('payment-title');
-
-const paymentDescription =
-    document.getElementById('payment-description');
-
+const paymentIcon = document.getElementById('payment-icon');
+const paymentTitle = document.getElementById('payment-title');
+const paymentDescription = document.getElementById('payment-description');
 
 const paymentDetails = {
 
     razorpay: {
-        icon: '💳',
+        icon: '<i class="fa-regular fa-credit-card"></i>',
         title: 'Razorpay',
-        description:
-            'Secure payment using Card, UPI or Net Banking.'
+        description: 'Secure payment using Card, UPI or Net Banking.'
     },
 
     payu: {
-        icon: '💰',
+        icon: '<i class="fa-solid fa-wallet"></i>',
         title: 'PayU',
-        description:
-            'Secure payment using Card, UPI or Net Banking.'
+        description: 'Secure payment using Card, UPI or Net Banking.'
     },
 
     stripe: {
-        icon: '🌎',
+        icon: '<i class="fa-solid fa-globe"></i>',
         title: 'Stripe',
-        description:
-            'Secure international card payment.'
+        description: 'Secure international card payment.'
     },
 
     phonepe: {
-        icon: '📱',
+        icon: '<i class="fa-solid fa-mobile-screen-button"></i>',
         title: 'PhonePe',
-        description:
-            'Secure payment using PhonePe.'
+        description: 'Secure payment using PhonePe.'
     },
 
     paytm: {
-        icon: '📲',
+        icon: '<i class="fa-solid fa-money-bill-transfer"></i>',
         title: 'Paytm',
-        description:
-            'Secure payment using Paytm.'
+        description: 'Secure payment using Paytm.'
     },
 
     cod: {
-        icon: '💵',
+        icon: '<i class="fa-solid fa-money-bill-wave"></i>',
         title: 'Cash on Delivery',
-        description:
-            'Pay in cash when your order is delivered.'
+        description: 'Pay in cash when your order is delivered.'
     }
 
 };
 
 
-/*
-|--------------------------------------------------------------------------
-| UPDATE PAYMENT UI
-|--------------------------------------------------------------------------
-*/
+/* UPDATE PAYMENT */
 
 function updatePayment() {
 
-    const selected =
-        document.querySelector(
-            'input[name="payment_method"]:checked'
-        )?.value;
+    const selected = document.querySelector(
+        'input[name="payment_method"]:checked'
+    )?.value;
 
-
-    if (!selected) {
-        return;
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | RESET
-    |--------------------------------------------------------------------------
-    */
+    if (!selected) return;
 
     paymentOptions.forEach(option => {
-
         option.classList.remove(
             'border-2',
-            'border-black'
+            'border-[#493825]',
+            'bg-[#f8f3eb]'
         );
 
         option.classList.add(
             'border',
-            'border-gray-200'
+            'border-[#e8dccb]',
+            'bg-white'
         );
-
     });
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | ACTIVE
-    |--------------------------------------------------------------------------
-    */
-
-    const activeOption =
-        document.querySelector(
-            `[data-payment="${selected}"]`
-        );
-
+    const activeOption = document.querySelector(
+        `[data-payment="${selected}"]`
+    );
 
     if (activeOption) {
-
         activeOption.classList.remove(
             'border',
-            'border-gray-200'
+            'border-[#e8dccb]',
+            'bg-white'
         );
 
         activeOption.classList.add(
             'border-2',
-            'border-black'
+            'border-[#493825]',
+            'bg-[#f8f3eb]'
         );
-
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | INFORMATION
-    |--------------------------------------------------------------------------
-    */
-
-    const detail =
-        paymentDetails[selected];
-
+    const detail = paymentDetails[selected];
 
     if (detail) {
-
-        paymentIcon.textContent =
-            detail.icon;
-
-        paymentTitle.textContent =
-            detail.title;
-
-        paymentDescription.textContent =
-            detail.description;
-
+        paymentIcon.innerHTML = detail.icon;
+        paymentTitle.textContent = detail.title;
+        paymentDescription.textContent = detail.description;
     }
-
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| RADIO EVENTS
-|--------------------------------------------------------------------------
-*/
-
 paymentRadios.forEach(radio => {
-
-    radio.addEventListener(
-        'change',
-        updatePayment
-    );
-
+    radio.addEventListener('change', updatePayment);
 });
-
-
-/*
-|--------------------------------------------------------------------------
-| INITIAL
-|--------------------------------------------------------------------------
-*/
 
 updatePayment();
 
 
+/* DELIVERY OPTION DESIGN */
 
-/*
-|--------------------------------------------------------------------------
-| REMOVE COUPON
-|--------------------------------------------------------------------------
-*/
+const deliveryOptions = document.querySelectorAll('.delivery-option');
+
+function updateDelivery() {
+
+    deliveryOptions.forEach(option => {
+
+        const radio = option.querySelector('input[type="radio"]');
+
+        if (radio.checked) {
+            option.classList.remove('border', 'border-[#e8dccb]', 'bg-white');
+            option.classList.add('border-2', 'border-[#493825]', 'bg-[#f8f3eb]');
+        } else {
+            option.classList.remove('border-2', 'border-[#493825]', 'bg-[#f8f3eb]');
+            option.classList.add('border', 'border-[#e8dccb]', 'bg-white');
+        }
+
+    });
+}
+
+deliveryOptions.forEach(option => {
+    option.querySelector('input').addEventListener('change', updateDelivery);
+});
+
+updateDelivery();
+
+
+/* REMOVE COUPON */
 
 function removeCoupon() {
 
-    fetch(
-        "{{ route('coupon.remove') }}",
-        {
-            method: "POST",
+    fetch("{{ route('coupon.remove') }}", {
+        method: "POST",
 
-            headers: {
-                "X-CSRF-TOKEN":
-                    "{{ csrf_token() }}",
-
-                "Accept":
-                    "application/json"
-            }
+        headers: {
+            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            "Accept": "application/json"
         }
-    )
-    .then(() => {
-        window.location.reload();
-    });
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Unable to remove coupon.');
+        }
 
+        window.location.reload();
+    })
+    .catch(error => {
+        alert(error.message);
+    });
 }
 
 
-
-/*
-|--------------------------------------------------------------------------
-| APPLY COUPON
-|--------------------------------------------------------------------------
-*/
+/* APPLY COUPON */
 
 function ApplyCoupon() {
 
-    const couponCode =
-        document.getElementById(
-            'coupon_code'
-        ).value;
-
+    const couponInput = document.getElementById('coupon_code');
+    const couponCode = couponInput.value.trim();
 
     if (!couponCode) {
+        couponInput.focus();
         return;
     }
 
+    fetch("{{ route('coupon.apply') }}", {
+        method: "POST",
 
-    fetch(
-        "{{ route('coupon.apply') }}",
-        {
-            method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            "Accept": "application/json"
+        },
 
-            headers: {
-
-                "Content-Type":
-                    "application/json",
-
-                "X-CSRF-TOKEN":
-                    "{{ csrf_token() }}",
-
-                "Accept":
-                    "application/json"
-            },
-
-            body: JSON.stringify({
-
-                coupon_code:
-                    couponCode
-
-            })
+        body: JSON.stringify({
+            coupon_code: couponCode
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Unable to apply coupon. Please check the code.');
         }
-    )
-    .then(() => {
-        window.location.reload();
-    });
 
+        window.location.reload();
+    })
+    .catch(error => {
+        alert(error.message);
+    });
 }
 
 
+/* PREVENT DOUBLE SUBMISSION */
 
-/*
-|--------------------------------------------------------------------------
-| PREVENT DOUBLE CLICK
-|--------------------------------------------------------------------------
-*/
+document.getElementById('checkout-form').addEventListener('submit', function () {
 
-document
-    .getElementById('checkout-form')
-    .addEventListener('submit', function () {
+    const button = document.getElementById('place-order-btn');
 
-        const button =
-            document.getElementById(
-                'place-order-btn'
-            );
+    if (button.disabled) return;
 
-        button.disabled = true;
+    button.disabled = true;
 
-        button.innerHTML =
-            'Processing...';
+    button.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <span>Processing...</span>
+    `;
 
-    });
-
+});
 
 </script>
+
+@endsection

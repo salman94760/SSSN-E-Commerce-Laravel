@@ -3,66 +3,6 @@
 @section('title', 'SSSN | SHOP')
 
 @section('customerContent')
-{{-- NAVBAR: STATIC --}}
-<nav class="announcement sticky left-0 top-0 z-30 w-full border-b border-white/20">
-
-    <div class="mx-auto flex max-w-[1500px] items-center justify-between px-6 py-6 lg:px-20">
-
-        {{-- LOGO --}}
-        <a href="{{ url('/') }}"
-           class="fashion-font text-3xl font-bold tracking-[3px] text-white">
-            SSSN
-            <span class="text-sm font-normal tracking-[4px]">FASHION</span>
-        </a>
-
-        {{-- NAVIGATION LINKS --}}
-        <div class="hidden items-center gap-9 md:flex">
-
-            <a href="{{ url('/') }}"
-               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
-                Home
-            </a>
-
-            <a href="{{ url('/shop') }}"
-               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
-                Shop
-            </a>
-
-            <a href="#categories"
-               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
-                Categories
-            </a>
-
-            <a href="#brands"
-               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
-                Brands
-            </a>
-
-            <a href="#contact"
-               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
-                Contact
-            </a>
-
-        </div>
-
-        {{-- LOGIN & CART --}}
-        <div class="flex items-center gap-5">
-
-            <a href="{{ route('userLogin') }}"
-               class="text-xs font-semibold uppercase tracking-[2px] text-white transition hover:text-[#d2b99c]">
-                Login
-            </a>
-
-            <a href="{{ url('/cart') }}"
-               class="border border-white/60 px-5 py-3 text-xs font-bold uppercase tracking-[2px] text-white transition hover:bg-white hover:text-[#493825]">
-                Cart
-            </a>
-
-        </div>
-
-    </div>
-
-</nav>
 
 <main class="relative mx-auto w-full max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
     <div class="pointer-events-none absolute left-0 top-10 -z-10 h-64 w-64 rounded-full bg-[#eadcc9]/30 blur-3xl"></div>

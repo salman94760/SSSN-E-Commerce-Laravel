@@ -92,14 +92,7 @@
             </div>
 
 
-            <div class="mt-12 text-center">
-
-                <a href="#collection"
-                   class="inline-flex items-center gap-4 border border-[#292524] px-9 py-4 text-xs font-bold uppercase tracking-[2px] transition hover:bg-[#292524] hover:text-white">
-                    Explore All Products →
-                </a>
-
-            </div>
+           
 
         </div>
 

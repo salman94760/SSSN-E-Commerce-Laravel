@@ -25,7 +25,7 @@
         </div>
 
         {{-- WISHLIST --}}
-        <div class="absolute right-3 top-3 z-20">
+        <div>
             <x-products.wishlistButton :product="$product"/>
         </div>
 
