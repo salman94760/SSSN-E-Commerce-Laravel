@@ -60,6 +60,7 @@ class AuthController extends Controller
 
     public function login(Request $request){
         if($request->isMethod("POST")){
+        // dd($request->all());
             $remember = $request->boolean('remember');
             if(Auth::attempt(['email'=>$request->email,'password'=>$request->password],$remember)){
                 if(auth()->user()->role === 'customer'){

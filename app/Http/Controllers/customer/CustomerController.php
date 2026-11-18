@@ -114,78 +114,104 @@ class CustomerController extends Controller
     }
 
 
+
 public function addToCart(Request $request, string $id)
 {
-    $product = Product::findOrFail($id);
+    $product = Product::with('sizes')->findOrFail($id);
 
     $request->validate([
         'quantity' => 'required|integer|min:1',
-        'size_id'  => 'nullable|exists:sizes,id',
+        'size_id'  => 'nullable|integer',
         'color_id' => 'nullable|exists:colors,id',
     ]);
 
+    // Check product sizes
+    $availableSizes = $product->sizes;
+
+    // Multiple sizes: selection required
+    if ($availableSizes->count() > 1 && !$request->filled('size_id')) {
+        return back()->with('error', 'Please select a size.');
+    }
+
+    // Single size: automatically select
+    if ($availableSizes->count() === 1 && !$request->filled('size_id')) {
+        $request->merge([
+            'size_id' => $availableSizes->first()->id
+        ]);
+    }
+
+    // Validate selected size belongs to product
+    $size = null;
+
+    if ($request->filled('size_id')) {
+
+        $size = $product->sizes()
+            ->where('sizes.id', $request->size_id)
+            ->first();
+
+        if (!$size) {
+            return back()->with('error', 'Invalid product size selected.');
+        }
+    }
+
+    // Session and user
     $sessionId = $request->session()->getId();
     $userId = Auth::id();
 
-    // Existing cart find karo
+    // Find cart
     $cart = Cart::where(function ($query) use ($userId, $sessionId) {
+
         if ($userId) {
             $query->where('user_id', $userId);
         } else {
             $query->where('session_id', $sessionId);
         }
+
     })->first();
 
-    // Cart nahi hai to create karo
+    // Create cart if not exists
     if (!$cart) {
+
         $cart = Cart::create([
             'user_id'    => $userId,
             'session_id' => $sessionId,
         ]);
     }
 
-    // Selected size find karo
-    $size = $product->sizes()
-        ->where('sizes.id', $request->size_id)
-        ->first();
-
-    // Selected size product se belong nahi karta
-    if ($request->filled('size_id') && !$size) {
-        return back()->with('error', 'Invalid product size selected.');
-    }
-
-    // Product + Size + Color ke basis par cart item check karo
+    // Find existing cart item
     $cartItem = CartItem::where('cart_id', $cart->id)
         ->where('product_id', $product->id)
         ->where('size_id', $request->size_id)
         ->where('color_id', $request->color_id)
         ->first();
 
-    // Unit price calculate karo
+    // Calculate price
     $unitPrice = $size?->pivot?->price
         ?? $product->sale_price
         ?? $product->price;
 
     if ($cartItem) {
 
+        // Same product + same size + same color
         $cartItem->increment('quantity', $request->quantity);
 
     } else {
 
-        // CartItem::create([
-        //     'cart_id'    => $cart->id,
-        //     'product_id' => $product->id,
-        //     'quantity'   => $request->quantity,
-        //     'price'      => $unitPrice,
-        //     'color_id'   => $request->color_id,
-        //     'size_id'    => $request->size_id,
-        // ]);
+        CartItem::create([
+            'cart_id'    => $cart->id,
+            'product_id' => $product->id,
+            'quantity'   => $request->quantity,
+            'price'      => $unitPrice,
+            'color_id'   => $request->color_id,
+            'size_id'    => $request->size_id,
+        ]);
     }
 
     return redirect()
         ->route('customer.cart')
         ->with('success', 'Added to cart successfully');
 }
+
 
     public function increase($item)
     {

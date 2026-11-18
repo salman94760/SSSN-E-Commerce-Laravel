@@ -7,8 +7,8 @@
 
     <title>@yield('title', 'Login | SSSN Fashion')</title>
 
-    <link rel="icon" type="image/png" href="{{ asset('logo/logo.ico') }}">
-
+    <!-- <link rel="icon" type="image/png" href="{{ asset('logo/logo.ico') }}"> -->
+    <link rel="icon" type="image/png" href="{{ asset('logo/favicon.png') }}">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
